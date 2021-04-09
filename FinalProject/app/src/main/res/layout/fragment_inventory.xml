@@ -45,7 +45,6 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/characteristics"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.571"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/potions_food" />
 
@@ -66,6 +65,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/back_button"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/list"
         tools:layout="@layout/fragment_item_characteristics" />

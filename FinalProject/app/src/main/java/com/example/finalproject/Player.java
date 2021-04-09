@@ -1,11 +1,13 @@
 package com.example.finalproject;
 
+import android.util.Pair;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class Player {
-    private int level, experience, gold, health, mana, power_level, experience_to_next_level_required, research_points, coordinates, damage, armor;
+    private int level, experience, gold, health, mana, power_level, experience_to_next_level_required, research_points, damage, armor;
+    private Pair<Integer, Integer> coordinates;
     private Spell chosen_spell;
     private ArrayList<Integer> resistances=new ArrayList<>();
     private ArrayList<Item> equipment=new ArrayList<>();
@@ -13,7 +15,7 @@ public class Player {
     private ArrayList<Spell> spells=new ArrayList<>(), fast_spells=new ArrayList<>();
     private Enemy enemy;
 
-    public Player(int coordinates){
+    public Player(int x, int y){
         level=0;
         experience=0;
         gold=0;
@@ -36,7 +38,7 @@ public class Player {
         resistances.add(null);
         resistances.add(null);
         resistances.add(null);
-        this.coordinates=coordinates;
+        this.coordinates=new Pair<>(x, y);
     }
 
     public void cast_spell(){
@@ -140,14 +142,6 @@ public class Player {
         this.fast_spells = fast_spells;
     }
 
-    public int getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(int coordinates) {
-        this.coordinates = coordinates;
-    }
-
     public int getLevel() {
         return level;
     }
@@ -226,5 +220,13 @@ public class Player {
 
     public void setEnemy(Enemy enemy) {
         this.enemy = enemy;
+    }
+
+    public Pair<Integer, Integer> getCoordinates() {
+        return coordinates;
+    }
+
+    public void setCoordinates(Pair<Integer, Integer> coordinates) {
+        this.coordinates = coordinates;
     }
 }
