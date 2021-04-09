@@ -7,12 +7,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.provider.ContactsContract;
 import android.util.Pair;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -23,7 +21,6 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Map extends Fragment {
@@ -35,70 +32,89 @@ public class Map extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Pair<Integer, Integer> player_coords=MainActivity.player.getCoordinates();
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        Pair<ImageView, Pair<Integer, Integer>>[][] map=new Pair[5][5];
         TableLayout table=getView().findViewById(R.id.tableLayout);
         TableRow[] rows=new TableRow[table.getChildCount()];
-        Bitmap[] bm=new Bitmap[10];
-        for (int i=0;i<10;i++)
-            bm[i]=Bitmap.createBitmap(width/5, width/5, Bitmap.Config.ARGB_8888);
-        bm[0].eraseColor(Color.BLACK);
-        bm[1].eraseColor(Color.BLUE);
-
+        for (int i=0;i<table.getChildCount();i++)
+            rows[i]=(TableRow)table.getChildAt(i);
+        ImageView[][] visible_map=new ImageView[5][5];
         View.OnClickListener onClickListener=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Pair<Integer, Integer> coord=find_image((ImageView)v, map);
-                if (!MainActivity.player.getCoordinates().equals(coord))
+                Pair<Integer, Integer> coords= find_title_coords((ImageView)v, visible_map),
+                player_coords=MainActivity.player.getCoordinates();
+                if (!MainActivity.player.getCoordinates().equals(coords)&&MainActivity.map[coords.first][coords.second].getType()!=-1)
                 {
                     int a=new Random().nextInt(100);
-                    int dx=coord.first-MainActivity.player.getCoordinates().first,
-                            dy=coord.second-MainActivity.player.getCoordinates().second;
-                    MainActivity.player.setCoordinates(new Pair<>(MainActivity.player.getCoordinates().first+dx, MainActivity.player.getCoordinates().second+dy));
-                    for (int i=0;i<5;i++){
-                        for (int j=0;j<5;j++){
-                        }
-                    }
-                    if (a<=50){
-                        Toast.makeText(getContext(), coord.first+" "+coord.second, Toast.LENGTH_SHORT).show();
-                    }
-                    else {
-                        Toast.makeText(getContext(), coord.first+" "+coord.second, Toast.LENGTH_SHORT).show();
-                        /*FragmentManager fm=getParentFragmentManager();
+                    MainActivity.map[player_coords.first][player_coords.second].getTexture().eraseColor(Color.BLACK);
+                    if (a<=MainActivity.chances_of_fight.get(MainActivity.map[coords.first][coords.second].getType())) {
+                        FragmentManager fm=getParentFragmentManager();
                         FragmentTransaction fragmentTransaction= fm.beginTransaction();
                         fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                         fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
                         fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                        fragmentTransaction.add(R.id.fight, new Fight());
-                        fragmentTransaction.commit();*/
+                        fragmentTransaction.add(R.id.fight, new FightFragment());
+                        fragmentTransaction.commit();
+                    }
+                    int dx=coords.first-player_coords.first,
+                            dy=coords.second-player_coords.second;
+                    MainActivity.map[player_coords.first][player_coords.second].setTexture(Bitmap.createBitmap(MainActivity.player.getTitle_texture()));
+                    MainActivity.player.setCoordinates(new Pair<>(player_coords.first+dx, player_coords.second+dy));
+                    player_coords=MainActivity.player.getCoordinates();
+                    MainActivity.player.setTitle_texture(Bitmap.createBitmap(MainActivity.map[player_coords.first][player_coords.second].getTexture()));
+                    MainActivity.map[player_coords.first][player_coords.second].getTexture().eraseColor(Color.BLUE);
+                    if (player_coords.first+dx>=2&&player_coords.second+dy>=2){
+                        for (int i=0;i<5;i++) {
+                            for (int j = 0; j < 5; j++) {
+                                visible_map[i][j].setImageBitmap(MainActivity.map[player_coords.first-2+i][player_coords.second-2+j].getTexture());
+                            }
+                        }
+                    }
+                    else if (player_coords.first+dx>=2) {
+                        for (int i=0;i<5;i++) {
+                            for (int j = 0; j < 5; j++) {
+                                visible_map[i][j].setImageBitmap(MainActivity.map[player_coords.first-2+i][j].getTexture());
+                            }
+                        }
+                    }
+                    else if (player_coords.second+dy>=2){
+                        for (int i=0;i<5;i++) {
+                            for (int j = 0; j < 5; j++) {
+                                visible_map[i][j].setImageBitmap(MainActivity.map[i][player_coords.second-2+j].getTexture());
+                            }
+                        }
+                    }
+                    else {
+                        for (int i=0;i<5;i++) {
+                            for (int j = 0; j < 5; j++) {
+                                visible_map[i][j].setImageBitmap(MainActivity.map[i][j].getTexture());
+                            }
+                        }
                     }
                 }
             }
         };
-        for (int i=0;i<5;i++){
-            rows[i]=(TableRow)table.getChildAt(i);
-            for (int j=0;j<5;j++){
-                map[i][j]=new Pair<>((ImageView)rows[i].getChildAt(j), new Pair<>(i, j));
-                map[i][j].first.setImageBitmap(Bitmap.createBitmap(bm[0]));
-                map[i][j].first.setOnClickListener(onClickListener);
-                if (i==2&&j==2)
-                {
-                    map[i][j].first.setImageBitmap(bm[1]);
-                }
+        for (int i=0;i<5;i++) {
+            for (int j = 0; j < 5; j++) {
+                visible_map[i][j] = (ImageView) rows[i].getChildAt(j);
+                visible_map[i][j].setImageBitmap(MainActivity.map[player_coords.first-2+i][player_coords.second-2+j].getTexture());
+                visible_map[i][j].setOnClickListener(onClickListener);
             }
         }
     }
 
-    private Pair<Integer, Integer> find_image(ImageView v, Pair[][] p){
+    private Pair<Integer, Integer> find_title_coords(ImageView v, ImageView[][] p){
         for (int i=0;i<5;i++){
             for (int j=0;j<5;j++){
-                if (v==p[i][j].first)
-                    return (Pair<Integer, Integer>)p[i][j].second;
+                if (v==p[i][j])
+                    return new Pair<>(i+MainActivity.player.getCoordinates().first-2, j+MainActivity.player.getCoordinates().second-2);
             }
         }
         return null;
     }
+
 }

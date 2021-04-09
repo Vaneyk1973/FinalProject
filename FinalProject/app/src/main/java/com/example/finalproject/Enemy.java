@@ -1,74 +1,66 @@
 package com.example.finalproject;
 
+import android.util.Pair;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
-public class Enemy {
-    private String name;
-    private int health, mana, damage, armor;
-    private HashMap<Item, Integer> drop;
+public class Enemy extends Entity {
+    private ArrayList<Pair<Item, Integer>> drop;
+    private boolean t=true;
 
-    public Enemy(String name, int health, int mana, int damage, int armor, HashMap<Item, Integer> drop) {
-        this.name = name;
-        this.health = health;
-        this.mana = mana;
-        this.damage = damage;
-        this.armor = armor;
-        this.drop = drop;
+    public Enemy(String name, int health, int mana, int damage, int armor, ArrayList drop) {
+        setHealth_regen(5);
+        setArmor(armor);
+        setDamage(damage);
+        setHealth(health);
+        setName(name);
+        setMax_health(health);
+        setMax_mana(mana);
+        setDrop(drop);
+    }
+
+    public Enemy (Enemy enemy){
+        setHealth_regen(enemy.getHealth_regen());
+        setMana_regen(enemy.getMana_regen());
+        setArmor(enemy.getArmor());
+        setDrop(enemy.getDrop());
+        setDamage(enemy.getDamage());
+        setExperience(enemy.getExperience());
+        setExperience_to_next_level_required(enemy.getExperience_to_next_level_required());
+        setHealth(enemy.getHealth());
+        setLevel(enemy.getLevel());
+        setMana(enemy.getMana());
+        setMax_health(enemy.getMax_health());
+        setMax_mana(enemy.getMax_mana());
+        setName(enemy.getName());
+        setPower_level(enemy.getPower_level());
     }
 
     public void attack (Player player){
+        player.take_damage(super.getDamage());
+    }
+
+    public void fight(){
+        if (t){
+            attack(MainActivity.player);
+            t=false;
+        }
+        else {
+            defend();
+            t=true;
+        }
+    }
+
+    public void defend(){
 
     }
 
-    public void take_damage(int damage){
-        health-=damage;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public int getMana() {
-        return mana;
-    }
-
-    public void setMana(int mana) {
-        this.mana = mana;
-    }
-
-    public int getDamage() {
-        return damage;
-    }
-
-    public void setDamage(int damage) {
-        this.damage = damage;
-    }
-
-    public int getArmor() {
-        return armor;
-    }
-
-    public void setArmor(int armor) {
-        this.armor = armor;
-    }
-
-    public HashMap<Item, Integer> getDrop() {
+    public ArrayList<Pair<Item, Integer>> getDrop() {
         return drop;
     }
 
-    public void setDrop(HashMap<Item, Integer> drop) {
+    public void setDrop(ArrayList<Pair<Item, Integer>> drop) {
         this.drop = drop;
     }
 }

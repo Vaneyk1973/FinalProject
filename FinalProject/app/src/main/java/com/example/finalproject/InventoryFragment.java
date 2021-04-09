@@ -46,7 +46,6 @@ public class InventoryFragment extends Fragment {
         display.getSize(size);
         int width = size.x;
         RecyclerView inventory=(RecyclerView)getView().findViewById(R.id.list);
-        ArrayList<Item> items=new ArrayList<>();
         ArrayList<ImageView> categories=new ArrayList<>();
         Button back=(Button)getView().findViewById(R.id.back_button);
         FragmentManager fm=getParentFragmentManager();
@@ -61,9 +60,7 @@ public class InventoryFragment extends Fragment {
         categories.get(1).setImageBitmap(bm);
         categories.get(2).setImageBitmap(bm);
         categories.get(3).setImageBitmap(bm);
-        items.add(new Weapon(0, 0, 0, "Weapon"));
-        items.add(new Potion(0, "Potion"));
-        inventory.setAdapter(new MyAdapter(items));
+        inventory.setAdapter(new MyAdapter(MainActivity.player.getInventory()));
         inventory.setLayoutManager(new LinearLayoutManager(getContext()));
         fr.add(R.id.characteristics, new ItemCharacteristics());
         fr.commit();
@@ -109,10 +106,13 @@ public class InventoryFragment extends Fragment {
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(getContext(), holder.name.getText(), Toast.LENGTH_SHORT).show();
-                    /*FragmentContainerView characteristics=getView().findViewById(R.id.characteristics);
-                    TextView name_view=(TextView)characteristics.findViewById(R.id.name_field);
-                    name_view.setText(data.get(position).getName());*/
+                    FragmentContainerView characteristics=getView().findViewById(R.id.characteristics);
+                    TextView name=(TextView)characteristics.findViewById(R.id.name_field);
+                    TextView category=(TextView)characteristics.findViewById(R.id.category_field);
+                    TextView cost=(TextView)characteristics.findViewById(R.id.cost_field);
+                    name.setText(data.get(position).getName());
+                    category.setText(data.get(position).getCategory()+"");
+                    cost.setText(data.get(position).getCost()+"");
                 }
             });
         }

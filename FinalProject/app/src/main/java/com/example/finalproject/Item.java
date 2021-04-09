@@ -4,6 +4,12 @@ public class Item {
     private int cost, rarity, category;
     private String name;
 
+    public Item(){}
+
+    public Item(String name){
+        this.name=name;
+    }
+
     public int getCost() {
         return cost;
     }

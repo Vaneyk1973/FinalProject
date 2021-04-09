@@ -27,8 +27,12 @@ public class StatusBar extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
         ImageView img = (ImageView) getView().findViewById(R.id.avatar);
-        Bitmap bm = Bitmap.createBitmap(512, 512, Bitmap.Config.ARGB_8888);
+        Bitmap bm = Bitmap.createBitmap((width-width/4-width/5)/2, (width-width/4-width/5)/2, Bitmap.Config.ARGB_8888);
         bm.eraseColor(Color.GREEN);
         img.setImageBitmap(bm);
         ProgressBar mana_bar = (ProgressBar) getView().findViewById(R.id.mana_bar);
