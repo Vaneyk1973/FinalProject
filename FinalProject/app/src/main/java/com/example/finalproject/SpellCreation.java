@@ -1,18 +1,40 @@
 package com.example.finalproject;
 
+import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Pair;
+import android.view.Display;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+
 public class SpellCreation extends Fragment {
+    private Element element;
+    private Type type;
+    private Form form;
+    private ManaChannel mana_channel;
+    private ManaReservoir mana_reservoir;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -22,5 +44,138 @@ public class SpellCreation extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        int width = size.x;
+        final String[] spell_name = new String[1];
+        EditText name=(EditText)getView().findViewById(R.id.spell_name);
+        name.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                spell_name[0] =v.getText().toString();
+                return false;
+            }
+        });
+        Button confirm_spell=(Button)getView().findViewById(R.id.confirm_creation);
+        confirm_spell.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.player.getSpells().add(new Spell(element, type, form, mana_channel, mana_reservoir, spell_name[0]));
+                Toast.makeText(getContext(), spell_name[0], Toast.LENGTH_LONG).show();
+            }
+        });
+        Button back=(Button)getView().findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm=getParentFragmentManager();
+                FragmentTransaction fragmentTransaction= fm.beginTransaction();
+                fragmentTransaction.remove(fm.findFragmentById(R.id.spell_creation));
+                fragmentTransaction.add(R.id.map, new Map());
+                fragmentTransaction.add(R.id.status, new StatusBar());
+                fragmentTransaction.add(R.id.menu, new Menu());
+                fragmentTransaction.commit();
+            }
+        });
+        Bitmap bm=Bitmap.createBitmap(width/5, width/5, Bitmap.Config.ARGB_8888);
+        bm.eraseColor(Color.YELLOW);
+        ImageView element_view=(ImageView)getView().findViewById(R.id.element);
+        element_view.setImageBitmap(bm);
+        ImageView mana_reservoir_view=(ImageView)getView().findViewById(R.id.mana_reservoir);
+        mana_reservoir_view.setImageBitmap(bm);
+        ImageView type_view=(ImageView)getView().findViewById(R.id.type);
+        type_view.setImageBitmap(bm);
+        ImageView mana_channel_view=(ImageView)getView().findViewById(R.id.mana_channel);
+        mana_channel_view.setImageBitmap(bm);
+        ImageView form_view=(ImageView)getView().findViewById(R.id.form);
+        form_view.setImageBitmap(bm);
+        RecyclerView comps=getView().findViewById(R.id.avaliable_components);
+        comps.setLayoutManager(new LinearLayoutManager(getContext()));
+        element_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comps.setAdapter(new SpellAdapter<Element>(MainActivity.elements));
+            }
+        });
+        mana_reservoir_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comps.setAdapter(new SpellAdapter<ManaReservoir>(MainActivity.manaReservoirs));
+            }
+        });
+        mana_channel_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comps.setAdapter(new SpellAdapter<ManaChannel>(MainActivity.manaChannels));
+            }
+        });
+        type_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comps.setAdapter(new SpellAdapter<Type>(MainActivity.types));
+            }
+        });
+        form_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comps.setAdapter(new SpellAdapter<Form>(MainActivity.forms));
+            }
+        });
+    }
+
+    class SpellAdapter<T extends Component> extends RecyclerView.Adapter<SpellAdapter.ViewHolder>{
+        private final ArrayList<Pair<T, Boolean>> data=new ArrayList<>();
+
+        public SpellAdapter(ArrayList<Pair<T, Boolean>> data) {
+            this.data.addAll(data);
+        }
+
+        public class ViewHolder extends RecyclerView.ViewHolder{
+            TextView comp;
+            public ViewHolder(@NonNull @NotNull View itemView) {
+                super(itemView);
+                comp=(TextView)itemView.findViewById(R.id.comp);
+            }
+        }
+
+        @NonNull
+        @NotNull
+        @Override
+        public SpellCreation.SpellAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+            View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.item2, parent, false);
+            return new SpellAdapter.ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull @NotNull SpellCreation.SpellAdapter.ViewHolder holder, int position) {
+            Class r=data.get(position).getClass();
+            if (r.equals(Element.class)) {
+                holder.comp.setText(String.valueOf(((Element) data.get(position).first).getElement()));
+                holder.comp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        element=(Element)data.get(position).first;
+                    }
+                });
+            }
+            else if (r.equals(Type.class)){
+                holder.comp.setText(String.valueOf(((Type) data.get(position).first).getType()));
+            }
+            else if (r.equals(ManaReservoir.class)){
+                holder.comp.setText(String.valueOf(((Type) data.get(position).first).getType()));
+            }
+            else if (r.equals(ManaChannel.class)){
+                holder.comp.setText(String.valueOf(((Type) data.get(position).first).getType()));
+            }
+            else if (r.equals(Form.class)){
+                holder.comp.setText(String.valueOf(((Type) data.get(position).first).getType()));
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return data.size();
+        }
     }
 }

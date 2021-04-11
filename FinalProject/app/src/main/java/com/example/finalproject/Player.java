@@ -78,30 +78,33 @@ public class Player extends Entity {
             equipment.set(0, item);
             setDamage(getDamage()+((Weapon) item).getDamage());
         }
-        else if (item.getClass()==Helmet.class)
+        else if (item.getClass()==Armor.class)
         {
-            equipment.set(1, item);
-            setArmor(getArmor()+((Helmet) item).getArmor());
-        }
-        else if (item.getClass()==Chestplate.class)
-        {
-            equipment.set(2, item);
-            setArmor(getArmor()+((Chestplate) item).getArmor());
-        }
-        else if (item.getClass()==HandArmor.class)
-        {
-            equipment.set(3, item);
-            setArmor(getArmor()+((HandArmor) item).getArmor());
-        }
-        else if (item.getClass()==LegArmor.class)
-        {
-            equipment.set(4, item);
-            setArmor(getArmor()+((LegArmor) item).getArmor());
-        }
-        else if (item.getClass()==Boots.class)
-        {
-            equipment.set(5, item);
-            setArmor(getArmor()+((Boots) item).getArmor());
+            if (((Armor) item).getType_of_armor()==1)
+            {
+                equipment.set(1, item);
+                setArmor(getArmor()+((Armor) item).getArmor());
+            }
+            else if (((Armor) item).getType_of_armor()==2)
+            {
+                equipment.set(2, item);
+                setArmor(getArmor()+((Armor) item).getArmor());
+            }
+            else if (((Armor) item).getType_of_armor()==3)
+            {
+                equipment.set(3, item);
+                setArmor(getArmor()+((Armor) item).getArmor());
+            }
+            else if (((Armor) item).getType_of_armor()==4)
+            {
+                equipment.set(4, item);
+                setArmor(getArmor()+((Armor) item).getArmor());
+            }
+            else if (((Armor) item).getType_of_armor()==5)
+            {
+                equipment.set(5, item);
+                setArmor(getArmor()+((Armor) item).getArmor());
+            }
         }
     }
 

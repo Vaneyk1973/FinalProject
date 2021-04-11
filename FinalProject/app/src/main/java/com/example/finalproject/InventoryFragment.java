@@ -11,7 +11,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -22,13 +21,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.TooManyListenersException;
 
 public class InventoryFragment extends Fragment {
 
@@ -56,11 +52,14 @@ public class InventoryFragment extends Fragment {
         categories.add(getView().findViewById(R.id.recourses));
         categories.add(getView().findViewById(R.id.other));
         bm.eraseColor(Color.RED);
-        categories.get(0).setImageBitmap(bm);
-        categories.get(1).setImageBitmap(bm);
-        categories.get(2).setImageBitmap(bm);
-        categories.get(3).setImageBitmap(bm);
-        inventory.setAdapter(new MyAdapter(MainActivity.player.getInventory()));
+        categories.get(0).setImageBitmap(Bitmap.createBitmap(bm));
+        bm.eraseColor(Color.GREEN);
+        categories.get(1).setImageBitmap(Bitmap.createBitmap(bm));
+        bm.eraseColor(Color.BLUE);
+        categories.get(2).setImageBitmap(Bitmap.createBitmap(bm));
+        bm.eraseColor(Color.GRAY);
+        categories.get(3).setImageBitmap(Bitmap.createBitmap(bm));
+        inventory.setAdapter(new InventoryAdapter(MainActivity.player.getInventory()));
         inventory.setLayoutManager(new LinearLayoutManager(getContext()));
         fr.add(R.id.characteristics, new ItemCharacteristics());
         fr.commit();
@@ -76,10 +75,11 @@ public class InventoryFragment extends Fragment {
             }
         });
     }
-    class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder>{
+
+    class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder>{
         private final ArrayList<Item> data=new ArrayList<>();
 
-        public MyAdapter(ArrayList<Item> data) {
+        public InventoryAdapter(ArrayList<Item> data) {
             this.data.addAll(data);
         }
 
@@ -88,20 +88,19 @@ public class InventoryFragment extends Fragment {
             public ViewHolder(@NonNull @NotNull View itemView) {
                 super(itemView);
                 name=(TextView) itemView.findViewById(R.id.textView);
-
             }
         }
 
         @NonNull
         @NotNull
         @Override
-        public MyAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        public InventoryFragment.InventoryAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
             View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
             return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull @NotNull MyAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull @NotNull InventoryFragment.InventoryAdapter.ViewHolder holder, int position) {
             holder.name.setText(data.get(position).getName());
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -3,17 +3,15 @@ package com.example.finalproject;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.ImageDecoder;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.Display;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.EventListener;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +22,11 @@ public class MainActivity extends AppCompatActivity {
     public static HashMap<Integer, HashMap<Enemy, Integer>> chances_of_enemy=new HashMap<>();
     public static ArrayList<Enemy> enemies=new ArrayList<>();
     public static HashMap<Integer, ArrayList<Pair<Item, Integer>>> drop=new HashMap<>();
+    public static ArrayList<Pair<Element, Boolean>> elements=new ArrayList<>();
+    public static ArrayList<Pair<ManaChannel, Boolean>> manaChannels =new ArrayList<>();
+    public static ArrayList<Pair<Type, Boolean>> types =new ArrayList<>();
+    public static ArrayList<Pair<Form, Boolean>> forms =new ArrayList<>();
+    public static ArrayList<Pair<ManaReservoir, Boolean>> manaReservoirs =new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,9 @@ public class MainActivity extends AppCompatActivity {
         chances_of_enemy.put(4, new HashMap<>());
         chances_of_enemy.put(3, new HashMap<>());
         chances_of_enemy.put(2, new HashMap<>());
+        for (int i=0;i<7;i++)
+            elements.add(new Pair<>(new Element("fire", i), true));
+        types.add(new Pair<>(new Type("self", 12), true));
     }
 
     class MapTitle{

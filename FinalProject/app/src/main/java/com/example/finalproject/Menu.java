@@ -38,16 +38,29 @@ public class Menu extends Fragment {
         int width = size.x;
         Bitmap bm=Bitmap.createBitmap(width/4, width/4, Bitmap.Config.ARGB_8888);
         bm.eraseColor(Color.RED);
-        inv[0].setImageBitmap(bm);
-        inv[1].setImageBitmap(bm);
-        inv[2].setImageBitmap(bm);
-        inv[3].setImageBitmap(bm);
+        inv[0].setImageBitmap(Bitmap.createBitmap(bm));
+        bm.eraseColor(Color.GREEN);
+        inv[1].setImageBitmap(Bitmap.createBitmap(bm));
+        bm.eraseColor(Color.BLUE);
+        inv[2].setImageBitmap(Bitmap.createBitmap(bm));
+        bm.eraseColor(Color.GRAY);
+        inv[3].setImageBitmap(Bitmap.createBitmap(bm));
         FragmentManager fm=getParentFragmentManager();
         FragmentTransaction fragmentTransaction= fm.beginTransaction();
         inv[0].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fragmentTransaction.add(R.id.inventory, new InventoryFragment());
+                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                fragmentTransaction.commit();
+            }
+        });
+        inv[1].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTransaction.add(R.id.spell_creation, new SpellCreation());
                 fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                 fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                 fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
