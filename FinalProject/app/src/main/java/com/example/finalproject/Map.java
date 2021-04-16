@@ -49,7 +49,7 @@ public class Map extends Fragment {
                 player_coords=MainActivity.player.getCoordinates();
                 if (!MainActivity.player.getCoordinates().equals(coords)&&MainActivity.map[coords.first][coords.second].getType()!=-1)
                 {
-                    int a=111;/*=new Random().nextInt(100);*/
+                    int a=new Random().nextInt(100);
                     MainActivity.map[player_coords.first][player_coords.second].getTexture().eraseColor(Color.BLACK);
                     if (a<=MainActivity.chances_of_fight.get(MainActivity.map[coords.first][coords.second].getType())) {
                         FragmentManager fm=getParentFragmentManager();
