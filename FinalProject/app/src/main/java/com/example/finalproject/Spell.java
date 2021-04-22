@@ -18,6 +18,9 @@ public class Spell {
         this.manaChannel = manaChannel;
         this.manaReservoir = manaReservoir;
         this.name = name;
+        damage=manaReservoir.getVolume()*element.getBase_damage();
+        lasting_time=manaReservoir.getVolume()/manaChannel.getMps();
+        mana_consumption=manaReservoir.getVolume();
     }
 
     public void affect (Enemy enemy){
@@ -26,7 +29,7 @@ public class Spell {
             enemy.take_damage(damage);
         }
         else {
-            Log.d("", "Not enough mana");
+            Log.d("TTTTT", "Not enough mana");
         }
     }
 

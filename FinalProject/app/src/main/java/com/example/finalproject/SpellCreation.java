@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -30,11 +31,11 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class SpellCreation extends Fragment {
-    private Element element;
-    private Type type;
-    private Form form;
-    private ManaChannel mana_channel;
-    private ManaReservoir mana_reservoir;
+    private Element element=MainActivity.elements.get(0).first;
+    private Type type=MainActivity.types.get(0).first;
+    private Form form=MainActivity.forms.get(0).first;
+    private ManaChannel mana_channel=MainActivity.manaChannels.get(0).first;
+    private ManaReservoir mana_reservoir=MainActivity.manaReservoirs.get(0).first;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,19 +51,11 @@ public class SpellCreation extends Fragment {
         int width = size.x;
         final String[] spell_name = new String[1];
         EditText name=(EditText)getView().findViewById(R.id.spell_name);
-        name.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                spell_name[0] =v.getText().toString();
-                return false;
-            }
-        });
         Button confirm_spell=(Button)getView().findViewById(R.id.confirm_creation);
         confirm_spell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.player.getSpells().add(new Spell(element, type, form, mana_channel, mana_reservoir, spell_name[0]));
-                Toast.makeText(getContext(), spell_name[0], Toast.LENGTH_LONG).show();
+                MainActivity.player.getSpells().add(new Spell(element, type, form, mana_channel, mana_reservoir, name.getText().toString()));
             }
         });
         Button back=(Button)getView().findViewById(R.id.back);
@@ -95,31 +88,31 @@ public class SpellCreation extends Fragment {
         element_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter<Element>(MainActivity.elements));
+                comps.setAdapter(new SpellAdapter<>(MainActivity.elements));
             }
         });
         mana_reservoir_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter<ManaReservoir>(MainActivity.manaReservoirs));
+                comps.setAdapter(new SpellAdapter<>(MainActivity.manaReservoirs));
             }
         });
         mana_channel_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter<ManaChannel>(MainActivity.manaChannels));
+                comps.setAdapter(new SpellAdapter<>(MainActivity.manaChannels));
             }
         });
         type_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter<Type>(MainActivity.types));
+                comps.setAdapter(new SpellAdapter<>(MainActivity.types));
             }
         });
         form_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter<Form>(MainActivity.forms));
+                comps.setAdapter(new SpellAdapter<>(MainActivity.forms));
             }
         });
     }
@@ -143,15 +136,15 @@ public class SpellCreation extends Fragment {
         @NotNull
         @Override
         public SpellCreation.SpellAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-            View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.item2, parent, false);
+            View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.components_item, parent, false);
             return new SpellAdapter.ViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull SpellCreation.SpellAdapter.ViewHolder holder, int position) {
-            Class r=data.get(position).getClass();
+            Class r=data.get(position).first.getClass();
+            holder.comp.setText(String.valueOf(data.get(position).first.getName()));
             if (r.equals(Element.class)) {
-                holder.comp.setText(String.valueOf(((Element) data.get(position).first).getElement()));
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -160,16 +153,36 @@ public class SpellCreation extends Fragment {
                 });
             }
             else if (r.equals(Type.class)){
-                holder.comp.setText(String.valueOf(((Type) data.get(position).first).getType()));
+                holder.comp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        type=(Type)data.get(position).first;
+                    }
+                });
             }
             else if (r.equals(ManaReservoir.class)){
-                holder.comp.setText(String.valueOf(((Type) data.get(position).first).getType()));
+                holder.comp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mana_reservoir=(ManaReservoir)data.get(position).first;
+                    }
+                });
             }
             else if (r.equals(ManaChannel.class)){
-                holder.comp.setText(String.valueOf(((Type) data.get(position).first).getType()));
+                holder.comp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mana_channel=(ManaChannel)data.get(position).first;
+                    }
+                });
             }
             else if (r.equals(Form.class)){
-                holder.comp.setText(String.valueOf(((Type) data.get(position).first).getType()));
+                holder.comp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        form=(Form)data.get(position).first;
+                    }
+                });
             }
         }
 

@@ -95,7 +95,7 @@ public class InventoryFragment extends Fragment {
         @NotNull
         @Override
         public InventoryFragment.InventoryAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-            View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.item, parent, false);
+            View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.inventory_item, parent, false);
             return new ViewHolder(view);
         }
 

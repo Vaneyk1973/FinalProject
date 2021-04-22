@@ -10,10 +10,9 @@ public class Player extends Entity {
     private int gold, research_points;
     private Pair<Integer, Integer> coordinates;
     private Spell chosen_spell;
-    private ArrayList<Integer> resistances=new ArrayList<>();
     private ArrayList<Item> equipment=new ArrayList<>();
     private ArrayList<Item> inventory=new ArrayList<>();
-    private ArrayList<Spell> spells=new ArrayList<>(), fast_spells=new ArrayList<>();
+    private ArrayList<Spell> spells=new ArrayList<>();
     private Bitmap title_texture;
     private Enemy enemy;
 
@@ -41,14 +40,6 @@ public class Player extends Entity {
         equipment.add(null);
         equipment.add(null);
         equipment.add(null);
-        resistances.add(null);
-        resistances.add(null);
-        resistances.add(null);
-        resistances.add(null);
-        resistances.add(null);
-        resistances.add(null);
-        resistances.add(null);
-        resistances.add(null);
     }
 
     public void take_drop(){
@@ -64,12 +55,8 @@ public class Player extends Entity {
         chosen_spell.affect(enemy);
     }
 
-    public void choose_spell(int spell){
-        chosen_spell=fast_spells.get(spell);
-    }
-
-    public void setResistances(int resistance, int element){
-        resistances.set(element, resistance);
+    public void choose_spell(Spell spell){
+        chosen_spell=spell;
     }
 
     public void equip(Item item){
@@ -144,14 +131,6 @@ public class Player extends Entity {
         this.spells = spells;
     }
 
-    public ArrayList<Spell> getFast_spells() {
-        return fast_spells;
-    }
-
-    public void setFast_spells(ArrayList<Spell> fast_spells) {
-        this.fast_spells = fast_spells;
-    }
-
     public int getGold() {
         return gold;
     }
@@ -174,10 +153,6 @@ public class Player extends Entity {
 
     public void setEquipment(ArrayList<Item> equipment) {
         this.equipment = equipment;
-    }
-
-    public ArrayList<Integer> getResistances() {
-        return resistances;
     }
 
     public void setEnemy(Enemy enemy) {

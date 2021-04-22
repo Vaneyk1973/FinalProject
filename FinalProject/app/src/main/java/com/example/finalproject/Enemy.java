@@ -7,9 +7,10 @@ import java.util.HashMap;
 
 public class Enemy extends Entity {
     private ArrayList<Pair<Item, Integer>> drop;
+    private int defence=0;
     private boolean t=true;
 
-    public Enemy(String name, int health, int mana, int damage, int armor, ArrayList drop) {
+    public Enemy(String name, int health, int mana, int damage, int armor, ArrayList<Pair<Item, Integer>> drop) {
         setHealth_regen(5);
         setArmor(armor);
         setDamage(damage);
@@ -62,5 +63,9 @@ public class Enemy extends Entity {
 
     public void setDrop(ArrayList<Pair<Item, Integer>> drop) {
         this.drop = drop;
+    }
+
+    public void be_affected_by_spell(Spell spell){
+        defence+=getResistances().get(spell)*spell.getDamage();
     }
 }

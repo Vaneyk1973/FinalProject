@@ -6,6 +6,7 @@ public class Entity {
     private int level, experience, health, max_health, mana, max_mana, power_level, experience_to_next_level_required,
             damage, armor, health_regen, mana_regen;
     private String name;
+    private HashMap<Spell, Double> resistances=new HashMap<>();
 
     public void take_damage(int damage){
         health-=damage;
@@ -123,5 +124,13 @@ public class Entity {
 
     public void setExperience_to_next_level_required(int experience_to_next_level_required) {
         this.experience_to_next_level_required = experience_to_next_level_required;
+    }
+
+    public HashMap<Spell, Double> getResistances() {
+        return resistances;
+    }
+
+    public void setResistances(HashMap<Spell, Double> resistances) {
+        this.resistances = resistances;
     }
 }

@@ -1,7 +1,7 @@
 package com.example.finalproject;
 
 public class Element extends Component{
-    private int element;
+    private int element, base_damage;
 
     public Element(String name, int element) {
         super(name);
@@ -10,5 +10,9 @@ public class Element extends Component{
 
     public int getElement() {
         return element;
+    }
+
+    public int getBase_damage() {
+        return base_damage;
     }
 }

@@ -27,22 +27,21 @@ public class Menu extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         ImageView[] inv=new ImageView[4];
         inv[0]=getView().findViewById(R.id.inventory_button);
         inv[1]=getView().findViewById(R.id.spellCreation_button);
         inv[2]=getView().findViewById(R.id.spells_button);
-        inv[3]=getView().findViewById(R.id.researchTree_button);
+        inv[3]=getView().findViewById(R.id.research_tree_button);
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
         Bitmap bm=Bitmap.createBitmap(width/4, width/4, Bitmap.Config.ARGB_8888);
-        bm.eraseColor(Color.RED);
-        inv[0].setImageBitmap(Bitmap.createBitmap(bm));
+        inv[0].setImageBitmap(MainActivity.menu[0]);
         bm.eraseColor(Color.GREEN);
         inv[1].setImageBitmap(Bitmap.createBitmap(bm));
-        bm.eraseColor(Color.BLUE);
-        inv[2].setImageBitmap(Bitmap.createBitmap(bm));
+        inv[2].setImageBitmap(MainActivity.menu[2]);
         bm.eraseColor(Color.GRAY);
         inv[3].setImageBitmap(Bitmap.createBitmap(bm));
         FragmentManager fm=getParentFragmentManager();
@@ -67,6 +66,24 @@ public class Menu extends Fragment {
                 fragmentTransaction.commit();
             }
         });
-        super.onViewCreated(view, savedInstanceState);
+        inv[2].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTransaction.add(R.id.spells, new Spells());
+                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                fragmentTransaction.commit();            }
+        });
+        inv[3].setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fragmentTransaction.add(R.id.research_tree, new ResearchTree());
+                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                fragmentTransaction.commit();
+            }
+        });
     }
 }
