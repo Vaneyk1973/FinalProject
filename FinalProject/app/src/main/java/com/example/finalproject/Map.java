@@ -51,7 +51,7 @@ public class Map extends Fragment {
                 {
                     int a=new Random().nextInt(100);
                     MainActivity.map[player_coords.first][player_coords.second].getTexture().eraseColor(Color.BLACK);
-                    if (a<=MainActivity.chances_of_fight.get(MainActivity.map[coords.first][coords.second].getType())) {
+                    if (a<MainActivity.chances_of_fight.get(MainActivity.map[coords.first][coords.second].getType())) {
                         FragmentManager fm=getParentFragmentManager();
                         FragmentTransaction fragmentTransaction= fm.beginTransaction();
                         fragmentTransaction.remove(fm.findFragmentById(R.id.map));

@@ -13,7 +13,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
 import android.view.KeyEvent;
@@ -22,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,11 +31,12 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class SpellCreation extends Fragment {
-    private Element element=MainActivity.elements.get(0).first;
-    private Type type=MainActivity.types.get(0).first;
-    private Form form=MainActivity.forms.get(0).first;
-    private ManaChannel mana_channel=MainActivity.manaChannels.get(0).first;
-    private ManaReservoir mana_reservoir=MainActivity.manaReservoirs.get(0).first;
+    private Element element=MainActivity.elements.get(0);
+    private Type type=MainActivity.types.get(0);
+    private Form form=MainActivity.forms.get(0);
+    private ManaChannel mana_channel=MainActivity.mana_channels.get(0);
+    private ManaReservoir mana_reservoir=MainActivity.mana_reservoirs.get(0);
+    private String name;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,15 +51,25 @@ public class SpellCreation extends Fragment {
         display.getSize(size);
         int width = size.x;
         final String[] spell_name = new String[1];
-        EditText name=(EditText)getView().findViewById(R.id.spell_name);
+        EditText name_view=(EditText)getView().findViewById(R.id.spell_name);
+        name_view.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                name=v.getText().toString();
+                return false;
+            }
+        });
         Button confirm_spell=(Button)getView().findViewById(R.id.confirm_creation);
+        name=name_view.getText().toString();
         confirm_spell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.player.getSpells().add(new Spell(element, type, form, mana_channel, mana_reservoir, name.getText().toString()));
+                name=name_view.getText().toString();
+                MainActivity.player.getSpells().add(new Spell(element, type, form, mana_channel, mana_reservoir, name));
+
             }
         });
-        Button back=(Button)getView().findViewById(R.id.back);
+        Button back=(Button)getView().findViewById(R.id.back_button3);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,40 +99,47 @@ public class SpellCreation extends Fragment {
         element_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter<>(MainActivity.elements));
+                comps.setAdapter(new SpellAdapter(MainActivity.elements));
             }
         });
         mana_reservoir_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter<>(MainActivity.manaReservoirs));
+                comps.setAdapter(new SpellAdapter(MainActivity.mana_reservoirs));
             }
         });
         mana_channel_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter<>(MainActivity.manaChannels));
+                comps.setAdapter(new SpellAdapter(MainActivity.mana_channels));
             }
         });
         type_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter<>(MainActivity.types));
+                comps.setAdapter(new SpellAdapter(MainActivity.types));
             }
         });
         form_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter<>(MainActivity.forms));
+                comps.setAdapter(new SpellAdapter(MainActivity.forms));
             }
         });
+        /*View fr=getView().findViewById(R.id.spell_characteristics);
+        ((TextView)(fr.findViewById(R.id.spell_name_char))).setText(name);
+        ((TextView)(fr.findViewById(R.id.spell_type_char))).setText(type.getName());
+        ((TextView)(fr.findViewById(R.id.spell_element_char))).setText(element.getName());*/
     }
 
     class SpellAdapter<T extends Component> extends RecyclerView.Adapter<SpellAdapter.ViewHolder>{
-        private final ArrayList<Pair<T, Boolean>> data=new ArrayList<>();
+        private final ArrayList<T> data=new ArrayList<>();
 
-        public SpellAdapter(ArrayList<Pair<T, Boolean>> data) {
-            this.data.addAll(data);
+        public SpellAdapter(ArrayList<T> data) {
+            for (int i=0;i<data.size();i++){
+                if (data.get(i).isAvailable())
+                    this.data.add(data.get(i));
+            }
         }
 
         public class ViewHolder extends RecyclerView.ViewHolder{
@@ -142,13 +160,15 @@ public class SpellCreation extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull SpellCreation.SpellAdapter.ViewHolder holder, int position) {
-            Class r=data.get(position).first.getClass();
-            holder.comp.setText(String.valueOf(data.get(position).first.getName()));
+            Class r=data.get(position).getClass();
+            holder.comp.setText(String.valueOf(data.get(position).getName()));
+
             if (r.equals(Element.class)) {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        element=(Element)data.get(position).first;
+                        element=(Element)data.get(position);
+
                     }
                 });
             }
@@ -156,7 +176,7 @@ public class SpellCreation extends Fragment {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        type=(Type)data.get(position).first;
+                        type=(Type)data.get(position);
                     }
                 });
             }
@@ -164,7 +184,7 @@ public class SpellCreation extends Fragment {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mana_reservoir=(ManaReservoir)data.get(position).first;
+                        mana_reservoir=(ManaReservoir)data.get(position);
                     }
                 });
             }
@@ -172,7 +192,7 @@ public class SpellCreation extends Fragment {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mana_channel=(ManaChannel)data.get(position).first;
+                        mana_channel=(ManaChannel)data.get(position);
                     }
                 });
             }
@@ -180,7 +200,7 @@ public class SpellCreation extends Fragment {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        form=(Form)data.get(position).first;
+                        form=(Form)data.get(position);
                     }
                 });
             }

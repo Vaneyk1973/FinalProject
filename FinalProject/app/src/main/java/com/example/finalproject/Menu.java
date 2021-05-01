@@ -59,11 +59,13 @@ public class Menu extends Fragment {
         inv[1].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentTransaction.add(R.id.spell_creation, new SpellCreation());
-                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                fragmentTransaction.commit();
+                if (MainActivity.researches.get(0).isResearched()){
+                    fragmentTransaction.add(R.id.spell_creation, new SpellCreation());
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                    fragmentTransaction.commit();
+                }
             }
         });
         inv[2].setOnClickListener(new View.OnClickListener() {

@@ -1,12 +1,49 @@
 package com.example.finalproject;
 
+import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.HashMap;
 
-public class Entity {
+public class Entity implements Parcelable {
     private int level, experience, health, max_health, mana, max_mana, power_level, experience_to_next_level_required,
-            damage, armor, health_regen, mana_regen;
+            damage, armor, health_regen, mana_regen, given_exp, given_gold;
     private String name;
     private HashMap<Spell, Double> resistances=new HashMap<>();
+
+    public Entity(){}
+
+    protected Entity(Parcel in) {
+        level = in.readInt();
+        experience = in.readInt();
+        health = in.readInt();
+        max_health = in.readInt();
+        mana = in.readInt();
+        max_mana = in.readInt();
+        power_level = in.readInt();
+        experience_to_next_level_required = in.readInt();
+        damage = in.readInt();
+        armor = in.readInt();
+        health_regen = in.readInt();
+        mana_regen = in.readInt();
+        given_exp = in.readInt();
+        given_gold = in.readInt();
+        name = in.readString();
+        resistances=new HashMap<>((HashMap<Spell, Double>) in.readBundle().getSerializable("resistances"));
+    }
+
+    public static final Creator<Entity> CREATOR = new Creator<Entity>() {
+        @Override
+        public Entity createFromParcel(Parcel in) {
+            return new Entity(in);
+        }
+
+        @Override
+        public Entity[] newArray(int size) {
+            return new Entity[size];
+        }
+    };
 
     public void take_damage(int damage){
         health-=damage;
@@ -132,5 +169,48 @@ public class Entity {
 
     public void setResistances(HashMap<Spell, Double> resistances) {
         this.resistances = resistances;
+    }
+
+    public int getGiven_exp() {
+        return given_exp;
+    }
+
+    public void setGiven_exp(int given_exp) {
+        this.given_exp = given_exp;
+    }
+
+    public int getGiven_gold() {
+        return given_gold;
+    }
+
+    public void setGiven_gold(int given_gold) {
+        this.given_gold = given_gold;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(level);
+        dest.writeInt(experience);
+        dest.writeInt(health);
+        dest.writeInt(max_health);
+        dest.writeInt(mana);
+        dest.writeInt(max_mana);
+        dest.writeInt(power_level);
+        dest.writeInt(experience_to_next_level_required);
+        dest.writeInt(damage);
+        dest.writeInt(armor);
+        dest.writeInt(health_regen);
+        dest.writeInt(mana_regen);
+        dest.writeInt(given_exp);
+        dest.writeInt(given_gold);
+        dest.writeString(name);
+        Bundle b=new Bundle();
+        b.putSerializable("resistances", resistances);
+        dest.writeBundle(new Bundle(b));
     }
 }

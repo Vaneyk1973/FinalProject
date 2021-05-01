@@ -2,7 +2,9 @@ package com.example.finalproject;
 
 import android.util.Log;
 
-public class Spell {
+import java.io.Serializable;
+
+public class Spell implements Serializable {
     private int mana_consumption, damage, lasting_time;
     private Element element;
     private Type type;
@@ -22,6 +24,19 @@ public class Spell {
         lasting_time=manaReservoir.getVolume()/manaChannel.getMps();
         mana_consumption=manaReservoir.getVolume();
     }
+
+    public Spell(Spell spell){
+        element=new Element(spell.element);
+        type=new Type(spell.type);
+        form=new Form(spell.form);
+        manaChannel=new ManaChannel(spell.manaChannel);
+        manaReservoir=new ManaReservoir(spell.manaReservoir);
+        name=spell.name;
+        mana_consumption=spell.mana_consumption;
+        damage=spell.damage;
+        lasting_time=spell.lasting_time;
+    }
+
 
     public void affect (Enemy enemy){
         if (MainActivity.player.getMana()>=mana_consumption){

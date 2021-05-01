@@ -72,16 +72,15 @@
         app:layout_constraintStart_toEndOf="@+id/mana_reservoir"
         app:layout_constraintTop_toBottomOf="@+id/spell_name" />
 
-    <FrameLayout
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/spell_characteristics"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/confirm_creation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/element">
-
-    </FrameLayout>
+        app:layout_constraintTop_toBottomOf="@+id/element"
+        tools:layout="@layout/fragment_spell_characteristics"/>
 
     <Button
         android:id="@+id/confirm_creation"
@@ -94,7 +93,7 @@
         app:layout_constraintTop_toBottomOf="@id/spell_characteristics" />
 
     <Button
-        android:id="@+id/back"
+        android:id="@+id/back_button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Back"

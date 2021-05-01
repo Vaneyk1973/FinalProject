@@ -2,9 +2,11 @@ package com.example.finalproject;
 
 public class Component {
     private String name;
+    private boolean available;
 
-    public Component(String name) {
+    public Component(String name, boolean available) {
         this.name = name;
+        this.available=available;
     }
 
     public String getName() {
@@ -13,6 +15,14 @@ public class Component {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setAvailable() {
+        available=true;
     }
 }
 
