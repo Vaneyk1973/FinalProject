@@ -128,4 +128,12 @@
         app:layout_constraintStart_toEndOf="@+id/power_level"
         app:layout_constraintTop_toBottomOf="@+id/gold_amount" />
 
+    <Button
+        android:id="@+id/chat_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chat"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

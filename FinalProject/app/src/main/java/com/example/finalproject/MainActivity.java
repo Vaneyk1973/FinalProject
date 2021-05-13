@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         setInitialData();
     }
 
-    
+
 
     @Override
     protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
