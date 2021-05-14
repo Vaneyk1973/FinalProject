@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.provider.ContactsContract;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,6 @@ public class FightFragment extends Fragment {
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        MainActivity.player.setEnemy(new Enemy(MainActivity.enemies.get(0)));
         Button run = (Button) getView().findViewById(R.id.run);
         Button attack = (Button) getView().findViewById(R.id.attack);
         Button cast_spell = (Button) getView().findViewById(R.id.cast_spell);
@@ -88,6 +88,7 @@ public class FightFragment extends Fragment {
                 MainActivity.player.getEnemy().regenerate();
                 MainActivity.player.attack();
                 MainActivity.player.getEnemy().fight();
+                Log.d("KK", MainActivity.player.getEnemy().getName());
                 enemy_health.setProgress(MainActivity.player.getEnemy().getHealth());
                 your_health.setProgress(MainActivity.player.getHealth());
                 if (MainActivity.player.getEnemy().getHealth() <= 0) {
@@ -99,6 +100,17 @@ public class FightFragment extends Fragment {
                     fragmentTransaction.add(R.id.status, new StatusBar());
                     fragmentTransaction.add(R.id.menu, new Menu());
                     fragmentTransaction.commit();
+                }
+                if (MainActivity.player.getHealth()<=0){
+                    Toast.makeText(getContext(), "You died \n All of your progress will be deleted \n Better luck this time", Toast.LENGTH_LONG).show();
+                    FragmentManager fm = getParentFragmentManager();
+                    FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.fight));
+                    fragmentTransaction.add(R.id.map, new Map());
+                    fragmentTransaction.add(R.id.status, new StatusBar());
+                    fragmentTransaction.add(R.id.menu, new Menu());
+                    fragmentTransaction.commit();
+                    MainActivity.setInitialData();
                 }
             }
         });

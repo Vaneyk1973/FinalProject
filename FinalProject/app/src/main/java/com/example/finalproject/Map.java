@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -47,8 +48,10 @@ public class Map extends Fragment {
             public void onClick(View v) {
                 Pair<Integer, Integer> coords= find_title_coords((ImageView)v, visible_map),
                 player_coords=MainActivity.player.getCoordinates();
+                StatusBar.update();
                 if (!MainActivity.player.getCoordinates().equals(coords)&&MainActivity.map[coords.first][coords.second].getType()!=0)
                 {
+                    MainActivity.player.regenerate();
                     int a=new Random().nextInt(100);
                     MainActivity.map[player_coords.first][player_coords.second].getTexture().eraseColor(Color.BLACK);
                     if (a<MainActivity.chances_of_fight.get(MainActivity.map[coords.first][coords.second].getType())) {
@@ -59,6 +62,46 @@ public class Map extends Fragment {
                         fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                         fragmentTransaction.add(R.id.fight, new FightFragment());
                         fragmentTransaction.commit();
+                        a=new Random().nextInt(100);
+
+                        switch (MainActivity.map[coords.first][coords.second].getType()){
+                            case 1:{
+
+                                if (a<30)
+                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(1).get(30)));
+                                else MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(1).get(70)));
+                                break;
+                            }
+                            case 2:{
+                                if (a<60)
+                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(2).get(60)));
+                                else if (a<=95&&a>=60)
+                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(2).get(35)));
+                                else MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(2).get(5)));
+                                break;
+                            }
+                            case 4:{
+                                MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(4).get(100)));
+                                break;
+                            }
+                            case 5:{
+                                MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(5).get(100)));
+                                break;
+                            }
+                            case 6:{
+                                MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(6).get(100)));
+                                break;
+                            }
+                            case 7:{
+                                MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(7).get(100)));
+                                break;
+                            }
+                            case 8:{
+                                MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(8).get(100)));
+                                break;
+                            }
+                        }
+                        Log.d("KKJ", String.valueOf(MainActivity.player.getEnemy().getName()));
                     }
                     int dx=coords.first-player_coords.first,
                             dy=coords.second-player_coords.second;

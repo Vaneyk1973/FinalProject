@@ -13,7 +13,7 @@ public class Enemy extends Entity implements Parcelable {
     private boolean t=true;
 
     public Enemy(String name, int health, int mana, int damage, int armor, int given_gold, int given_exp, ArrayList<Pair<Item, Integer>> drop) {
-        setHealth_regen(5);
+        setHealth_regen(2);
         setArmor(armor);
         setDamage(damage);
         setHealth(health);

@@ -12,6 +12,24 @@ public class Item implements Serializable {
         this.name=name;
     }
 
+    public Item(int cost, String name) {
+        this.cost = cost;
+        this.name = name;
+    }
+
+    public Item(int cost, int rarity, String name) {
+        this.cost = cost;
+        this.rarity = rarity;
+        this.name = name;
+    }
+
+    public Item(int cost, int rarity, int category, String name) {
+        this.cost = cost;
+        this.rarity = rarity;
+        this.category = category;
+        this.name = name;
+    }
+
     public int getCost() {
         return cost;
     }

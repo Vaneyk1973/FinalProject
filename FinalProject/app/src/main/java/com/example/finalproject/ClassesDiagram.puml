@@ -7,6 +7,12 @@ class Item implements Serializable{
 
     public Item(String name)
 
+    public Item(int cost, String name)
+
+    public Item(int cost, int rarity, String name)
+
+    public Item(int cost, int rarity, int category, String name)
+
     public int getCost()
 
     public void setCost(int cost)
@@ -217,15 +223,6 @@ class Entity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags)
 }
 
-class Fight extends Fragment {
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
-
-
-    @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState)
-}
 
 class FightFragment extends Fragment {
 
