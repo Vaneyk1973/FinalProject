@@ -47,7 +47,7 @@ public class Map extends Fragment {
             public void onClick(View v) {
                 Pair<Integer, Integer> coords= find_title_coords((ImageView)v, visible_map),
                 player_coords=MainActivity.player.getCoordinates();
-                if (!MainActivity.player.getCoordinates().equals(coords)&&MainActivity.map[coords.first][coords.second].getType()!=1)
+                if (!MainActivity.player.getCoordinates().equals(coords)&&MainActivity.map[coords.first][coords.second].getType()!=0)
                 {
                     int a=new Random().nextInt(100);
                     MainActivity.map[player_coords.first][player_coords.second].getTexture().eraseColor(Color.BLACK);

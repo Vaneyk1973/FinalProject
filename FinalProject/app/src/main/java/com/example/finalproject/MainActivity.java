@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             player=new Player(savedInstanceState.getParcelable("player"));
             Log.d("HHH", player.toString());
         }
-        else player=new Player(2, 4);
+        else player=new Player(2, 2);
         setInitialData();
     }
 
@@ -84,35 +84,66 @@ public class MainActivity extends AppCompatActivity {
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        Bitmap a=Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.xxx), width/5*9, width/5, false);
-        Bitmap[][] b=new Bitmap[9][1];
-        for (int i=0;i<9;i++){
-            b[i][0]=Bitmap.createBitmap(a, i*width/5, 0, width/5, width/5);
+        int n=10, m=10;
+        Bitmap a=Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.xxx), width/5*n, width/5*m, false);
+        Bitmap[][] b=new Bitmap[n][m];
+        for (int i=0;i<n;i++){
+            for (int j=0;j<m;j++){
+                b[i][j]=Bitmap.createBitmap(a, i*width/5, j*width/5, width/5, width/5);
+            }
         }
         for (int i=0;i<map.length;i++){
             for (int j=0;j<map[0].length;j++){
                 map[i][j]=new MapTitle(new Pair<>(i, j), Bitmap.createBitmap(width/5, width/5, Bitmap.Config.ARGB_8888), 0);
                 if ((i<=1||j<=1)||(i>=map.length-2||j>=map.length-2)){
-                    map[i][j].setType(1);
+                    map[i][j].setType(0);
                 }
                 else{
-                    map[i][j].getTexture().eraseColor(Color.BLACK);
+                    map[i][j].setType(2);
                 }
             }
         }
-        for (int i=4;i<7;i++){
-            for (int j=4;j<7;j++){
-                map[i][j].setType(5);
+        for (int i=2;i<11;i++){
+            for (int j=2;j<11;j++){
+                map[j][i].setType(1);
             }
         }
-        map[4][4].setType(3);
+        for (int i=15;i<20;i++){
+            for (int j=17;j<22;j++){
+                map[i][j].setType(1);
+            }
+        }
+        for (int i=20;i<23;i++){
+            for (int j=6;j<9;j++){
+                map[i][j].setType(1);
+            }
+        }
+        for (int i=7;i<20;i++){
+            map[6][i].setType(5);
+        }
+        for (int i=20;i<30;i++){
+            map[6][i].setType(7);
+        }
+        for (int i=7;i<21;i++){
+            map[i][19].setType(6);
+        }
+        for (int i=19;i>6;i-=2){
+            map[21][i].setType(5);
+        }
+        map[6][6].setType(3);
+        map[17][19].setType(3);
+        map[21][7].setType(3);
         for (int i=0;i<map.length;i++){
             for (int j=0;j<map[0].length;j++){
                 switch (map[i][j].getType()){
-                    case 0: map[i][j].setTexture(b[4][0]); break;
+                    case 0: map[i][j].setTexture(b[0][0]); break;
                     case 1: map[i][j].setTexture(b[1][0]); break;
+                    case 2: map[i][j].setTexture(b[2][0]); break;
                     case 3: map[i][j].setTexture(b[3][0]); break;
+                    case 4: map[i][j].setTexture(b[4][0]); break;
                     case 5: map[i][j].setTexture(b[5][0]); break;
+                    case 6: map[i][j].setTexture(b[6][0]); break;
+                    case 7: map[i][j].setTexture(b[7][0]); break;
                 }
             }
         }
@@ -129,17 +160,19 @@ public class MainActivity extends AppCompatActivity {
         player.setTitle_texture(Bitmap.createBitmap(map[player.getCoordinates().first][player.getCoordinates().second].texture));
         map[player.getCoordinates().first][player.getCoordinates().second].getTexture().eraseColor(Color.BLUE);
         enemies.add(new Enemy("Wolf", 30, 0, 5, 0, 10, 5, drop.get(0)));
-        chances_of_fight.put(2, 50);
-        chances_of_fight.put(0, 75);
-        chances_of_fight.put(1, 30);
-        chances_of_fight.put(3, 10);
+        chances_of_fight.put(0, 0);
+        chances_of_fight.put(1, 20);
+        chances_of_fight.put(2, 60);
+        chances_of_fight.put(3, 0);
         chances_of_fight.put(4, 30);
         chances_of_fight.put(5, 30);
+        chances_of_fight.put(6, 10);
+        chances_of_fight.put(7, 10);
         chances_of_enemy.put(0, new HashMap<>());
         chances_of_enemy.put(1, new HashMap<>());
-        chances_of_enemy.put(4, new HashMap<>());
-        chances_of_enemy.put(3, new HashMap<>());
         chances_of_enemy.put(2, new HashMap<>());
+        chances_of_enemy.put(3, new HashMap<>());
+        chances_of_enemy.put(4, new HashMap<>());
         elements.add(new Element("Pure mana", -1, 2, false));
         elements.add(new Element("Fire", 0, 10, false));
         elements.add(new Element("Water", 1, 5, false));
