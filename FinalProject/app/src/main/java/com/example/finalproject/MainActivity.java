@@ -116,8 +116,8 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
-        researches.add(new Research(null, "Basic spell creation", 1, 0, 0, false, true));
         ArrayList<Research> rqr=new ArrayList<>();
+        researches.add(new Research(null, "Basic spell creation", 1, 0, 0, false, true));
         rqr.add(researches.get(0));
         researches.add(new Research((ArrayList<Research>)rqr.clone(), "Fire mage", 3, 1, 1, false, false));
         researches.add(new Research((ArrayList<Research>)rqr.clone(), "Water mage", 3, 1, 2, false, false));

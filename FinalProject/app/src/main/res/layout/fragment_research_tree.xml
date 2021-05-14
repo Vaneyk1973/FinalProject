@@ -30,7 +30,8 @@
                     android:id="@+id/basic_spell_creation"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textColor="@color/black"/>
 
             </TableRow>
 
@@ -42,25 +43,29 @@
                     android:id="@+id/fire_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textColor="@color/black"/>
 
                 <TextView
                     android:id="@+id/water_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textColor="@color/black"/>
 
                 <TextView
                     android:id="@+id/air_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textColor="@color/black"/>
 
                 <TextView
                     android:id="@+id/earth_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
-                    android:text="TextView" />
+                    android:text="TextView"
+                    android:textColor="@color/black"/>
             </TableRow>
 
             <TableRow

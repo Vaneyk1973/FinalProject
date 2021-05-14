@@ -7,6 +7,8 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,6 +17,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -37,7 +40,6 @@ import retrofit2.http.POST;
 import retrofit2.http.Query;
 
 public class Chat extends Fragment {
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_chat, container, false);
@@ -50,9 +52,20 @@ public class Chat extends Fragment {
                 baseUrl("https://m5hw.herokuapp.com/").
                 build();
         A a=chat_server.create(A.class);
-        RecyclerView chat=getView().findViewById(R.id.chat_list);
         ArrayList<Message> messages=new ArrayList<>();
+        RecyclerView chat=getView().findViewById(R.id.chat_list);
         EditText enter_message=getView().findViewById(R.id.message);
+        Button back=getView().findViewById(R.id.back_button_chat);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fm=getParentFragmentManager();
+                FragmentTransaction fr=fm.beginTransaction();
+                fr.add(R.id.map, new Map());
+                fr.remove(fm.findFragmentById(R.id.chat));
+                fr.commit();
+            }
+        });
         View.OnClickListener click=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,9 +117,8 @@ public class Chat extends Fragment {
                 return false;
             }
         });
+
     }
-
-
 
     class Message{
         @Expose

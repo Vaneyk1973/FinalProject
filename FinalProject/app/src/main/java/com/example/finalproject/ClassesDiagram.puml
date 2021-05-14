@@ -1,0 +1,707 @@
+@startuml
+'https://plantuml.com/class-diagram
+
+class Item implements Serializable{
+    private int cost, rarity, category;
+    private String name;
+
+    public Item(String name)
+
+    public int getCost()
+
+    public void setCost(int cost)
+
+    public String getName()
+
+    public void setName(String name)
+
+    public int getRarity()
+
+    public void setRarity(int rarity)
+
+    public int getCategory()
+
+    public void setCategory(int category)
+}
+
+class Armor extends Item {
+    private final int armor, weight, type_of_armor;
+
+    public Armor(int armor, int weight, int type_of_armor, int rarity)
+
+    public int getArmor()
+
+    public int getWeight()
+
+    public int getType_of_armor()
+}
+
+class Boots extends Armor {
+    public Boots(int armor, int weight, int type_of_armor, int rarity)
+}
+
+class Chestplate extends Armor {
+    public Chestplate(int armor, int weight, int type_of_armor, int rarity)
+}
+
+class HandArmor extends Armor {
+    public HandArmor(int armor, int weight, int type_of_armor, int rarity)
+}
+
+class Helmet extends Armor {
+    public Helmet(int armor, int weight, int type_of_armor, int rarity)
+}
+
+class LegArmor extends Armor {
+    public LegArmor(int armor, int weight, int type_of_armor, int rarity)
+}
+
+class Weapon extends Item {
+    private int damage, type_of_damage, type_of_weapon;
+
+    public Weapon(int damage, int type_of_damage, int type_of_weapon, String name)
+
+    public int getDamage()
+
+    public void setDamage(int damage)
+
+    public int getType_of_damage()
+
+    public void setType_of_damage(int type_of_damage)
+
+    public int getType_of_weapon()
+
+    public void setType_of_weapon(int type_of_weapon)
+}
+
+class Component {
+    private String name;
+    private boolean available;
+
+    public Component(String name, boolean available)
+
+    public String getName()
+
+    public void setName(String name)
+
+    public boolean isAvailable()
+
+    public void setAvailable()
+}
+
+class Element extends Component{
+    private int element, base_damage;
+
+    public Element(String name, int element, int base_damage, boolean available)
+
+    public Element(Element element)
+
+    public int getElement()
+
+    public int getBase_damage()
+}
+
+class Enemy extends Entity implements Parcelable {
+    private ArrayList<Pair<Item, Integer>> drop;
+    private int defence=0;
+    private boolean t=true;
+
+    public Enemy(String name, int health, int mana, int damage, int armor, int given_gold, int given_exp, ArrayList<Pair<Item, Integer>> drop)
+
+    public Enemy (Enemy enemy)
+
+    public void attack (Player player)
+
+    public void fight()
+
+    public void defend()
+
+    public ArrayList<Pair<Item, Integer>> getDrop()
+
+    public void setDrop(ArrayList<Pair<Item, Integer>> drop)
+
+    public void be_affected_by_spell(Spell spell)
+}
+
+class Entity implements Parcelable {
+    private int level, experience, health, max_health, mana, max_mana, power_level, experience_to_next_level_required,
+            damage, armor, health_regen, mana_regen, given_exp, given_gold;
+    private String name;
+    private HashMap<Spell, Double> resistances=new HashMap<>();
+
+    public Entity()
+
+    protected Entity(Parcel in)
+
+    public static final Creator<Entity> CREATOR = new Creator<Entity>() {
+        @Override
+        public Entity createFromParcel(Parcel in)
+
+        @Override
+        public Entity[] newArray(int size)
+    };
+
+    public void take_damage(int damage)
+
+
+    public void regenerate()
+
+    public int getHealth_regen()
+
+    public void setHealth_regen(int health_regen)
+
+    public int getMana_regen()
+
+    public void setMana_regen(int mana_regen)
+
+    public String getName()
+
+    public void setName(String name)
+
+    public int getHealth()
+
+    public void setHealth(int health)
+
+    public int getMana()
+
+    public void setMana(int mana)
+
+    public int getDamage()
+
+    public void setDamage(int damage)
+
+    public int getArmor()
+
+    public void setArmor(int armor)
+
+    public int getLevel()
+
+    public void setLevel(int level)
+
+    public int getExperience()
+
+    public void setExperience(int experience)
+
+    public int getMax_health()
+
+    public void setMax_health(int max_health)
+
+    public int getMax_mana()
+
+    public void setMax_mana(int max_mana)
+
+    public int getPower_level()
+
+    public void setPower_level(int power_level)
+
+    public int getExperience_to_next_level_required()
+
+    public void setExperience_to_next_level_required(int experience_to_next_level_required)
+
+    public HashMap<Spell, Double> getResistances()
+
+    public void setResistances(HashMap<Spell, Double> resistances)
+
+    public int getGiven_exp()
+
+    public void setGiven_exp(int given_exp)
+
+    public int getGiven_gold()
+
+    public void setGiven_gold(int given_gold)
+
+    @Override
+    public int describeContents()
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+}
+
+class Fight extends Fragment {
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState)
+}
+
+class FightFragment extends Fragment {
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState)
+}
+
+class SpellsAdapter extends RecyclerView.Adapter{
+    ArrayList<Spell> data=new ArrayList<>();
+
+    public SpellsAdapter(ArrayList<Spell> data)
+
+    @NonNull
+    @NotNull
+    @Override
+    public SpellViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType)
+
+    @Override
+    public void onBindViewHolder(@NonNull @NotNull FightFragment.SpellsAdapter.SpellViewHolder holder, int position)
+
+    @Override
+    public int getItemCount()
+}
+
+class SpellViewHolder extends RecyclerView.ViewHolder{
+    TextView name;
+    public SpellViewHolder(@NonNull @NotNull View itemView)
+}
+
+class Food extends Item {
+    private int mana_recovery, health_recovery, weight;
+
+    public Food(int mana_recovery, int health_recovery, int weight)
+
+    public int getMana_recovery()
+
+    public void setMana_recovery(int mana_recovery)
+
+    public int getHealth_recovery()
+
+    public void setHealth_recovery(int health_recovery)
+
+    public int getWeight()
+
+    public void setWeight(int weight)
+}
+
+class Form extends Component {
+    private final int form;
+
+    public Form(String name, int form, boolean available)
+
+    public Form(Form form)
+
+    public int getForm()
+}
+
+class InventoryFragment extends Fragment {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState)
+}
+
+class InventoryAdapter extends RecyclerView.Adapter {
+    private final ArrayList<Item> data = new ArrayList<>();
+
+    public InventoryAdapter(ArrayList<Item> data)
+
+    @NonNull
+    @NotNull
+    @Override
+    public InventoryFragment.InventoryAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType)
+
+    @Override
+    public void onBindViewHolder(@NonNull @NotNull InventoryFragment.InventoryAdapter.ViewHolder holder, int position)
+
+    @Override
+    public int getItemCount()
+}
+
+class ViewHolder extends RecyclerView.ViewHolder {
+    TextView name;
+
+    public ViewHolder(@NonNull @NotNull View itemView)
+}
+
+class MainActivity extends AppCompatActivity {
+
+    public static Player player;
+    public static HashMap<Integer, Integer> chances_of_fight =new HashMap<>();
+    public static MapTitle[][] map=new MapTitle[32][32];
+    public static Bitmap[] menu=new Bitmap[4];
+    public static HashMap<Integer, HashMap<Enemy, Integer>> chances_of_enemy=new HashMap<>();
+    public static ArrayList<Enemy> enemies=new ArrayList<>();
+    public static HashMap<Integer, ArrayList<Pair<Item, Integer>>> drop=new HashMap<>();
+    public static ArrayList<Element> elements=new ArrayList<>();
+    public static ArrayList<ManaChannel> mana_channels =new ArrayList<>();
+    public static ArrayList<Type> types =new ArrayList<>();
+    public static ArrayList<Form> forms =new ArrayList<>();
+    public static ArrayList<ManaReservoir> mana_reservoirs =new ArrayList<>();
+    public static ArrayList<Research> researches=new ArrayList();
+    private static boolean created=false;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState)
+
+    @Override
+    protected void onSaveInstanceState(@NonNull @NotNull Bundle outState)
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState)
+
+    private void setInitialData()
+}
+
+class ManaChannel extends Component {
+    private final int mps;
+
+    public ManaChannel(String name, int mps, boolean available)
+
+    public ManaChannel(ManaChannel manaChannel)
+
+    public int getMps()
+}
+
+class MapTitle {
+    private final Pair<Integer, Integer> coords;
+    private Bitmap texture;
+    private int type;
+
+    public MapTitle(Pair<Integer, Integer> coords, Bitmap texture, int type)
+
+    public Pair<Integer, Integer> getCoords()
+
+    public void setTexture(Bitmap texture)
+
+    public Bitmap getTexture()
+
+    public int getType()
+
+    public void setType(int type)
+}
+
+class ManaReservoir extends Component {
+    private final int volume;
+
+    public ManaReservoir(String name, int volume, boolean available)
+
+    public ManaReservoir(ManaReservoir manaReservoir)
+
+    public int getVolume()
+}
+
+class Map extends Fragment {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+
+    private Pair<Integer, Integer> find_title_coords(ImageView v, ImageView[][] p)
+}
+
+class Menu extends Fragment {
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+}
+
+class Message {
+    public String message;
+    public String date;
+    public String user;
+}
+
+class Player extends Entity implements Parcelable {
+
+    private int gold, research_points;
+    private ArrayList<Integer> element_bonuses=new ArrayList<>();
+    private Pair<Integer, Integer> coordinates;
+    private Spell chosen_spell;
+    private ArrayList<Item> equipment=new ArrayList<>();
+    private ArrayList<Item> inventory=new ArrayList<>();
+    private ArrayList<Spell> spells=new ArrayList<>();
+    private Bitmap title_texture;
+    private Enemy enemy;
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+
+    public static final Creator<Player> CREATOR = new Creator<Player>() {
+        @Override
+        public Player createFromParcel(Parcel in)
+
+        @Override
+        public Player[] newArray(int size)
+    };
+
+    protected Player(Parcel in)
+
+    public Enemy getEnemy()
+
+    public Player(int x, int y)
+
+    public void research(Research research)
+
+    public void take_drop()
+
+    public void cast_spell()
+
+    public void choose_spell(Spell spell)
+
+    public void equip(Item item)
+
+    public void attack ()
+
+    public void level_up()
+
+    public void addExperience(int exp)
+
+    public ArrayList<Item> getInventory()
+
+    public void setInventory(ArrayList<Item> inventory)
+
+    public Bitmap getTitle_texture()
+
+    public void setTitle_texture(Bitmap title_texture)
+
+    public ArrayList<Spell> getSpells()
+
+    public void setSpells(ArrayList<Spell> spells)
+
+    public int getGold()
+
+    public void setGold(int gold)
+
+    public int getResearch_points()
+
+    public void setResearch_points(int research_points)
+
+    public ArrayList<Item> getEquipment()
+
+    public void setEquipment(ArrayList<Item> equipment)
+
+    public void setEnemy(Enemy enemy)
+
+    public Pair<Integer, Integer> getCoordinates()
+
+    public void setCoordinates(Pair<Integer, Integer> coordinates)
+
+    @Override
+    public int describeContents()
+
+    @Override
+    public String toString()
+
+    public ArrayList<Integer> getElement_bonuses()
+}
+
+class Potion extends Item {
+    public int lasting_time, strength, effect;
+
+    public Potion(int effect, String name)
+
+    public Potion(int lasting_time, int strength, int effect)
+
+    public int getLasting_time()
+
+    public void setLasting_time(int lasting_time)
+
+    public int getStrength()
+
+    public void setStrength(int strength)
+
+    public int getEffect()
+
+    public void setEffect(int effect)
+}
+
+class Research {
+    private final ArrayList<Research> required_researches;
+    private final String name;
+    private final int cost, tier, effect;
+    private boolean researched, available;
+
+    public Research(ArrayList<Research> required_researches, String name, int cost, int tier, int effect, boolean researched, boolean available)
+
+    public boolean isResearched()
+
+    public void setResearched(boolean researched)
+
+    public boolean isAvailable()
+
+    public void setAvailable(boolean available)
+
+    public String getName()
+
+    public int getCost()
+
+    public ArrayList<Research> getRequired_researches()
+
+    public int getTier()
+
+    public void enable()
+
+    public int getEffect()
+
+    public void affect(Player player)
+}
+
+class ResearchTree extends Fragment {
+    private boolean created=false;
+    public static HashMap<Research, TextView> research_hash_map = new HashMap<>();
+    public static HashMap<TextView, Research> research_hash_map1 = new HashMap<>();
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState)
+}
+
+class Resources extends Item {
+
+}
+
+class Spell implements Serializable {
+    private int mana_consumption, damage, lasting_time;
+    private Element element;
+    private Type type;
+    private Form form;
+    private ManaChannel manaChannel;
+    private ManaReservoir manaReservoir;
+    private String name;
+
+    public Spell(Element element, Type type, Form form, ManaChannel manaChannel, ManaReservoir manaReservoir, String name)
+
+    public Spell(Spell spell)
+
+
+    public void affect (Enemy enemy)
+
+    public void consume_mana()
+
+    public String getName()
+
+    public void setName(String name)
+
+    public int getMana_consumption()
+
+    public void setMana_consumption(int mana_consumption)
+
+    public int getDamage()
+
+    public void setDamage(int damage)
+
+    public int getLasting_time()
+
+    public void setLasting_time(int lasting_time)
+
+    public Element getElement()
+
+    public void setElement(Element element)
+
+    public Type getType()
+
+    public void setType(Type type)
+
+    public Form getForm()
+
+    public void setForm(Form form)
+
+    public ManaChannel getManaChannel()
+
+    public void setManaChannel(ManaChannel manaChannel)
+
+    public ManaReservoir getManaReservoir()
+
+    public void setManaReservoir(ManaReservoir manaReservoir)
+}
+
+class SpellCreation extends Fragment {
+    private Element element=MainActivity.elements.get(0);
+    private Type type=MainActivity.types.get(0);
+    private Form form=MainActivity.forms.get(0);
+    private ManaChannel mana_channel=MainActivity.mana_channels.get(0);
+    private ManaReservoir mana_reservoir=MainActivity.mana_reservoirs.get(0);
+    private String name;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState)
+}
+
+class SpellAdapter<T extends Component> extends RecyclerView.Adapter{
+    private final ArrayList<T> data=new ArrayList<>();
+
+    public SpellAdapter(ArrayList<T> data)
+
+    @NonNull
+    @NotNull
+    @Override
+    public SpellCreation.SpellAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType)
+
+    @Override
+    public void onBindViewHolder(@NonNull @NotNull SpellCreation.SpellAdapter.ViewHolder holder, int position)
+
+    @Override
+    public int getItemCount()
+}
+
+class ViewHolder extends RecyclerView.ViewHolder{
+    TextView comp;
+    public ViewHolder(@NonNull @NotNull View itemView)
+}
+
+class Spells extends Fragment {
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+
+    @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState)
+}
+
+class SpellsAdapter extends RecyclerView.Adapter{
+    ArrayList<Spell> spells;
+
+    public SpellsAdapter(ArrayList<Spell> spells)
+
+    @NonNull
+    @NotNull
+    @Override
+    public SpellsViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType)
+
+    @Override
+    public void onBindViewHolder(@NonNull @NotNull Spells.SpellsAdapter.SpellsViewHolder holder, int position)
+
+    @Override
+    public int getItemCount()
+}
+
+class SpellsViewHolder extends RecyclerView.ViewHolder {
+    TextView name;
+
+    public SpellsViewHolder(@NonNull @NotNull View itemView)
+}
+
+class StatusBar extends Fragment {
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+}
+
+class Type extends Component {
+    private final int type;
+
+    public Type(String name, int type, boolean available)
+    public Type(Type type)
+
+    public int getType()
+}
+
+@enduml
