@@ -1,6 +1,7 @@
 @startuml
 'https://plantuml.com/class-diagram
 
+
 class Item implements Serializable{
     private int cost, rarity, category;
     private String name;
