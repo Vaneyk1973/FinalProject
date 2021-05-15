@@ -136,32 +136,44 @@ public class Player extends Entity implements Parcelable {
         }
         else if (item.getClass()==Armor.class)
         {
-            if (((Armor) item).getType_of_armor()==1)
-            {
-                equipment.set(1, item);
-                setArmor(getArmor()+((Armor) item).getArmor());
-            }
-            else if (((Armor) item).getType_of_armor()==2)
-            {
-                equipment.set(2, item);
-                setArmor(getArmor()+((Armor) item).getArmor());
-            }
-            else if (((Armor) item).getType_of_armor()==3)
-            {
-                equipment.set(3, item);
-                setArmor(getArmor()+((Armor) item).getArmor());
-            }
-            else if (((Armor) item).getType_of_armor()==4)
-            {
-                equipment.set(4, item);
-                setArmor(getArmor()+((Armor) item).getArmor());
-            }
-            else if (((Armor) item).getType_of_armor()==5)
-            {
-                equipment.set(5, item);
-                setArmor(getArmor()+((Armor) item).getArmor());
+            Armor item1=(Armor)item;
+            switch (item1.getType_of_armor()){
+                case 1:{
+                    equipment.set(1, item1);
+                    setArmor(getArmor()+ item1.getArmor());
+                    break;
+                }
+                case 2:{
+                    equipment.set(2, item1);
+                    setArmor(getArmor()+ item1.getArmor());
+                    break;
+                }
+                case 3:{
+                    equipment.set(3, item1);
+                    setArmor(getArmor()+ item1.getArmor());
+                    break;
+                }
+                case 4:{
+                    equipment.set(4, item1);
+                    setArmor(getArmor()+ item1.getArmor());
+                    break;
+                }
+                case 5:{
+                    equipment.set(5, item1);
+                    setArmor(getArmor()+ item1.getArmor());
+                    break;
+                }
             }
         }
+    }
+
+    public void eat(Food food){
+        setHealth(getHealth()+ food.getHealth_recovery());
+        setMana(getMana()+ food.getMana_recovery());
+        if (getHealth()>getMax_health())
+            setHealth(getMax_health());
+        if (getMana()>getMax_mana())
+            setMana(getMax_mana());
     }
 
     public void attack (){
