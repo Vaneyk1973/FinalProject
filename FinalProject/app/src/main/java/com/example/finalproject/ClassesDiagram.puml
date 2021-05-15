@@ -42,25 +42,6 @@ class Armor extends Item {
     public int getType_of_armor()
 }
 
-class Boots extends Armor {
-    public Boots(int armor, int weight, int type_of_armor, int rarity)
-}
-
-class Chestplate extends Armor {
-    public Chestplate(int armor, int weight, int type_of_armor, int rarity)
-}
-
-class HandArmor extends Armor {
-    public HandArmor(int armor, int weight, int type_of_armor, int rarity)
-}
-
-class Helmet extends Armor {
-    public Helmet(int armor, int weight, int type_of_armor, int rarity)
-}
-
-class LegArmor extends Armor {
-    public LegArmor(int armor, int weight, int type_of_armor, int rarity)
-}
 
 class Weapon extends Item {
     private int damage, type_of_damage, type_of_weapon;
