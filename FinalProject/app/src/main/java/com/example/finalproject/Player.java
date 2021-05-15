@@ -25,6 +25,7 @@ public class Player extends Entity implements Parcelable {
     private ArrayList<Spell> spells=new ArrayList<>();
     private Bitmap title_texture;
     private Enemy enemy;
+    private boolean is_registered;
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {

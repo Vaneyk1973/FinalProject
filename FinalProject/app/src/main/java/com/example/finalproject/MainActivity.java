@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
         drop.get(0).add(new Pair<>(new Item(2, "Rabbit's fur"), 70));
         drop.get(0).add(new Pair<>(new Item(3, "Rabbit's leg"), 30));
         drop.put(1, new ArrayList<>());
+        drop.get(1).add(new Pair<>(new Item(5, "Dog's fur"), 100));
         drop.put(2, new ArrayList<>());
         drop.put(3, new ArrayList<>());
         drop.put(4, new ArrayList<>());
