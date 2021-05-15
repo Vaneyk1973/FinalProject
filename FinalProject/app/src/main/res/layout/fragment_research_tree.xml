@@ -31,8 +31,7 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="@color/black"/>
-
+                    android:textColor="@android:color/holo_red_dark"/>
             </TableRow>
 
             <TableRow
@@ -44,28 +43,28 @@
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="@color/black"/>
+                    android:textColor="@android:color/holo_red_dark"/>
 
                 <TextView
                     android:id="@+id/water_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="@color/black"/>
+                    android:textColor="@android:color/holo_red_dark"/>
 
                 <TextView
                     android:id="@+id/air_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="@color/black"/>
+                    android:textColor="@android:color/holo_red_dark"/>
 
                 <TextView
                     android:id="@+id/earth_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
                     android:text="TextView"
-                    android:textColor="@color/black"/>
+                    android:textColor="@android:color/holo_red_dark"/>
             </TableRow>
 
             <TableRow
