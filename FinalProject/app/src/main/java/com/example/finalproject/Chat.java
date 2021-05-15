@@ -28,7 +28,9 @@ import com.google.gson.annotations.SerializedName;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -117,7 +119,6 @@ public class Chat extends Fragment {
                 return false;
             }
         });
-
     }
 
     class Message{
