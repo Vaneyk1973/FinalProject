@@ -177,7 +177,15 @@ public class Chat extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull @NotNull Chat.ChatAdapter.ViewHolder holder, int position) {
             holder.message.setText(data.get(position).message);
-            holder.time.setText(String.valueOf(data.get(position).date));
+            long date=data.get(position).date;
+            String ms=date%1000+"", s, min, h;
+            date/=1000;
+            s=date%60+":";
+            date/=600;
+            min=date%60+":";
+            date/=60;
+            h=date%24+":";
+            holder.time.setText(h+min+s+ms);
             holder.user.setText(data.get(position).user);
         }
 
