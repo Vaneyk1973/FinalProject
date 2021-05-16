@@ -23,8 +23,8 @@ import java.util.HashMap;
 
 public class ResearchTree extends Fragment {
     private static boolean created=false;
-    public static HashMap<Research, TextView> research_hash_map = new HashMap<>();
-    public static HashMap<TextView, Research> research_hash_map1 = new HashMap<>();
+    public static HashMap<Research, TextView> research_hash_map;
+    public static HashMap<TextView, Research> research_hash_map1;
 
     public static void setCreated(boolean created) {
         ResearchTree.created = created;
@@ -39,6 +39,8 @@ public class ResearchTree extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (!created){
+            research_hash_map=new HashMap<>();
+            research_hash_map1=new HashMap<>();
             research_hash_map.put(MainActivity.researches.get(0), (TextView) getView().findViewById(R.id.basic_spell_creation));
             research_hash_map.put(MainActivity.researches.get(1), (TextView) getView().findViewById(R.id.fire_mage));
             research_hash_map.put(MainActivity.researches.get(2), (TextView) getView().findViewById(R.id.water_mage));
@@ -55,8 +57,9 @@ public class ResearchTree extends Fragment {
                     MainActivity.player.research(research_hash_map1.get(v));
                 }
             };
+            Log.d("KKTT", MainActivity.researches.size()+"");
             for (int i = 0; i < MainActivity.researches.size(); i++) {
-                Log.d("KKTT", research_hash_map.get(MainActivity.researches.get(i))+"");
+
                 research_hash_map.get(MainActivity.researches.get(i)).setText(MainActivity.researches.get(i).getName());
                 research_hash_map.get(MainActivity.researches.get(i)).setOnClickListener(n);
                 if (MainActivity.researches.get(i).isResearched())

@@ -46,7 +46,7 @@ public class StatusBar extends Fragment {
         lvl.setText(txt);
         txt = MainActivity.player.getGold() + "";
         gld.setText(txt);
-        Bitmap bm = Bitmap.createBitmap((width - width / 4 - width / 5) / 2, (width - width / 4 - width / 5) / 2, Bitmap.Config.ARGB_8888);
+        Bitmap bm = Bitmap.createBitmap(MainActivity.avatar_width, MainActivity.avatar_width, Bitmap.Config.ARGB_8888);
         bm.eraseColor(Color.GREEN);
         img.setImageBitmap(bm);
         mana_bar = (ProgressBar) getView().findViewById(R.id.mana_bar);

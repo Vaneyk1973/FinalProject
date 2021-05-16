@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -22,6 +23,7 @@ import java.util.HashMap;
 public class MainActivity extends AppCompatActivity {
 
     public static Player player;
+    public static int menu_width, avatar_width, map_title_width;
     public static HashMap<Integer, Integer> chances_of_fight =new HashMap<>();
     public static MapTitle[][] map=new MapTitle[32][32];
     public static Bitmap[] menu=new Bitmap[4];
@@ -34,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Type> types =new ArrayList<>();
     public static ArrayList<Form> forms =new ArrayList<>();
     public static ArrayList<ManaReservoir> mana_reservoirs =new ArrayList<>();
-    public static ArrayList<Research> researches=new ArrayList();
+    public static ArrayList<Research> researches;
     private static Display display;
     private static Resources res;
 
@@ -54,24 +56,37 @@ public class MainActivity extends AppCompatActivity {
         setInitialData();
         Log.d("KKC", player.toString());
         player.setTitle_texture(Bitmap.createBitmap(map[player.getCoordinates().first][player.getCoordinates().second].texture));
-
     }
 
-    protected static void setInitialData(){
+    private static void set_textures(){
         Point size = new Point();
         display.getSize(size);
-        int width = size.x;
+        int width=size.x, height=size.y;
+        double xy=width*1.0/height;
+        Log.d("KKQQ", xy+"");
+        if (xy>=0.4&&xy<=0.6)
+        {
+            menu_width=width/4;
+            avatar_width=width/3;
+            map_title_width=width*100/500;
+        }
+        else {
+            map_title_width=height*100/1000;
+            menu_width=width/4;
+            avatar_width=width/5;
+        }
         int n=10, m=10;
-        Bitmap a=Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.xxx), width/5*n, width/5*m, false);
+        Bitmap a=null;
+        a=Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.xxx), map_title_width*10, map_title_width*10, false);
         Bitmap[][] b=new Bitmap[n][m];
         for (int i=0;i<n;i++){
             for (int j=0;j<m;j++){
-                b[i][j]=Bitmap.createBitmap(a, i*width/5, j*width/5, width/5, width/5);
+                b[i][j]=Bitmap.createBitmap(a, i*map_title_width, j*map_title_width, map_title_width, map_title_width);
             }
         }
         for (int i=0;i<map.length;i++){
             for (int j=0;j<map[0].length;j++){
-                map[i][j]=new MapTitle(new Pair<>(i, j), Bitmap.createBitmap(width/5, width/5, Bitmap.Config.ARGB_8888), 0);
+                map[i][j]=new MapTitle(new Pair<>(i, j), Bitmap.createBitmap(map_title_width, map_title_width, Bitmap.Config.ARGB_8888), 0);
                 if ((i<=1||j<=1)||(i>=map.length-2||j>=map.length-2)){
                     map[i][j].setType(0);
                 }
@@ -118,6 +133,13 @@ public class MainActivity extends AppCompatActivity {
                 map[i][j].setTexture(title_textures.get(map[i][j].getType()));
             }
         }
+        menu[0]=Bitmap.createScaledBitmap(b[9][0], menu_width, menu_width, false);
+        menu[2]=Bitmap.createScaledBitmap(b[8][0], menu_width, menu_width, false);
+        map[player.getCoordinates().first][player.getCoordinates().second].getTexture().eraseColor(Color.BLUE);
+    }
+
+    private static void set_researches(){
+        researches=new ArrayList<>();
         ArrayList<Research> rqr=new ArrayList<>();
         researches.add(new Research(null, "Basic spell creation", 1, 0, 0, false, true));
         rqr.add(researches.get(0));
@@ -125,6 +147,9 @@ public class MainActivity extends AppCompatActivity {
         researches.add(new Research((ArrayList<Research>)rqr.clone(), "Water mage", 3, 1, 2, false, false));
         researches.add(new Research((ArrayList<Research>)rqr.clone(), "Earth mage", 3, 1, 3, false, false));
         researches.add(new Research((ArrayList<Research>)rqr.clone(), "Air mage", 3, 1, 4, false, false));
+    }
+
+    private static void set_drop(){
         drop.put(0, new ArrayList<>());
         drop.get(0).add(new Pair<>(new Item(2, "Rabbit's fur"), 70));
         drop.get(0).add(new Pair<>(new Item(3, "Rabbit's leg"), 30));
@@ -134,7 +159,9 @@ public class MainActivity extends AppCompatActivity {
         drop.put(3, new ArrayList<>());
         drop.put(4, new ArrayList<>());
         drop.put(5, new ArrayList<>());
-        map[player.getCoordinates().first][player.getCoordinates().second].getTexture().eraseColor(Color.BLUE);
+    }
+
+    private static void set_enemies(){
         enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0)));
         enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1)));
         enemies.add(new Enemy("Wolf", 35, 0, 5, 0, 10, 10, drop.get(2)));
@@ -166,6 +193,9 @@ public class MainActivity extends AppCompatActivity {
         chances_of_enemy.get(7).put(100, enemies.get(5));
         chances_of_enemy.put(8, new HashMap<>());
         chances_of_enemy.get(8).put(100, enemies.get(5));
+    }
+
+    private static void set_magic(){
         elements.add(new Element("Pure mana", -1, 2, false));
         elements.add(new Element("Fire", 0, 10, false));
         elements.add(new Element("Water", 1, 5, false));
@@ -179,22 +209,29 @@ public class MainActivity extends AppCompatActivity {
         forms.add(new Form("Sphere", 0, true));
         mana_reservoirs.add(new ManaReservoir("Basic", 1, true));
         mana_channels.add(new ManaChannel("Basic", 2, true));
-        menu[0]=Bitmap.createScaledBitmap(b[9][0], width/4, width/4, false);
-        menu[2]=Bitmap.createScaledBitmap(b[8][0], width/4, width/4, false);
+    }
+
+    protected static void setInitialData(){
+        set_textures();
+        set_researches();
+        set_drop();
+        set_enemies();
+        set_magic();
     }
 
     @Override
     protected void onStart() {
-        ResearchTree.setCreated(true);
+        ResearchTree.setCreated(false);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
+        set_researches();
         Log.d("KKSt", player.toString());
         super.onStart();
     }
 
     @Override
     protected void onResume() {
-        ResearchTree.setCreated(true);
+        ResearchTree.setCreated(false);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         Log.d("KKR", player.toString());
@@ -203,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onRestart() {
-        ResearchTree.setCreated(true);
+        ResearchTree.setCreated(false);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         Log.d("KKRe", player.toString());
@@ -212,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        ResearchTree.setCreated(true);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed=sh.edit();
         ed.clear();
@@ -224,7 +260,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        ResearchTree.setCreated(true);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed=sh.edit();
         ed.clear();
@@ -236,7 +271,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        ResearchTree.setCreated(true);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed=sh.edit();
         ed.clear();

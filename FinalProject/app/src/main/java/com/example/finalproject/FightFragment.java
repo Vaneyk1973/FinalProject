@@ -103,6 +103,8 @@ public class FightFragment extends Fragment {
                     fragmentTransaction.commit();
                 }
                 if (MainActivity.player.getHealth()<=0){
+                    MainActivity.player=new Player(2, 2);
+                    MainActivity.setInitialData();
                     Toast.makeText(getContext(), "You died \n All of your progress will be deleted \n Better luck this time", Toast.LENGTH_LONG).show();
                     FragmentManager fm = getParentFragmentManager();
                     FragmentTransaction fragmentTransaction = fm.beginTransaction();
@@ -111,7 +113,6 @@ public class FightFragment extends Fragment {
                     fragmentTransaction.add(R.id.status, new StatusBar());
                     fragmentTransaction.add(R.id.menu, new Menu());
                     fragmentTransaction.commit();
-                    MainActivity.setInitialData();
                 }
             }
         });
