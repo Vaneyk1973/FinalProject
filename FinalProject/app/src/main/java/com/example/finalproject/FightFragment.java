@@ -91,6 +91,7 @@ public class FightFragment extends Fragment {
                 Log.d("KK", MainActivity.player.getEnemy().getName());
                 enemy_health.setProgress(MainActivity.player.getEnemy().getHealth());
                 your_health.setProgress(MainActivity.player.getHealth());
+                your_mana.setProgress(MainActivity.player.getMana());
                 if (MainActivity.player.getEnemy().getHealth() <= 0) {
                     MainActivity.player.take_drop();
                     FragmentManager fm = getParentFragmentManager();
@@ -160,6 +161,7 @@ public class FightFragment extends Fragment {
                     MainActivity.player.choose_spell(data.get(position));
                     ((RecyclerView) getView().findViewById(R.id.avaliable_spells)).setAdapter(new SpellsAdapter(new ArrayList<>()));
                     MainActivity.player.cast_spell();
+                    MainActivity.player.getEnemy().attack(MainActivity.player);
                     ProgressBar your_health = getView().findViewById(R.id.your_health),
                             your_mana = getView().findViewById(R.id.your_mana),
                             enemy_health = getView().findViewById(R.id.enemy_health),

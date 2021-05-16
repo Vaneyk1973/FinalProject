@@ -13,34 +13,12 @@ class Item implements Serializable{
     public Item(int cost, int rarity, String name)
 
     public Item(int cost, int rarity, int category, String name)
-
-    public int getCost()
-
-    public void setCost(int cost)
-
-    public String getName()
-
-    public void setName(String name)
-
-    public int getRarity()
-
-    public void setRarity(int rarity)
-
-    public int getCategory()
-
-    public void setCategory(int category)
 }
 
 class Armor extends Item {
     private final int armor, weight, type_of_armor;
 
     public Armor(int armor, int weight, int type_of_armor, int rarity)
-
-    public int getArmor()
-
-    public int getWeight()
-
-    public int getType_of_armor()
 }
 
 
@@ -48,18 +26,6 @@ class Weapon extends Item {
     private int damage, type_of_damage, type_of_weapon;
 
     public Weapon(int damage, int type_of_damage, int type_of_weapon, String name)
-
-    public int getDamage()
-
-    public void setDamage(int damage)
-
-    public int getType_of_damage()
-
-    public void setType_of_damage(int type_of_damage)
-
-    public int getType_of_weapon()
-
-    public void setType_of_weapon(int type_of_weapon)
 }
 
 class Component {
@@ -67,14 +33,6 @@ class Component {
     private boolean available;
 
     public Component(String name, boolean available)
-
-    public String getName()
-
-    public void setName(String name)
-
-    public boolean isAvailable()
-
-    public void setAvailable()
 }
 
 class Element extends Component{
@@ -83,10 +41,6 @@ class Element extends Component{
     public Element(String name, int element, int base_damage, boolean available)
 
     public Element(Element element)
-
-    public int getElement()
-
-    public int getBase_damage()
 }
 
 class Enemy extends Entity implements Parcelable {
@@ -134,70 +88,6 @@ class Entity implements Parcelable {
 
     public void regenerate()
 
-    public int getHealth_regen()
-
-    public void setHealth_regen(int health_regen)
-
-    public int getMana_regen()
-
-    public void setMana_regen(int mana_regen)
-
-    public String getName()
-
-    public void setName(String name)
-
-    public int getHealth()
-
-    public void setHealth(int health)
-
-    public int getMana()
-
-    public void setMana(int mana)
-
-    public int getDamage()
-
-    public void setDamage(int damage)
-
-    public int getArmor()
-
-    public void setArmor(int armor)
-
-    public int getLevel()
-
-    public void setLevel(int level)
-
-    public int getExperience()
-
-    public void setExperience(int experience)
-
-    public int getMax_health()
-
-    public void setMax_health(int max_health)
-
-    public int getMax_mana()
-
-    public void setMax_mana(int max_mana)
-
-    public int getPower_level()
-
-    public void setPower_level(int power_level)
-
-    public int getExperience_to_next_level_required()
-
-    public void setExperience_to_next_level_required(int experience_to_next_level_required)
-
-    public HashMap<Spell, Double> getResistances()
-
-    public void setResistances(HashMap<Spell, Double> resistances)
-
-    public int getGiven_exp()
-
-    public void setGiven_exp(int given_exp)
-
-    public int getGiven_gold()
-
-    public void setGiven_gold(int given_gold)
-
     @Override
     public int describeContents()
 
@@ -242,18 +132,6 @@ class Food extends Item {
     private int mana_recovery, health_recovery, weight;
 
     public Food(int mana_recovery, int health_recovery, int weight)
-
-    public int getMana_recovery()
-
-    public void setMana_recovery(int mana_recovery)
-
-    public int getHealth_recovery()
-
-    public void setHealth_recovery(int health_recovery)
-
-    public int getWeight()
-
-    public void setWeight(int weight)
 }
 
 class Form extends Component {
@@ -333,9 +211,6 @@ class ManaChannel extends Component {
 
     public ManaChannel(ManaChannel manaChannel)
 
-    public int getMps()
-}
-
 class MapTitle {
     private final Pair<Integer, Integer> coords;
     private Bitmap texture;
@@ -344,14 +219,6 @@ class MapTitle {
     public MapTitle(Pair<Integer, Integer> coords, Bitmap texture, int type)
 
     public Pair<Integer, Integer> getCoords()
-
-    public void setTexture(Bitmap texture)
-
-    public Bitmap getTexture()
-
-    public int getType()
-
-    public void setType(int type)
 }
 
 class ManaReservoir extends Component {
@@ -360,8 +227,6 @@ class ManaReservoir extends Component {
     public ManaReservoir(String name, int volume, boolean available)
 
     public ManaReservoir(ManaReservoir manaReservoir)
-
-    public int getVolume()
 }
 
 class Map extends Fragment {
@@ -414,8 +279,6 @@ class Player extends Entity implements Parcelable {
 
     protected Player(Parcel in)
 
-    public Enemy getEnemy()
-
     public Player(int x, int y)
 
     public void research(Research research)
@@ -434,43 +297,11 @@ class Player extends Entity implements Parcelable {
 
     public void addExperience(int exp)
 
-    public ArrayList<Item> getInventory()
-
-    public void setInventory(ArrayList<Item> inventory)
-
-    public Bitmap getTitle_texture()
-
-    public void setTitle_texture(Bitmap title_texture)
-
-    public ArrayList<Spell> getSpells()
-
-    public void setSpells(ArrayList<Spell> spells)
-
-    public int getGold()
-
-    public void setGold(int gold)
-
-    public int getResearch_points()
-
-    public void setResearch_points(int research_points)
-
-    public ArrayList<Item> getEquipment()
-
-    public void setEquipment(ArrayList<Item> equipment)
-
-    public void setEnemy(Enemy enemy)
-
-    public Pair<Integer, Integer> getCoordinates()
-
-    public void setCoordinates(Pair<Integer, Integer> coordinates)
-
     @Override
     public int describeContents()
 
     @Override
     public String toString()
-
-    public ArrayList<Integer> getElement_bonuses()
 }
 
 class Potion extends Item {
@@ -479,18 +310,6 @@ class Potion extends Item {
     public Potion(int effect, String name)
 
     public Potion(int lasting_time, int strength, int effect)
-
-    public int getLasting_time()
-
-    public void setLasting_time(int lasting_time)
-
-    public int getStrength()
-
-    public void setStrength(int strength)
-
-    public int getEffect()
-
-    public void setEffect(int effect)
 }
 
 class Research {
@@ -500,26 +319,7 @@ class Research {
     private boolean researched, available;
 
     public Research(ArrayList<Research> required_researches, String name, int cost, int tier, int effect, boolean researched, boolean available)
-
-    public boolean isResearched()
-
-    public void setResearched(boolean researched)
-
-    public boolean isAvailable()
-
-    public void setAvailable(boolean available)
-
-    public String getName()
-
-    public int getCost()
-
-    public ArrayList<Research> getRequired_researches()
-
-    public int getTier()
-
     public void enable()
-
-    public int getEffect()
 
     public void affect(Player player)
 }
@@ -554,46 +354,9 @@ class Spell implements Serializable {
 
     public Spell(Spell spell)
 
-
     public void affect (Enemy enemy)
 
     public void consume_mana()
-
-    public String getName()
-
-    public void setName(String name)
-
-    public int getMana_consumption()
-
-    public void setMana_consumption(int mana_consumption)
-
-    public int getDamage()
-
-    public void setDamage(int damage)
-
-    public int getLasting_time()
-
-    public void setLasting_time(int lasting_time)
-
-    public Element getElement()
-
-    public void setElement(Element element)
-
-    public Type getType()
-
-    public void setType(Type type)
-
-    public Form getForm()
-
-    public void setForm(Form form)
-
-    public ManaChannel getManaChannel()
-
-    public void setManaChannel(ManaChannel manaChannel)
-
-    public ManaReservoir getManaReservoir()
-
-    public void setManaReservoir(ManaReservoir manaReservoir)
 }
 
 class SpellCreation extends Fragment {
@@ -679,8 +442,6 @@ class Type extends Component {
 
     public Type(String name, int type, boolean available)
     public Type(Type type)
-
-    public int getType()
 }
 
 @enduml

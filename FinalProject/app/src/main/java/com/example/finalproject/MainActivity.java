@@ -1,10 +1,5 @@
 package com.example.finalproject;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentTransaction;
-
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -12,15 +7,14 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
-import android.view.View;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import org.jetbrains.annotations.NotNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
+
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Form> forms =new ArrayList<>();
     public static ArrayList<ManaReservoir> mana_reservoirs =new ArrayList<>();
     public static ArrayList<Research> researches=new ArrayList();
-    private static boolean created=false;
     private static Display display;
     private static Resources res;
 
@@ -55,34 +48,15 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.add(R.id.status, new StatusBar());
         fragmentTransaction.add(R.id.menu, new Menu());
         fragmentTransaction.commit();
-        if (savedInstanceState!=null)
-        {
-            player=new Player(savedInstanceState.getParcelable("player"));
-            Log.d("HHH", player.toString());
-        }
-        else player=new Player(2, 2);
+        SharedPreferences sh=getPreferences(MODE_PRIVATE);
+        player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         setInitialData();
-    }
+        Log.d("KKC", player.toString());
+        player.setTitle_texture(Bitmap.createBitmap(map[player.getCoordinates().first][player.getCoordinates().second].texture));
 
-
-    @Override
-    protected void onSaveInstanceState(@NonNull @NotNull Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putParcelable("player", player);
-        Log.d("LLL", player.toString());
-    }
-
-    @Override
-    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
-        super.onRestoreInstanceState(savedInstanceState);
-        player=new Player(savedInstanceState.getParcelable("player"));
-        Log.d("LLLL", player.toString());
     }
 
     protected static void setInitialData(){
-        if (created)
-            player=new Player(2, 2);
-        created=true;
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
@@ -165,7 +139,6 @@ public class MainActivity extends AppCompatActivity {
         drop.put(3, new ArrayList<>());
         drop.put(4, new ArrayList<>());
         drop.put(5, new ArrayList<>());
-        player.setTitle_texture(Bitmap.createBitmap(map[player.getCoordinates().first][player.getCoordinates().second].texture));
         map[player.getCoordinates().first][player.getCoordinates().second].getTexture().eraseColor(Color.BLUE);
         enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0)));
         enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1)));
@@ -215,6 +188,63 @@ public class MainActivity extends AppCompatActivity {
         menu[2]=Bitmap.createScaledBitmap(b[8][0], width/4, width/4, false);
     }
 
+    @Override
+    protected void onStart() {
+        SharedPreferences sh=getPreferences(MODE_PRIVATE);
+        player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
+        Log.d("KKSt", player.toString());
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        SharedPreferences sh=getPreferences(MODE_PRIVATE);
+        player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
+        Log.d("KKR", player.toString());
+        super.onResume();
+    }
+
+    @Override
+    protected void onRestart() {
+        SharedPreferences sh=getPreferences(MODE_PRIVATE);
+        player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
+        Log.d("KKRe", player.toString());
+        super.onRestart();
+    }
+
+    @Override
+    protected void onDestroy() {
+        SharedPreferences sh=getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed=sh.edit();
+        ed.clear();
+        ed.putString("Player", new Gson().toJson(player));
+        ed.commit();
+        Log.d("KKD", player.toString());
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onStop() {
+        SharedPreferences sh=getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed=sh.edit();
+        ed.clear();
+        ed.putString("Player", new Gson().toJson(player));
+        ed.commit();
+        Log.d("KKS", player.toString());
+        super.onStop();
+    }
+
+    @Override
+    protected void onPause() {
+        SharedPreferences sh=getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed=sh.edit();
+        ed.clear();
+        ed.putString("Player", new Gson().toJson(player));
+        ed.commit();
+        Log.d("KKP", player.toString());
+        super.onPause();
+    }
+
 
     static class MapTitle{
         private final Pair<Integer, Integer> coords;
@@ -247,4 +277,6 @@ public class MainActivity extends AppCompatActivity {
             this.type = type;
         }
     }
+
+
 }

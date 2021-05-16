@@ -64,7 +64,10 @@ public class Menu extends Fragment {
             public void onClick(View v) {
                 if (MainActivity.researches.get(0).isResearched()){
                     fragmentTransaction.add(R.id.spell_creation, new SpellCreation());
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                    if (fm.findFragmentById(R.id.map)!=null)
+                        fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                    else if (fm.findFragmentById(R.id.chat)!=null)
+                        fragmentTransaction.remove(fm.findFragmentById(R.id.chat));
                     fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                     fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
                     fragmentTransaction.commit();
@@ -75,16 +78,23 @@ public class Menu extends Fragment {
             @Override
             public void onClick(View v) {
                 fragmentTransaction.add(R.id.spells, new Spells());
-                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                if (fm.findFragmentById(R.id.map)!=null)
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                else if (fm.findFragmentById(R.id.chat)!=null)
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.chat));
                 fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                 fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                fragmentTransaction.commit();            }
+                fragmentTransaction.commit();
+            }
         });
         inv[3].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 fragmentTransaction.add(R.id.research_tree, new ResearchTree());
-                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                if (fm.findFragmentById(R.id.map)!=null)
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                else if (fm.findFragmentById(R.id.chat)!=null)
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.chat));
                 fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                 fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
                 fragmentTransaction.commit();
