@@ -26,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     public static MapTitle[][] map=new MapTitle[32][32];
     public static Bitmap[] menu=new Bitmap[4];
     public static HashMap<Integer, HashMap<Integer, Enemy>> chances_of_enemy=new HashMap<>();
+    public static HashMap<Integer, Bitmap> title_textures=new HashMap<>();
     public static ArrayList<Enemy> enemies=new ArrayList<>();
     public static HashMap<Integer, ArrayList<Pair<Item, Integer>>> drop=new HashMap<>();
     public static ArrayList<Element> elements=new ArrayList<>();
@@ -109,18 +110,12 @@ public class MainActivity extends AppCompatActivity {
         map[6][6].setType(3);
         map[17][19].setType(3);
         map[21][7].setType(3);
+        for (int i=0;i<=7;i++){
+            title_textures.put(i, Bitmap.createBitmap(b[i][0]));
+        }
         for (int i=0;i<map.length;i++){
             for (int j=0;j<map[0].length;j++){
-                switch (map[i][j].getType()){
-                    case 0: map[i][j].setTexture(b[0][0]); break;
-                    case 1: map[i][j].setTexture(b[1][0]); break;
-                    case 2: map[i][j].setTexture(b[2][0]); break;
-                    case 3: map[i][j].setTexture(b[3][0]); break;
-                    case 4: map[i][j].setTexture(b[4][0]); break;
-                    case 5: map[i][j].setTexture(b[5][0]); break;
-                    case 6: map[i][j].setTexture(b[6][0]); break;
-                    case 7: map[i][j].setTexture(b[7][0]); break;
-                }
+                map[i][j].setTexture(title_textures.get(map[i][j].getType()));
             }
         }
         ArrayList<Research> rqr=new ArrayList<>();
@@ -190,6 +185,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        ResearchTree.setCreated(true);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         Log.d("KKSt", player.toString());
@@ -198,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        ResearchTree.setCreated(true);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         Log.d("KKR", player.toString());
@@ -206,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onRestart() {
+        ResearchTree.setCreated(true);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         Log.d("KKRe", player.toString());
@@ -214,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        ResearchTree.setCreated(true);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed=sh.edit();
         ed.clear();
@@ -225,6 +224,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        ResearchTree.setCreated(true);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed=sh.edit();
         ed.clear();
@@ -236,6 +236,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        ResearchTree.setCreated(true);
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed=sh.edit();
         ed.clear();

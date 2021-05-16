@@ -51,26 +51,32 @@ public class Map extends Fragment {
                 StatusBar.update();
                 if (!MainActivity.player.getCoordinates().equals(coords)&&MainActivity.map[coords.first][coords.second].getType()!=0)
                 {
-                    MainActivity.player.regenerate();
-                    int a=new Random().nextInt(100);
-                    MainActivity.map[player_coords.first][player_coords.second].getTexture().eraseColor(Color.BLACK);
-                    if (a<MainActivity.chances_of_fight.get(MainActivity.map[coords.first][coords.second].getType())) {
-                        FragmentManager fm=getParentFragmentManager();
-                        FragmentTransaction fragmentTransaction= fm.beginTransaction();
-                        fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                        fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                        fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                        fragmentTransaction.add(R.id.fight, new FightFragment());
-                        fragmentTransaction.commit();
-                    }
                     int dx=coords.first-player_coords.first,
                             dy=coords.second-player_coords.second;
                     if (Math.abs(dx)<=1&&Math.abs(dy)<=1){
+                        MainActivity.player.regenerate();
+                        int a=new Random().nextInt(100);
+                        if (a<MainActivity.chances_of_fight.get(MainActivity.map[coords.first][coords.second].getType())) {
+                            FragmentManager fm=getParentFragmentManager();
+                            FragmentTransaction fragmentTransaction= fm.beginTransaction();
+                            fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                            fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                            fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                            fragmentTransaction.add(R.id.fight, new FightFragment());
+                            fragmentTransaction.commit();
+                        }
+                        MainActivity.player.setTitle_texture(
+                                MainActivity.title_textures.get(
+                                        MainActivity.map[player_coords.first][player_coords.second].getType()));
                         Log.d("KKKK", MainActivity.player.getTitle_texture()+"");
-                        MainActivity.map[player_coords.first][player_coords.second].setTexture(Bitmap.createBitmap(MainActivity.player.getTitle_texture()));
-                        MainActivity.player.setCoordinates(new Pair<>(player_coords.first+dx, player_coords.second+dy));
+                        MainActivity.map[player_coords.first][player_coords.second].setTexture(
+                                Bitmap.createBitmap(MainActivity.player.getTitle_texture()));
+                        MainActivity.player.setCoordinates(
+                                new Pair<>(player_coords.first+dx, player_coords.second+dy));
                         player_coords=MainActivity.player.getCoordinates();
-                        MainActivity.player.setTitle_texture(Bitmap.createBitmap(MainActivity.map[player_coords.first][player_coords.second].getTexture()));
+                        MainActivity.player.setTitle_texture(
+                                Bitmap.createBitmap(
+                                        MainActivity.map[player_coords.first][player_coords.second].getTexture()));
                         MainActivity.map[player_coords.first][player_coords.second].getTexture().eraseColor(Color.BLUE);
                         if (player_coords.first+dx>=2&&player_coords.second+dy>=2){
                             for (int i=0;i<5;i++) {

@@ -22,10 +22,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 
 public class ResearchTree extends Fragment {
-    private boolean created=false;
+    private static boolean created=false;
     public static HashMap<Research, TextView> research_hash_map = new HashMap<>();
     public static HashMap<TextView, Research> research_hash_map1 = new HashMap<>();
 
+    public static void setCreated(boolean created) {
+        ResearchTree.created = created;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public class ResearchTree extends Fragment {
                 }
             };
             for (int i = 0; i < MainActivity.researches.size(); i++) {
+                Log.d("KKTT", research_hash_map.get(MainActivity.researches.get(i))+"");
                 research_hash_map.get(MainActivity.researches.get(i)).setText(MainActivity.researches.get(i).getName());
                 research_hash_map.get(MainActivity.researches.get(i)).setOnClickListener(n);
                 if (MainActivity.researches.get(i).isResearched())
