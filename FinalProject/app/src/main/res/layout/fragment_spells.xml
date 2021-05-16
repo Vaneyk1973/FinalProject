@@ -5,7 +5,7 @@
     android:id="@+id/frameLayout5"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Spells">
+    tools:context=".fragments.Spells">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/spells_list"
