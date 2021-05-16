@@ -64,16 +64,16 @@ public class InventoryFragment extends Fragment {
         categories.get(3).setImageBitmap(Bitmap.createBitmap(bm));
         inventory.setAdapter(new InventoryAdapter(MainActivity.player.getInventory()));
         inventory.setLayoutManager(new LinearLayoutManager(getContext()));
-        fr.add(R.id.characteristics, new ItemCharacteristics());
+        fr.add(R.id.characteristics, new ItemCharacteristicsFragment());
         fr.commit();
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction= fm.beginTransaction();
                 fragmentTransaction.remove(fm.findFragmentById(R.id.inventory));
-                fragmentTransaction.add(R.id.map, new Map());
-                fragmentTransaction.add(R.id.status, new StatusBar());
-                fragmentTransaction.add(R.id.menu, new Menu());
+                fragmentTransaction.add(R.id.map, new MapFragment());
+                fragmentTransaction.add(R.id.status, new StatusBarFragment());
+                fragmentTransaction.add(R.id.menu, new MenuFragment());
                 fragmentTransaction.commit();
             }
         });

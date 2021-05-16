@@ -97,9 +97,9 @@ public class FightFragment extends Fragment {
                     FragmentManager fm = getParentFragmentManager();
                     FragmentTransaction fragmentTransaction = fm.beginTransaction();
                     fragmentTransaction.remove(fm.findFragmentById(R.id.fight));
-                    fragmentTransaction.add(R.id.map, new Map());
-                    fragmentTransaction.add(R.id.status, new StatusBar());
-                    fragmentTransaction.add(R.id.menu, new Menu());
+                    fragmentTransaction.add(R.id.map, new MapFragment());
+                    fragmentTransaction.add(R.id.status, new StatusBarFragment());
+                    fragmentTransaction.add(R.id.menu, new MenuFragment());
                     fragmentTransaction.commit();
                 }
                 if (MainActivity.player.getHealth()<=0){
@@ -109,9 +109,9 @@ public class FightFragment extends Fragment {
                     FragmentManager fm = getParentFragmentManager();
                     FragmentTransaction fragmentTransaction = fm.beginTransaction();
                     fragmentTransaction.remove(fm.findFragmentById(R.id.fight));
-                    fragmentTransaction.add(R.id.map, new Map());
-                    fragmentTransaction.add(R.id.status, new StatusBar());
-                    fragmentTransaction.add(R.id.menu, new Menu());
+                    fragmentTransaction.add(R.id.map, new MapFragment());
+                    fragmentTransaction.add(R.id.status, new StatusBarFragment());
+                    fragmentTransaction.add(R.id.menu, new MenuFragment());
                     fragmentTransaction.commit();
                 }
             }
@@ -124,9 +124,9 @@ public class FightFragment extends Fragment {
                     FragmentManager fm = getParentFragmentManager();
                     FragmentTransaction fragmentTransaction = fm.beginTransaction();
                     fragmentTransaction.remove(fm.findFragmentById(R.id.fight));
-                    fragmentTransaction.add(R.id.map, new Map());
-                    fragmentTransaction.add(R.id.status, new StatusBar());
-                    fragmentTransaction.add(R.id.menu, new Menu());
+                    fragmentTransaction.add(R.id.map, new MapFragment());
+                    fragmentTransaction.add(R.id.status, new StatusBarFragment());
+                    fragmentTransaction.add(R.id.menu, new MenuFragment());
                     fragmentTransaction.commit();
                 }
             }
@@ -175,9 +175,9 @@ public class FightFragment extends Fragment {
                         FragmentManager fm = getParentFragmentManager();
                         FragmentTransaction fragmentTransaction = fm.beginTransaction();
                         fragmentTransaction.remove(fm.findFragmentById(R.id.fight));
-                        fragmentTransaction.add(R.id.map, new Map());
-                        fragmentTransaction.add(R.id.status, new StatusBar());
-                        fragmentTransaction.add(R.id.menu, new Menu());
+                        fragmentTransaction.add(R.id.map, new MapFragment());
+                        fragmentTransaction.add(R.id.status, new StatusBarFragment());
+                        fragmentTransaction.add(R.id.menu, new MenuFragment());
                         fragmentTransaction.commit();
                     }
                 }

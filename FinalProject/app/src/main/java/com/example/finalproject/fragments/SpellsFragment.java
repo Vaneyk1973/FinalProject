@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class Spells extends Fragment {
+public class SpellsFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,9 +43,9 @@ public class Spells extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction= f.beginTransaction();
                 fragmentTransaction.remove(f.findFragmentById(R.id.spells));
-                fragmentTransaction.add(R.id.map, new Map());
-                fragmentTransaction.add(R.id.status, new StatusBar());
-                fragmentTransaction.add(R.id.menu, new Menu());
+                fragmentTransaction.add(R.id.map, new MapFragment());
+                fragmentTransaction.add(R.id.status, new StatusBarFragment());
+                fragmentTransaction.add(R.id.menu, new MenuFragment());
                 fragmentTransaction.commit();
             }
         });
@@ -66,7 +66,7 @@ public class Spells extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull @NotNull Spells.SpellsAdapter.SpellsViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull @NotNull SpellsFragment.SpellsAdapter.SpellsViewHolder holder, int position) {
             holder.name.setText(spells.get(position).getName());
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override

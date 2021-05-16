@@ -20,6 +20,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
+import com.example.finalproject.service.A;
+import com.example.finalproject.service.Message;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
@@ -38,7 +40,7 @@ import retrofit2.http.GET;
 import retrofit2.http.POST;
 import retrofit2.http.Query;
 
-public class Chat extends Fragment {
+public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_chat, container, false);
@@ -54,17 +56,20 @@ public class Chat extends Fragment {
         ArrayList<Message> messages=new ArrayList<>();
         RecyclerView chat=getView().findViewById(R.id.chat_list);
         EditText enter_message=getView().findViewById(R.id.message);
-        Button back=getView().findViewById(R.id.back_button_chat);
+        Button back=getView().findViewById(R.id.back_button_chat), register=getView().findViewById(R.id.register);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fm=getParentFragmentManager();
                 FragmentTransaction fr=fm.beginTransaction();
-                fr.add(R.id.map, new Map());
+                fr.add(R.id.map, new MapFragment());
                 fr.remove(fm.findFragmentById(R.id.chat));
                 fr.commit();
             }
         });
+        if (MainActivity.player.isLogged_in()){
+
+        }
         View.OnClickListener click=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -118,35 +123,6 @@ public class Chat extends Fragment {
         });
     }
 
-    class Message{
-        @Expose
-        @SerializedName("message")
-        public String message;
-        @Expose
-        @SerializedName("user")
-        public String user;
-        @Expose
-        @SerializedName("date")
-        public long date;
-
-        @Override
-        public String toString() {
-            return "Message{" +
-                    "message='" + message + '\'' +
-                    ", user='" + user + '\'' +
-                    ", date=" + date +
-                    '}';
-        }
-    }
-
-    interface A{
-        @GET("/get_messages")
-        Call<ArrayList<Message>> get_messages();
-
-        @POST("/put_message")
-        Call<String> put_message(@Query("message") String message);
-    }
-
     class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
 
         ArrayList<Message> data;
@@ -173,7 +149,7 @@ public class Chat extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull @NotNull Chat.ChatAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ViewHolder holder, int position) {
             holder.message.setText(data.get(position).message);
             long date=data.get(position).date;
             String ms=date%1000+"", s, min, h;

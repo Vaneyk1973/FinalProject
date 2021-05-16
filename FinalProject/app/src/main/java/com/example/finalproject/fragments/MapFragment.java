@@ -26,7 +26,7 @@ import com.example.finalproject.entities.Enemy;
 
 import java.util.Random;
 
-public class Map extends Fragment {
+public class MapFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_map, container, false);
@@ -50,7 +50,7 @@ public class Map extends Fragment {
             public void onClick(View v) {
                 Pair<Integer, Integer> coords= find_title_coords((ImageView)v, visible_map),
                 player_coords=MainActivity.player.getCoordinates();
-                StatusBar.update();
+                StatusBarFragment.update();
                 if (!MainActivity.player.getCoordinates().equals(coords)&&MainActivity.map[coords.first][coords.second].getType()!=0)
                 {
                     int dx=coords.first-player_coords.first,

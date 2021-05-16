@@ -56,9 +56,9 @@ public class MainActivity extends AppCompatActivity {
         display = getWindowManager().getDefaultDisplay();
         res=getResources();
         FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.map, new Map());
-        fragmentTransaction.add(R.id.status, new StatusBar());
-        fragmentTransaction.add(R.id.menu, new Menu());
+        fragmentTransaction.add(R.id.map, new MapFragment());
+        fragmentTransaction.add(R.id.status, new StatusBarFragment());
+        fragmentTransaction.add(R.id.menu, new MenuFragment());
         fragmentTransaction.commit();
         SharedPreferences sh=getPreferences(MODE_PRIVATE);
         player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);

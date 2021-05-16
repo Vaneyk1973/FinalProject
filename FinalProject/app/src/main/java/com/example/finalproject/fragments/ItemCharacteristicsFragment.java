@@ -18,7 +18,7 @@ import com.example.finalproject.R;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ItemCharacteristics extends Fragment {
+public class ItemCharacteristicsFragment extends Fragment {
     private Item item;
 
 

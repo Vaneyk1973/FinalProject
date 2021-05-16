@@ -23,7 +23,7 @@ import android.widget.TextView;
 
 import com.example.finalproject.R;
 
-public class StatusBar extends Fragment {
+public class StatusBarFragment extends Fragment {
     private static ProgressBar mana_bar;
     private static ProgressBar health_bar;
 
@@ -65,7 +65,7 @@ public class StatusBar extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.add(R.id.chat, new Chat());
+                fragmentTransaction.add(R.id.chat, new ChatFragment());
                 fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                 fragmentTransaction.commit();
             }

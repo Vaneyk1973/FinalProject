@@ -7,7 +7,7 @@ import android.os.Parcelable;
 import android.util.Pair;
 
 import com.example.finalproject.fragments.MainActivity;
-import com.example.finalproject.fragments.ResearchTree;
+import com.example.finalproject.fragments.ResearchTreeFragment;
 import com.example.finalproject.items.Armor;
 import com.example.finalproject.items.Food;
 import com.example.finalproject.items.Item;
@@ -21,15 +21,17 @@ import java.util.Random;
 public class Player extends Entity implements Parcelable {
 
     private int gold, research_points;
+    private boolean logged_in;
+    private boolean registered;
+    private String user_login;
     private ArrayList<Integer> element_bonuses=new ArrayList<>();
-    private Pair<Integer, Integer> coordinates;
-    private Spell chosen_spell;
     private ArrayList<Item> equipment=new ArrayList<>();
     private ArrayList<Item> inventory=new ArrayList<>();
     private ArrayList<Spell> spells=new ArrayList<>();
+    private Pair<Integer, Integer> coordinates;
+    private Spell chosen_spell;
     private Bitmap title_texture;
     private Enemy enemy;
-    private boolean is_registered;
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
@@ -109,7 +111,7 @@ public class Player extends Entity implements Parcelable {
                     MainActivity.researches.get(i).enable();
                 }
             }
-            ResearchTree.research_hash_map.get(research).setBackgroundColor(Color.GREEN);
+            ResearchTreeFragment.research_hash_map.get(research).setBackgroundColor(Color.GREEN);
             research.affect(this);
         }
     }
@@ -124,6 +126,9 @@ public class Player extends Entity implements Parcelable {
         addExperience(enemy.getGiven_exp());
     }
 
+    public void register(String login, String password){
+
+    }
 
     public void cast_spell(){
         chosen_spell.affect(enemy);
@@ -286,5 +291,29 @@ public class Player extends Entity implements Parcelable {
 
     public ArrayList<Integer> getElement_bonuses() {
         return element_bonuses;
+    }
+
+    public boolean isLogged_in() {
+        return logged_in;
+    }
+
+    public void setLogged_in(boolean logged_in) {
+        this.logged_in = logged_in;
+    }
+
+    public String getUser_login() {
+        return user_login;
+    }
+
+    public void setUser_login(String user_login) {
+        this.user_login = user_login;
+    }
+
+    public boolean isRegistered() {
+        return registered;
+    }
+
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
     }
 }

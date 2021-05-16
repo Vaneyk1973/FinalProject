@@ -19,7 +19,7 @@ import android.widget.ImageView;
 
 import com.example.finalproject.R;
 
-public class Menu extends Fragment {
+public class MenuFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,7 +65,7 @@ public class Menu extends Fragment {
             @Override
             public void onClick(View v) {
                 if (MainActivity.researches.get(0).isResearched()){
-                    fragmentTransaction.add(R.id.spell_creation, new SpellCreation());
+                    fragmentTransaction.add(R.id.spell_creation, new SpellCreationFragment());
                     if (fm.findFragmentById(R.id.map)!=null)
                         fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                     else if (fm.findFragmentById(R.id.chat)!=null)
@@ -79,7 +79,7 @@ public class Menu extends Fragment {
         inv[2].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentTransaction.add(R.id.spells, new Spells());
+                fragmentTransaction.add(R.id.spells, new SpellsFragment());
                 if (fm.findFragmentById(R.id.map)!=null)
                     fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                 else if (fm.findFragmentById(R.id.chat)!=null)
@@ -92,7 +92,7 @@ public class Menu extends Fragment {
         inv[3].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentTransaction.add(R.id.research_tree, new ResearchTree());
+                fragmentTransaction.add(R.id.research_tree, new ResearchTreeFragment());
                 if (fm.findFragmentById(R.id.map)!=null)
                     fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                 else if (fm.findFragmentById(R.id.chat)!=null)

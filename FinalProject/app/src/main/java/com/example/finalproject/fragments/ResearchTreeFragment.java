@@ -23,7 +23,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 
-public class ResearchTree extends Fragment {
+public class ResearchTreeFragment extends Fragment {
     public static HashMap<Research, TextView> research_hash_map;
     public static HashMap<TextView, Research> research_hash_map1;
     @Override
@@ -68,9 +68,9 @@ public class ResearchTree extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 fragmentTransaction.remove(fm.findFragmentById(R.id.research_tree));
-                fragmentTransaction.add(R.id.map, new Map());
-                fragmentTransaction.add(R.id.status, new StatusBar());
-                fragmentTransaction.add(R.id.menu, new Menu());
+                fragmentTransaction.add(R.id.map, new MapFragment());
+                fragmentTransaction.add(R.id.status, new StatusBarFragment());
+                fragmentTransaction.add(R.id.menu, new MenuFragment());
                 fragmentTransaction.commit();
             }
         });

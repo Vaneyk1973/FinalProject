@@ -36,7 +36,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 
-public class SpellCreation extends Fragment {
+public class SpellCreationFragment extends Fragment {
     private Element element=MainActivity.elements.get(0);
     private Type type=MainActivity.types.get(0);
     private Form form=MainActivity.forms.get(0);
@@ -82,9 +82,9 @@ public class SpellCreation extends Fragment {
                 FragmentManager fm=getParentFragmentManager();
                 FragmentTransaction fragmentTransaction= fm.beginTransaction();
                 fragmentTransaction.remove(fm.findFragmentById(R.id.spell_creation));
-                fragmentTransaction.add(R.id.map, new Map());
-                fragmentTransaction.add(R.id.status, new StatusBar());
-                fragmentTransaction.add(R.id.menu, new Menu());
+                fragmentTransaction.add(R.id.map, new MapFragment());
+                fragmentTransaction.add(R.id.status, new StatusBarFragment());
+                fragmentTransaction.add(R.id.menu, new MenuFragment());
                 fragmentTransaction.commit();
             }
         });
@@ -155,13 +155,13 @@ public class SpellCreation extends Fragment {
         @NonNull
         @NotNull
         @Override
-        public SpellCreation.SpellAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        public SpellCreationFragment.SpellAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
             View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.components_item, parent, false);
             return new SpellAdapter.ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull @NotNull SpellCreation.SpellAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull @NotNull SpellCreationFragment.SpellAdapter.ViewHolder holder, int position) {
             Class r=data.get(position).getClass();
             holder.comp.setText(String.valueOf(data.get(position).getName()));
 
