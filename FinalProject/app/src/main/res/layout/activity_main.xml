@@ -8,6 +8,12 @@
     tools:context=".fragments.MainActivity">
 
     <FrameLayout
+        android:id="@+id/registration"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteY="731dp" />
+
+    <FrameLayout
         android:id="@+id/chat"
         android:layout_width="300dp"
         android:layout_height="500dp"
@@ -31,7 +37,9 @@
     <FrameLayout
         android:id="@+id/spell_creation"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent" >
+
+    </FrameLayout>
 
     <FrameLayout
         android:id="@+id/research_tree"
