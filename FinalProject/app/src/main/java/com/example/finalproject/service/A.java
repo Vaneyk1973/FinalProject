@@ -23,4 +23,10 @@ public interface A{
 
     @POST("/log_out")
     Call<String> log_out();
+
+    @GET("/is_registered")
+    Call<Boolean> is_registered();
+
+    @GET("/is_logged_in")
+    Call<Boolean> is_logged_in();
 }

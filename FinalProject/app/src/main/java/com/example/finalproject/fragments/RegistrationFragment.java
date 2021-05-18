@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.service.A;
@@ -36,7 +37,8 @@ public class RegistrationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Button register=getView().findViewById(R.id.confirm);
+        Button register=getView().findViewById(R.id.confirm),
+                back=getView().findViewById(R.id.back_button6);
         EditText login=getView().findViewById(R.id.login),
                 password=getView().findViewById(R.id.password);
         Retrofit retrofit=new Retrofit.Builder().baseUrl("https://m5hw.herokuapp.com/").
@@ -48,21 +50,57 @@ public class RegistrationFragment extends Fragment {
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                a.register(login.getText().toString(), password.getText().toString()).enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        Log.d("KKRS", response.body());
-                        FragmentTransaction fr=getParentFragmentManager().beginTransaction();
-                        fr.remove(getParentFragmentManager().findFragmentById(R.id.registration));
-                        fr.add(R.id.chat, new ChatFragment());
-                        fr.commit();
-                    }
+                if (!MainActivity.player.isRegistered()){
+                    a.register(login.getText().toString(), password.getText().toString()).enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            Log.d("KKRS", response.body());
+                            if (response.body().equals("You're registered")) {
+                                MainActivity.player.setRegistered(true);
+                                MainActivity.player.setLogged_in(true);
+                                FragmentTransaction fr=getParentFragmentManager().beginTransaction();
+                                fr.remove(getParentFragmentManager().findFragmentById(R.id.registration));
+                                fr.add(R.id.chat, new ChatFragment());
+                                fr.commit();
+                            }
+                            else {
+                                Toast.makeText(getContext(), response.body(), Toast.LENGTH_LONG).show();
+                            }
+                        }
 
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                        Log.d("KKRE", t.toString());
-                    }
-                });
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+                            Log.d("KKRE", t.toString());
+                        }
+                    });
+                }
+                else {
+                    a.log_in(login.getText().toString(), password.getText().toString()).enqueue(new Callback<String>() {
+                        @Override
+                        public void onResponse(Call<String> call, Response<String> response) {
+                            MainActivity.player.setLogged_in(true);
+                            FragmentTransaction fr=getParentFragmentManager().beginTransaction();
+                            fr.remove(getParentFragmentManager().findFragmentById(R.id.registration));
+                            fr.add(R.id.chat, new ChatFragment());
+                            fr.commit();
+                        }
+
+                        @Override
+                        public void onFailure(Call<String> call, Throwable t) {
+
+                        }
+                    });
+                }
+            }
+        });
+
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fr=getParentFragmentManager().beginTransaction();
+                fr.remove(getParentFragmentManager().findFragmentById(R.id.registration));
+                fr.add(R.id.map, new MapFragment());
+                fr.commit();
             }
         });
     }

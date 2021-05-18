@@ -17,14 +17,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
 import com.example.finalproject.service.A;
 import com.example.finalproject.service.Message;
 import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,9 +36,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.GET;
-import retrofit2.http.POST;
-import retrofit2.http.Query;
 
 public class ChatFragment extends Fragment {
     @Override
@@ -56,13 +53,15 @@ public class ChatFragment extends Fragment {
         ArrayList<Message> messages=new ArrayList<>();
         RecyclerView chat=getView().findViewById(R.id.chat_list);
         EditText enter_message=getView().findViewById(R.id.message);
-        Button back=getView().findViewById(R.id.back_button_chat), register=getView().findViewById(R.id.register);
+        Button back=getView().findViewById(R.id.back_button_chat), register=getView().findViewById(R.id.log_out);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fm=getParentFragmentManager();
                 FragmentTransaction fr=fm.beginTransaction();
                 fr.add(R.id.map, new MapFragment());
+                fr.add(R.id.menu, new MenuFragment());
+                fr.add(R.id.status, new StatusBarFragment());
                 fr.remove(fm.findFragmentById(R.id.chat));
                 fr.commit();
             }
@@ -83,6 +82,7 @@ public class ChatFragment extends Fragment {
                 messages.clear();
                 messages.addAll(response.body());
                 chat.setAdapter(new ChatAdapter(messages));
+                chat.scrollToPosition(messages.size()-1);
                 Log.d("KKU", messages.toString());
             }
 

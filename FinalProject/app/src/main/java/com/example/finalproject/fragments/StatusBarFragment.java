@@ -65,16 +65,14 @@ public class StatusBarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                if (MainActivity.player.isLogged_in()){
+                if (MainActivity.player.isLogged_in())
                     fragmentTransaction.add(R.id.chat, new ChatFragment());
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                    fragmentTransaction.commit();
-                }
-                else {
+                else
                     fragmentTransaction.add(R.id.registration, new RegistrationFragment());
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                    fragmentTransaction.commit();
-                }
+                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                fragmentTransaction.commit();
             }
         });
         super.onViewCreated(view, savedInstanceState);

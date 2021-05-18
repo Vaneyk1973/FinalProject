@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.finalproject.entities.Enemy;
+import com.example.finalproject.service.A;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.spell.Element;
 import com.example.finalproject.service.spell.Form;
@@ -28,6 +29,12 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -65,6 +72,36 @@ public class MainActivity extends AppCompatActivity {
         setInitialData();
         Log.d("KKC", player.toString());
         player.setTitle_texture(Bitmap.createBitmap(map[player.getCoordinates().first][player.getCoordinates().second].texture));
+        Retrofit retrofit=new Retrofit.Builder().baseUrl("https://m5hw.herokuapp.com/").
+                addConverterFactory(GsonConverterFactory.create()).
+                build();
+        A a=retrofit.create(A.class);
+        a.is_registered().enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.body()!=null){
+                    MainActivity.player.setRegistered(response.body());
+                    if (response.body()){
+                        a.is_logged_in().enqueue(new Callback<Boolean>() {
+                            @Override
+                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                                MainActivity.player.setLogged_in(response.body());
+                            }
+
+                            @Override
+                            public void onFailure(Call<Boolean> call, Throwable t) {
+                                Log.d("KKFF", t.toString());
+                            }
+                        });
+                    }
+                }
+                Log.d("KKKKKKKK", MainActivity.player.isLogged_in()+" "+MainActivity.player.isRegistered());
+            }
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.d("KKPSS", t.toString());
+            }
+        });
     }
 
     private static void set_textures(){
