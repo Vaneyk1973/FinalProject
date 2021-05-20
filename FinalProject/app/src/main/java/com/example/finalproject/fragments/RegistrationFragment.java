@@ -58,6 +58,7 @@ public class RegistrationFragment extends Fragment {
                             if (response.body().equals("You're registered")) {
                                 MainActivity.player.setRegistered(true);
                                 MainActivity.player.setLogged_in(true);
+                                MainActivity.player.setUser_login(login.getText().toString());
                                 FragmentTransaction fr=getParentFragmentManager().beginTransaction();
                                 fr.remove(getParentFragmentManager().findFragmentById(R.id.registration));
                                 fr.add(R.id.chat, new ChatFragment());
@@ -100,6 +101,8 @@ public class RegistrationFragment extends Fragment {
                 FragmentTransaction fr=getParentFragmentManager().beginTransaction();
                 fr.remove(getParentFragmentManager().findFragmentById(R.id.registration));
                 fr.add(R.id.map, new MapFragment());
+                fr.add(R.id.status, new StatusBarFragment());
+                fr.add(R.id.menu, new MenuFragment());
                 fr.commit();
             }
         });

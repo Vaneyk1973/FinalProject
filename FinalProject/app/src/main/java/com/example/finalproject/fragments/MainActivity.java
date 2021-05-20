@@ -76,18 +76,17 @@ public class MainActivity extends AppCompatActivity {
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
         A a=retrofit.create(A.class);
-        a.is_registered().enqueue(new Callback<Boolean>() {
+        a.is_registered(MainActivity.player.getUser_login()).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.body()!=null){
                     MainActivity.player.setRegistered(response.body());
                     if (response.body()){
-                        a.is_logged_in().enqueue(new Callback<Boolean>() {
+                        a.is_logged_in(MainActivity.player.getUser_login()).enqueue(new Callback<Boolean>() {
                             @Override
                             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                                 MainActivity.player.setLogged_in(response.body());
                             }
-
                             @Override
                             public void onFailure(Call<Boolean> call, Throwable t) {
                                 Log.d("KKFF", t.toString());

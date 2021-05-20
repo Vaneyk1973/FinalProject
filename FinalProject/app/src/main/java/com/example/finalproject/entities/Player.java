@@ -47,6 +47,9 @@ public class Player extends Entity implements Parcelable {
         dest.writeSerializable(spells);
         dest.writeParcelable(title_texture, flags);
         dest.writeParcelable(enemy, flags);
+        dest.writeString(registered+"");
+        dest.writeString(user_login);
+        dest.writeString(logged_in+"");
     }
 
     public static final Creator<Player> CREATOR = new Creator<Player>() {
@@ -73,6 +76,9 @@ public class Player extends Entity implements Parcelable {
         spells=new ArrayList<>((ArrayList)in.readSerializable());
         title_texture = in.readParcelable(Bitmap.class.getClassLoader());
         enemy=new Enemy(in.readParcelable(Enemy.class.getClassLoader()));
+        registered=Boolean.getBoolean(in.readString());
+        user_login=in.readString();
+        logged_in=Boolean.getBoolean(in.readString());
     }
 
     public Enemy getEnemy() {
@@ -99,6 +105,7 @@ public class Player extends Entity implements Parcelable {
         equipment.add(null);
         equipment.add(null);
         equipment.add(null);
+        setUser_login("");
     }
 
     public void research(Research research){

@@ -25,8 +25,8 @@ public interface A{
     Call<String> log_out();
 
     @GET("/is_registered")
-    Call<Boolean> is_registered();
+    Call<Boolean> is_registered(@Query("login") String login);
 
     @GET("/is_logged_in")
-    Call<Boolean> is_logged_in();
+    Call<Boolean> is_logged_in(@Query("login") String login);
 }
