@@ -60,7 +60,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/characteristics"
-        android:name="com.example.finalproject.ItemCharacteristics"
+        android:name="com.example.finalproject.fragments.ItemCharacteristicsFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toTopOf="@+id/back_button"

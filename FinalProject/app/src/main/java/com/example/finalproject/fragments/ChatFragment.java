@@ -49,6 +49,7 @@ public class ChatFragment extends Fragment {
         Retrofit chat_server=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).
                 baseUrl("https://m5hw.herokuapp.com/").
                 build();
+        Button log_out=getView().findViewById(R.id.log_out);
         A a=chat_server.create(A.class);
         ArrayList<Message> messages=new ArrayList<>();
         RecyclerView chat=getView().findViewById(R.id.chat_list);
@@ -94,7 +95,7 @@ public class ChatFragment extends Fragment {
         Callback<String> d=new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-                Log.d("KKR", new Gson().fromJson(response.body(), Message.class).toString());
+                Log.d("KKR", new Gson().fromJson(response.body(), Message.class)+"");
                 a.get_messages().enqueue(f);
             }
 
@@ -119,6 +120,28 @@ public class ChatFragment extends Fragment {
                 v.setText("");
                 enter_message.setOnClickListener(click);
                 return false;
+            }
+        });
+        log_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                a.log_out(MainActivity.player.getUser_login()).enqueue(new Callback<String>() {
+                    @Override
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        MainActivity.player.setLogged_in(false);
+                        FragmentManager fm=getParentFragmentManager();
+                        FragmentTransaction fr=fm.beginTransaction();
+                        fr.remove(fm.findFragmentById(R.id.chat));
+                        fr.add(R.id.registration, new RegistrationFragment());
+                        fr.commit();
+                        Log.d("KKRE", response.body()+"");
+                    }
+
+                    @Override
+                    public void onFailure(Call<String> call, Throwable t) {
+                        Log.d("KKRE", t.toString());
+                    }
+                });
             }
         });
     }

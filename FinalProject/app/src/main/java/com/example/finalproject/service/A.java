@@ -22,7 +22,7 @@ public interface A{
     Call<String> log_in(@Query("login") String login, @Query("password") String password);
 
     @POST("/log_out")
-    Call<String> log_out();
+    Call<String> log_out(@Query("login") String login);
 
     @GET("/is_registered")
     Call<Boolean> is_registered(@Query("login") String login);
