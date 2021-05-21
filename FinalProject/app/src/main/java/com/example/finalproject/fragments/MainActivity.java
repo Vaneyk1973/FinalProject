@@ -76,16 +76,17 @@ public class MainActivity extends AppCompatActivity {
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
         A a = retrofit.create(A.class);
-        a.is_registered(MainActivity.player.getUser_login()).enqueue(new Callback<Boolean>() {
+        a.is_registered(MainActivity.player.getUser().getLogin()).enqueue(new Callback<Boolean>() {
             @Override
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.body() != null) {
                     MainActivity.player.setRegistered(response.body());
                     if (response.body()) {
-                        a.is_logged_in(MainActivity.player.getUser_login()).enqueue(new Callback<Boolean>() {
+                        a.is_logged_in(MainActivity.player.getUser().getLogin()).enqueue(new Callback<Boolean>() {
                             @Override
                             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                                MainActivity.player.setLogged_in(response.body());
+                                if (response.body())
+                                    MainActivity.player.getUser().log_in();
                             }
 
                             @Override
@@ -95,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         });
                     }
                 }
-                Log.d("KKKKKKKK", MainActivity.player.isLogged_in() + " " + MainActivity.player.isRegistered());
+                Log.d("KKKKKKKK", MainActivity.player.getUser().isLogged_in() + " " + MainActivity.player.isRegistered());
             }
 
             @Override

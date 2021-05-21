@@ -39,13 +39,10 @@ public class MenuFragment extends Fragment {
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        Bitmap bm=Bitmap.createBitmap(width/4, width/4, Bitmap.Config.ARGB_8888);
         inv[0].setImageBitmap(MainActivity.menu[0]);
-        bm.eraseColor(Color.GREEN);
-        inv[1].setImageBitmap(Bitmap.createBitmap(bm));
+        inv[1].setImageBitmap(MainActivity.menu[1]);
         inv[2].setImageBitmap(MainActivity.menu[2]);
-        bm.eraseColor(Color.GRAY);
-        inv[3].setImageBitmap(Bitmap.createBitmap(bm));
+        inv[3].setImageBitmap(MainActivity.menu[3]);
         FragmentManager fm=getParentFragmentManager();
         FragmentTransaction fragmentTransaction= fm.beginTransaction();
         inv[0].setOnClickListener(new View.OnClickListener() {

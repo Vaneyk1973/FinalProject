@@ -56,14 +56,14 @@ public class RegistrationFragment extends Fragment {
                         Log.d("KKRS", response.body());
                         if (response.body().equals("You're registered")) {
                             MainActivity.player.setRegistered(true);
-                            MainActivity.player.setLogged_in(true);
-                            MainActivity.player.setUser_login(login.getText().toString());
+                            MainActivity.player.getUser().log_in();
+                            MainActivity.player.getUser().setLogin(login.getText().toString());
                             FragmentTransaction fr = getParentFragmentManager().beginTransaction();
                             fr.remove(getParentFragmentManager().findFragmentById(R.id.registration));
                             fr.add(R.id.chat, new ChatFragment());
                             fr.commit();
                         } else {
-                            Toast.makeText(getContext(), response.body()+"", Toast.LENGTH_LONG).show();
+                            Toast.makeText(getContext(), response.body() + "", Toast.LENGTH_LONG).show();
                         }
                     }
 
@@ -81,13 +81,15 @@ public class RegistrationFragment extends Fragment {
                 a.log_in(login.getText().toString(), password.getText().toString()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        if (response.body().equals("Successful"))
-                            MainActivity.player.setLogged_in(true);
-                        else Toast.makeText(getContext(), response.body(), Toast.LENGTH_SHORT).show();
-                        FragmentTransaction fr = getParentFragmentManager().beginTransaction();
-                        fr.remove(getParentFragmentManager().findFragmentById(R.id.registration));
-                        fr.add(R.id.chat, new ChatFragment());
-                        fr.commit();
+                        if (response.body().equals("Successful")) {
+                            MainActivity.player.getUser().log_in();
+                            MainActivity.player.getUser().setLogin(login.getText().toString());
+                            FragmentTransaction fr = getParentFragmentManager().beginTransaction();
+                            fr.remove(getParentFragmentManager().findFragmentById(R.id.registration));
+                            fr.add(R.id.chat, new ChatFragment());
+                            fr.commit();
+                        } else
+                            Toast.makeText(getContext(), response.body(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override

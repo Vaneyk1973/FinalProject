@@ -65,7 +65,7 @@ public class StatusBarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                if (MainActivity.player.isLogged_in())
+                if (MainActivity.player.getUser().isLogged_in())
                     fragmentTransaction.add(R.id.chat, new ChatFragment());
                 else
                     fragmentTransaction.add(R.id.registration, new RegistrationFragment());

@@ -67,9 +67,6 @@ public class ChatFragment extends Fragment {
                 fr.commit();
             }
         });
-        if (MainActivity.player.isLogged_in()){
-
-        }
         View.OnClickListener click=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,8 +111,8 @@ public class ChatFragment extends Fragment {
                 Log.d("KKK", v.getText().toString());
                 Message m=new Message();
                 m.message=v.getText().toString();
-                m.user="a";
-                m.date=new Date().getTime();
+                m.user=MainActivity.player.getUser();
+                m.date=new Date();
                 a.put_message(new Gson().toJson(m)).enqueue(d);
                 v.setText("");
                 enter_message.setOnClickListener(click);
@@ -125,10 +122,10 @@ public class ChatFragment extends Fragment {
         log_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                a.log_out(MainActivity.player.getUser_login()).enqueue(new Callback<String>() {
+                a.log_out(MainActivity.player.getUser().getLogin()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        MainActivity.player.setLogged_in(false);
+                        MainActivity.player.getUser().log_in();
                         FragmentManager fm=getParentFragmentManager();
                         FragmentTransaction fr=fm.beginTransaction();
                         fr.remove(fm.findFragmentById(R.id.chat));
@@ -174,7 +171,7 @@ public class ChatFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ViewHolder holder, int position) {
             holder.message.setText(data.get(position).message);
-            long date=data.get(position).date;
+            long date=data.get(position).date.getTime();
             String ms=date%1000+"", s, min, h;
             date/=1000;
             s=date%60+":";
@@ -183,7 +180,7 @@ public class ChatFragment extends Fragment {
             date/=60;
             h=date%24+":";
             holder.time.setText(h+min+s+ms);
-            holder.user.setText(data.get(position).user);
+            holder.user.setText(data.get(position).user.getLogin());
         }
 
         @Override

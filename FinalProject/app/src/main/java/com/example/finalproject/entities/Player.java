@@ -13,7 +13,9 @@ import com.example.finalproject.items.Food;
 import com.example.finalproject.items.Item;
 import com.example.finalproject.items.Weapon;
 import com.example.finalproject.service.Research;
+import com.example.finalproject.service.User;
 import com.example.finalproject.service.spell.Spell;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -21,9 +23,8 @@ import java.util.Random;
 public class Player extends Entity implements Parcelable {
 
     private int gold, research_points;
-    private boolean logged_in;
     private boolean registered;
-    private String user_login;
+    private User user;
     private ArrayList<Integer> element_bonuses=new ArrayList<>();
     private ArrayList<Item> equipment=new ArrayList<>();
     private ArrayList<Item> inventory=new ArrayList<>();
@@ -47,9 +48,7 @@ public class Player extends Entity implements Parcelable {
         dest.writeSerializable(spells);
         dest.writeParcelable(title_texture, flags);
         dest.writeParcelable(enemy, flags);
-        dest.writeString(registered+"");
-        dest.writeString(user_login);
-        dest.writeString(logged_in+"");
+        dest.writeString(new Gson().toJson(user));
     }
 
     public static final Creator<Player> CREATOR = new Creator<Player>() {
@@ -76,9 +75,7 @@ public class Player extends Entity implements Parcelable {
         spells=new ArrayList<>((ArrayList)in.readSerializable());
         title_texture = in.readParcelable(Bitmap.class.getClassLoader());
         enemy=new Enemy(in.readParcelable(Enemy.class.getClassLoader()));
-        registered=Boolean.getBoolean(in.readString());
-        user_login=in.readString();
-        logged_in=Boolean.getBoolean(in.readString());
+        user=new Gson().fromJson(in.readString(), User.class);
     }
 
     public Enemy getEnemy() {
@@ -105,7 +102,7 @@ public class Player extends Entity implements Parcelable {
         equipment.add(null);
         equipment.add(null);
         equipment.add(null);
-        setUser_login("");
+        user=new User("", "");
     }
 
     public void research(Research research){
@@ -300,20 +297,13 @@ public class Player extends Entity implements Parcelable {
         return element_bonuses;
     }
 
-    public boolean isLogged_in() {
-        return logged_in;
+
+    public User getUser() {
+        return user;
     }
 
-    public void setLogged_in(boolean logged_in) {
-        this.logged_in = logged_in;
-    }
-
-    public String getUser_login() {
-        return user_login;
-    }
-
-    public void setUser_login(String user_login) {
-        this.user_login = user_login;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public boolean isRegistered() {
