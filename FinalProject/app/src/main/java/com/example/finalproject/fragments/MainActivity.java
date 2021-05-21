@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
     private static void set_textures() {
         Point size = new Point();
         display.getSize(size);
+        Bitmap a;
         int width = size.x, height = size.y;
         double xy = width * 1.0 / height;
         Log.d("KKQQ", xy + "");
@@ -121,9 +122,8 @@ public class MainActivity extends AppCompatActivity {
             menu_width = width / 4;
             avatar_width = width / 5;
         }
-        int n = 10, m = 10;
-        Bitmap a = null;
         a = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.xxx), map_title_width * 10, map_title_width * 10, false);
+        int n = 10, m = 10;
         Bitmap[][] b = new Bitmap[n][m];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
