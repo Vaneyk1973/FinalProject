@@ -12,7 +12,7 @@ public class Message{
     public String message;
     @Expose
     @SerializedName("user")
-    public User user;
+    public String user;
     @Expose
     @SerializedName("date")
     public Date date;

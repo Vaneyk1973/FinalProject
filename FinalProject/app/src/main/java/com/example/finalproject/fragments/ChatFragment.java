@@ -24,6 +24,7 @@ import android.widget.TextView;
 import com.example.finalproject.R;
 import com.example.finalproject.service.A;
 import com.example.finalproject.service.Message;
+import com.example.finalproject.service.User;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
@@ -89,15 +90,15 @@ public class ChatFragment extends Fragment {
                 Log.d("KKD", t.toString());
             }
         };
-        Callback<String> d=new Callback<String>() {
+        Callback<Message> d=new Callback<Message>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-                Log.d("KKR", new Gson().fromJson(response.body(), Message.class)+"");
+            public void onResponse(Call<Message> call, Response<Message> response) {
+                Log.d("KKR", response.body()+"");
                 a.get_messages().enqueue(f);
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
+            public void onFailure(Call<Message> call, Throwable t) {
                 Log.d("KKE", t.toString());
             }
         };
@@ -111,8 +112,9 @@ public class ChatFragment extends Fragment {
                 Log.d("KKK", v.getText().toString());
                 Message m=new Message();
                 m.message=v.getText().toString();
-                m.user=MainActivity.player.getUser();
+                m.user=new Gson().toJson(MainActivity.player.getUser());
                 m.date=new Date();
+                Log.d("KKKR", m+"");
                 a.put_message(new Gson().toJson(m)).enqueue(d);
                 v.setText("");
                 enter_message.setOnClickListener(click);
@@ -141,6 +143,7 @@ public class ChatFragment extends Fragment {
                 });
             }
         });
+        chat.scrollToPosition(messages.size()-1);
     }
 
     class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
@@ -180,7 +183,7 @@ public class ChatFragment extends Fragment {
             date/=60;
             h=date%24+":";
             holder.time.setText(h+min+s+ms);
-            holder.user.setText(data.get(position).user.getLogin());
+            holder.user.setText(new Gson().fromJson(data.get(position).user, User.class).getLogin());
         }
 
         @Override
