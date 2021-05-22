@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Research> researches;
     private static Display display;
     private static Resources res;
+    private static Bitmap[][] b;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         }
         a = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.xxx), map_title_width * 10, map_title_width * 10, false);
         int n = 10, m = 10;
-        Bitmap[][] b = new Bitmap[n][m];
+        b = new Bitmap[n][m];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 b[i][j] = Bitmap.createBitmap(a, i * map_title_width, j * map_title_width, map_title_width, map_title_width);
@@ -209,12 +210,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static void set_enemies() {
-        enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0)));
-        enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1)));
-        enemies.add(new Enemy("Wolf", 35, 0, 5, 0, 10, 10, drop.get(2)));
-        enemies.add(new Enemy("Fox", 20, 0, 3, 0, 7, 6, drop.get(3)));
-        enemies.add(new Enemy("Bear", 100, 10, 15, 0, 50, 200, drop.get(4)));
-        enemies.add(new Enemy("Highwayman", 50, 10, 20, 0, 100, 50, drop.get(5)));
+        enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0), b[2][5]));
+        enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1), b[4][5]));
+        enemies.add(new Enemy("Wolf", 35, 0, 5, 0, 10, 10, drop.get(2), b[0][5]));
+        enemies.add(new Enemy("Fox", 20, 0, 3, 0, 7, 6, drop.get(3), b[1][5]));
+        enemies.add(new Enemy("Bear", 100, 10, 15, 0, 50, 200, drop.get(4), b[3][5]));
+        enemies.add(new Enemy("Highwayman", 50, 10, 20, 0, 100, 50, drop.get(5), b[5][5]));
         chances_of_fight.put(0, 0);
         chances_of_fight.put(1, 20);
         chances_of_fight.put(2, 60);

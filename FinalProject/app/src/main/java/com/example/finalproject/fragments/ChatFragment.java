@@ -17,8 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
@@ -90,18 +88,6 @@ public class ChatFragment extends Fragment {
                 Log.d("KKD", t.toString());
             }
         };
-        Callback<Message> d=new Callback<Message>() {
-            @Override
-            public void onResponse(Call<Message> call, Response<Message> response) {
-                Log.d("KKR", response.body()+"");
-                a.get_messages().enqueue(f);
-            }
-
-            @Override
-            public void onFailure(Call<Message> call, Throwable t) {
-                Log.d("KKE", t.toString());
-            }
-        };
         a.get_messages().enqueue(f);
         chat.setAdapter(new ChatAdapter(messages));
         chat.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -115,7 +101,18 @@ public class ChatFragment extends Fragment {
                 m.user=new Gson().toJson(MainActivity.player.getUser());
                 m.date=new Date();
                 Log.d("KKKR", m+"");
-                a.put_message(new Gson().toJson(m)).enqueue(d);
+                a.put_message(new Gson().toJson(m)).enqueue(new Callback<Message>() {
+                    @Override
+                    public void onResponse(Call<Message> call, Response<Message> response) {
+                        Log.d("KKR", response.body()+"");
+                        a.get_messages().enqueue(f);
+                    }
+
+                    @Override
+                    public void onFailure(Call<Message> call, Throwable t) {
+                        Log.d("KKE", t.toString());
+                    }
+                });
                 v.setText("");
                 enter_message.setOnClickListener(click);
                 return false;
@@ -146,7 +143,7 @@ public class ChatFragment extends Fragment {
         chat.scrollToPosition(messages.size()-1);
     }
 
-    class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ViewHolder>{
+    class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder>{
 
         ArrayList<Message> data;
 
@@ -154,9 +151,9 @@ public class ChatFragment extends Fragment {
             data=messages;
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder{
+        class ChatViewHolder extends RecyclerView.ViewHolder{
             TextView user, message, time;
-            public ViewHolder(@NonNull @NotNull View itemView) {
+            public ChatViewHolder(@NonNull @NotNull View itemView) {
                 super(itemView);
                 user=itemView.findViewById(R.id.user_list);
                 time=itemView.findViewById(R.id.time_list);
@@ -167,22 +164,15 @@ public class ChatFragment extends Fragment {
         @NonNull
         @NotNull
         @Override
-        public ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.message, parent, false));
+        public ChatFragment.ChatAdapter.ChatViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+            return new ChatViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.message, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ChatViewHolder holder, int position) {
             holder.message.setText(data.get(position).message);
-            long date=data.get(position).date.getTime();
-            String ms=date%1000+"", s, min, h;
-            date/=1000;
-            s=date%60+":";
-            date/=600;
-            min=date%60+":";
-            date/=60;
-            h=date%24+":";
-            holder.time.setText(h+min+s+ms);
+            Date date=data.get(position).date;
+            holder.time.setText(date.toString());
             holder.user.setText(new Gson().fromJson(data.get(position).user, User.class).getLogin());
         }
 

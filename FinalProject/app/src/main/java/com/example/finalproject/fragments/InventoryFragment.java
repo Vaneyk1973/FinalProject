@@ -79,16 +79,16 @@ public class InventoryFragment extends Fragment {
         });
     }
 
-    class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder>{
+    class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.InvenoryViewHolder>{
         private final ArrayList<Item> data=new ArrayList<>();
 
         public InventoryAdapter(ArrayList<Item> data) {
             this.data.addAll(data);
         }
 
-        public class ViewHolder extends RecyclerView.ViewHolder{
+        public class InvenoryViewHolder extends RecyclerView.ViewHolder{
             TextView name;
-            public ViewHolder(@NonNull @NotNull View itemView) {
+            public InvenoryViewHolder(@NonNull @NotNull View itemView) {
                 super(itemView);
                 name=(TextView) itemView.findViewById(R.id.textView);
             }
@@ -97,13 +97,13 @@ public class InventoryFragment extends Fragment {
         @NonNull
         @NotNull
         @Override
-        public InventoryFragment.InventoryAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        public InventoryFragment.InventoryAdapter.InvenoryViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
             View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.inventory_item, parent, false);
-            return new ViewHolder(view);
+            return new InvenoryViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull @NotNull InventoryFragment.InventoryAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull @NotNull InventoryFragment.InventoryAdapter.InvenoryViewHolder holder, int position) {
             holder.name.setText(data.get(position).getName());
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override

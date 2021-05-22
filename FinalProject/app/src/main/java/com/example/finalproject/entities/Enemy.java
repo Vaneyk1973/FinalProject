@@ -1,5 +1,6 @@
 package com.example.finalproject.entities;
 
+import android.graphics.Bitmap;
 import android.os.Parcelable;
 import android.util.Pair;
 
@@ -13,8 +14,9 @@ public class Enemy extends Entity implements Parcelable {
     private ArrayList<Pair<Item, Integer>> drop;
     private int defence=0;
     private boolean t=true;
+    private Bitmap texture;
 
-    public Enemy(String name, int health, int mana, int damage, int armor, int given_gold, int given_exp, ArrayList<Pair<Item, Integer>> drop) {
+    public Enemy(String name, int health, int mana, int damage, int armor, int given_gold, int given_exp, ArrayList<Pair<Item, Integer>> drop, Bitmap b) {
         setHealth_regen(2);
         setArmor(armor);
         setDamage(damage);
@@ -25,6 +27,7 @@ public class Enemy extends Entity implements Parcelable {
         setDrop(drop);
         setGiven_exp(given_exp);
         setGiven_gold(given_gold);
+        setTexture(b);
     }
 
     public Enemy (Enemy enemy){
@@ -44,6 +47,7 @@ public class Enemy extends Entity implements Parcelable {
         setPower_level(enemy.getPower_level());
         setGiven_exp(enemy.getGiven_exp());
         setGiven_gold(enemy.getGiven_gold());
+        setTexture(enemy.getTexture());
     }
 
     public void attack (Player player){
@@ -75,5 +79,13 @@ public class Enemy extends Entity implements Parcelable {
 
     public void be_affected_by_spell(Spell spell){
         defence+=getResistances().get(spell)*spell.getDamage();
+    }
+
+    public Bitmap getTexture() {
+        return texture;
+    }
+
+    public void setTexture(Bitmap texture) {
+        this.texture = texture;
     }
 }

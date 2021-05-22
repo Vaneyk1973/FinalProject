@@ -75,8 +75,7 @@ public class FightFragment extends Fragment {
         Bitmap bm = Bitmap.createBitmap(width / 4, width / 4, Bitmap.Config.ARGB_8888);
         bm.eraseColor(Color.GREEN);
         player_image.setImageBitmap(Bitmap.createBitmap(bm));
-        bm.eraseColor(Color.RED);
-        enemy_image.setImageBitmap(Bitmap.createBitmap(bm));
+        enemy_image.setImageBitmap(MainActivity.player.getEnemy().getTexture());
         your_health.setProgressTintList(ColorStateList.valueOf(Color.RED));
         your_mana.setProgressTintList(ColorStateList.valueOf(Color.BLUE));
         enemy_health.setProgressTintList(ColorStateList.valueOf(Color.RED));
