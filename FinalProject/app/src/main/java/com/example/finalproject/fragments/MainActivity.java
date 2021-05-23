@@ -16,6 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.finalproject.entities.Enemy;
 import com.example.finalproject.service.A;
+import com.example.finalproject.service.Music;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.spell.Element;
 import com.example.finalproject.service.spell.Form;
@@ -56,10 +57,13 @@ public class MainActivity extends AppCompatActivity {
     private static Display display;
     private static Resources res;
     private static Bitmap[][] b;
+    public static Music m;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        m=new Music();
+        m.start(this, R.raw.main);
         setContentView(R.layout.activity_main);
         display = getWindowManager().getDefaultDisplay();
         res = getResources();

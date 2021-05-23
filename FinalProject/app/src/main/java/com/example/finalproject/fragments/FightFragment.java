@@ -45,6 +45,7 @@ public class FightFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        MainActivity.m.start(getContext(), R.raw.fight);
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -100,6 +101,7 @@ public class FightFragment extends Fragment {
                     fragmentTransaction.add(R.id.status, new StatusBarFragment());
                     fragmentTransaction.add(R.id.menu, new MenuFragment());
                     fragmentTransaction.commit();
+                    MainActivity.m.start(getContext(), R.raw.main);
                 }
                 if (MainActivity.player.getHealth()<=0){
                     MainActivity.player=new Player(2, 2);
@@ -112,6 +114,7 @@ public class FightFragment extends Fragment {
                     fragmentTransaction.add(R.id.status, new StatusBarFragment());
                     fragmentTransaction.add(R.id.menu, new MenuFragment());
                     fragmentTransaction.commit();
+                    MainActivity.m.start(getContext(), R.raw.main);
                 }
             }
         });
