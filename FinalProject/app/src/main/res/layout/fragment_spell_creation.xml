@@ -51,6 +51,7 @@
 
     <EditText
         android:id="@+id/spell_name"
+        android:fontFamily="cursive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
@@ -83,6 +84,7 @@
         tools:layout="@layout/fragment_spell_characteristics"/>
 
     <Button
+        android:fontFamily="cursive"
         android:id="@+id/confirm_creation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -93,6 +95,7 @@
         app:layout_constraintTop_toBottomOf="@id/spell_characteristics" />
 
     <Button
+        android:fontFamily="cursive"
         android:id="@+id/back_button3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

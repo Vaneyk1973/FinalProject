@@ -40,7 +40,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity {
 
     public static Player player;
-    public static int menu_width, avatar_width, map_title_width;
+    public static int menu_width, avatar_width, map_title_width, status_images_width, category_image_width;
     public static HashMap<Integer, Integer> chances_of_fight = new HashMap<>();
     public static MapTitle[][] map = new MapTitle[32][32];
     public static Bitmap[] menu = new Bitmap[4];
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Research> researches;
     private static Display display;
     private static Resources res;
-    private static Bitmap[][] b;
+    public static Bitmap[][] b;
     public static Music m;
 
     @Override
@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("KKPSS", t.toString());
             }
         });
+        player.setAvatar(Bitmap.createBitmap(b[5][5]));
     }
 
     private static void set_textures() {
@@ -127,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
             menu_width = width / 4;
             avatar_width = width / 5;
         }
+        status_images_width=width/10;
+        category_image_width=width/4;
         a = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.xxx), map_title_width * 10, map_title_width * 10, false);
         int n = 10, m = 10;
         b = new Bitmap[n][m];

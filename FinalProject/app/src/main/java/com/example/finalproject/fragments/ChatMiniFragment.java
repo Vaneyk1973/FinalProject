@@ -36,10 +36,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class ChatFragment extends Fragment {
+public class ChatMiniFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_chat, container, false);
+        return inflater.inflate(R.layout.fragment_chat_mini, container, false);
     }
 
     @Override
@@ -48,7 +48,6 @@ public class ChatFragment extends Fragment {
         Retrofit chat_server=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).
                 baseUrl("https://m5hw.herokuapp.com/").
                 build();
-        Button log_out=getView().findViewById(R.id.log_out);
         A a=chat_server.create(A.class);
         ArrayList<Message> messages=new ArrayList<>();
         RecyclerView chat=getView().findViewById(R.id.chat_list);
@@ -59,11 +58,14 @@ public class ChatFragment extends Fragment {
             public void onClick(View v) {
                 FragmentManager fm=getParentFragmentManager();
                 FragmentTransaction fr=fm.beginTransaction();
-                fr.add(R.id.map, new MapFragment());
-                fr.add(R.id.menu, new MenuFragment());
-                fr.add(R.id.status, new StatusBarFragment());
-                fr.remove(fm.findFragmentById(R.id.chat));
+                fr.remove(fm.findFragmentById(R.id.chat_mini));
                 fr.commit();
+                FragmentTransaction f=getParentFragment().getParentFragmentManager().beginTransaction();
+                f.remove(getParentFragment().getParentFragmentManager().findFragmentById(R.id.status));
+                f.commit();
+                f=getParentFragment().getParentFragmentManager().beginTransaction();
+                f.add(R.id.status, new StatusBarFragment());
+                f.commit();
             }
         });
         View.OnClickListener click=new View.OnClickListener() {
@@ -78,7 +80,7 @@ public class ChatFragment extends Fragment {
             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
                 messages.clear();
                 messages.addAll(response.body());
-                chat.setAdapter(new ChatAdapter(messages));
+                chat.setAdapter(new ChatMiniFragment.ChatAdapter(messages));
                 chat.scrollToPosition(messages.size()-1);
                 Log.d("KKU", messages.toString());
             }
@@ -89,7 +91,7 @@ public class ChatFragment extends Fragment {
             }
         };
         a.get_messages().enqueue(f);
-        chat.setAdapter(new ChatAdapter(messages));
+        chat.setAdapter(new ChatMiniFragment.ChatAdapter(messages));
         chat.setLayoutManager(new LinearLayoutManager(getContext()));
         enter_message.setOnClickListener(click);
         enter_message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -118,32 +120,10 @@ public class ChatFragment extends Fragment {
                 return false;
             }
         });
-        log_out.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                a.log_out(MainActivity.player.getUser().getLogin()).enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        MainActivity.player.getUser().log_in();
-                        FragmentManager fm=getParentFragmentManager();
-                        FragmentTransaction fr=fm.beginTransaction();
-                        fr.remove(fm.findFragmentById(R.id.chat));
-                        fr.add(R.id.registration, new RegistrationFragment());
-                        fr.commit();
-                        Log.d("KKRE", response.body()+"");
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                        Log.d("KKRE", t.toString());
-                    }
-                });
-            }
-        });
         chat.scrollToPosition(messages.size()-1);
     }
 
-    class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder>{
+    class ChatAdapter extends RecyclerView.Adapter<ChatMiniFragment.ChatAdapter.ChatViewHolder>{
 
         ArrayList<Message> data;
 
@@ -164,12 +144,12 @@ public class ChatFragment extends Fragment {
         @NonNull
         @NotNull
         @Override
-        public ChatFragment.ChatAdapter.ChatViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-            return new ChatViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.message, parent, false));
+        public ChatMiniFragment.ChatAdapter.ChatViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+            return new ChatMiniFragment.ChatAdapter.ChatViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.message, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ChatViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull @NotNull ChatMiniFragment.ChatAdapter.ChatViewHolder holder, int position) {
             holder.message.setText(data.get(position).message);
             long time=data.get(position).date.getTime()/1000/60;
             String mins, hrs;

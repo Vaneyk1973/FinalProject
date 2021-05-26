@@ -33,8 +33,8 @@ public class ItemCharacteristicsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @org.jetbrains.annotations.NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Bitmap bm=Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888);
-        bm.eraseColor(Color.YELLOW);
+        Bitmap bm = Bitmap.createScaledBitmap
+                (MainActivity.b[0][0], MainActivity.category_image_width, MainActivity.category_image_width, false);
         ImageView imageView=(ImageView)(getView().findViewById(R.id.category_image));
         imageView.setImageBitmap(bm);
     }

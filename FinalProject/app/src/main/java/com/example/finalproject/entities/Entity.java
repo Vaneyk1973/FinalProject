@@ -9,8 +9,9 @@ import com.example.finalproject.service.spell.Spell;
 import java.util.HashMap;
 
 public class Entity implements Parcelable {
-    private int level, experience, health, max_health, mana, max_mana, power_level, experience_to_next_level_required,
-            damage, armor, health_regen, mana_regen, given_exp, given_gold;
+    private int level, experience,  power_level, experience_to_next_level_required,
+            damage, armor, given_exp, given_gold;
+    private double health, max_health, mana, max_mana,health_regen, mana_regen;
     private String name;
     private HashMap<Spell, Double> resistances=new HashMap<>();
 
@@ -19,16 +20,16 @@ public class Entity implements Parcelable {
     protected Entity(Parcel in) {
         level = in.readInt();
         experience = in.readInt();
-        health = in.readInt();
-        max_health = in.readInt();
-        mana = in.readInt();
-        max_mana = in.readInt();
+        health = in.readDouble();
+        max_health = in.readDouble();
+        mana = in.readDouble();
+        max_mana = in.readDouble();
         power_level = in.readInt();
         experience_to_next_level_required = in.readInt();
         damage = in.readInt();
         armor = in.readInt();
-        health_regen = in.readInt();
-        mana_regen = in.readInt();
+        health_regen = in.readDouble();
+        mana_regen = in.readDouble();
         given_exp = in.readInt();
         given_gold = in.readInt();
         name = in.readString();
@@ -61,19 +62,51 @@ public class Entity implements Parcelable {
             setHealth(getMax_health());
     }
 
-    public int getHealth_regen() {
+    public double getHealth() {
+        return health;
+    }
+
+    public void setHealth(double health) {
+        this.health = health;
+    }
+
+    public double getMax_health() {
+        return max_health;
+    }
+
+    public void setMax_health(double max_health) {
+        this.max_health = max_health;
+    }
+
+    public double getMana() {
+        return mana;
+    }
+
+    public void setMana(double mana) {
+        this.mana = mana;
+    }
+
+    public double getMax_mana() {
+        return max_mana;
+    }
+
+    public void setMax_mana(double max_mana) {
+        this.max_mana = max_mana;
+    }
+
+    public double getHealth_regen() {
         return health_regen;
     }
 
-    public void setHealth_regen(int health_regen) {
+    public void setHealth_regen(double health_regen) {
         this.health_regen = health_regen;
     }
 
-    public int getMana_regen() {
+    public double getMana_regen() {
         return mana_regen;
     }
 
-    public void setMana_regen(int mana_regen) {
+    public void setMana_regen(double mana_regen) {
         this.mana_regen = mana_regen;
     }
 
@@ -83,22 +116,6 @@ public class Entity implements Parcelable {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
-    public int getMana() {
-        return mana;
-    }
-
-    public void setMana(int mana) {
-        this.mana = mana;
     }
 
     public int getDamage() {
@@ -131,22 +148,6 @@ public class Entity implements Parcelable {
 
     public void setExperience(int experience) {
         this.experience = experience;
-    }
-
-    public int getMax_health() {
-        return max_health;
-    }
-
-    public void setMax_health(int max_health) {
-        this.max_health = max_health;
-    }
-
-    public int getMax_mana() {
-        return max_mana;
-    }
-
-    public void setMax_mana(int max_mana) {
-        this.max_mana = max_mana;
     }
 
     public int getPower_level() {
@@ -198,16 +199,16 @@ public class Entity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(level);
         dest.writeInt(experience);
-        dest.writeInt(health);
-        dest.writeInt(max_health);
-        dest.writeInt(mana);
-        dest.writeInt(max_mana);
+        dest.writeDouble(health);
+        dest.writeDouble(max_health);
+        dest.writeDouble(mana);
+        dest.writeDouble(max_mana);
         dest.writeInt(power_level);
         dest.writeInt(experience_to_next_level_required);
         dest.writeInt(damage);
         dest.writeInt(armor);
-        dest.writeInt(health_regen);
-        dest.writeInt(mana_regen);
+        dest.writeDouble(health_regen);
+        dest.writeDouble(mana_regen);
         dest.writeInt(given_exp);
         dest.writeInt(given_gold);
         dest.writeString(name);

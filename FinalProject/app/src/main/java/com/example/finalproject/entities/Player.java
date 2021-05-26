@@ -23,7 +23,7 @@ import java.util.Random;
 public class Player extends Entity implements Parcelable {
 
     private int gold, research_points;
-    private boolean registered;
+    private boolean registered, chat_mode;
     private User user;
     private ArrayList<Integer> element_bonuses=new ArrayList<>();
     private ArrayList<Item> equipment=new ArrayList<>();
@@ -32,6 +32,7 @@ public class Player extends Entity implements Parcelable {
     private Pair<Integer, Integer> coordinates;
     private Spell chosen_spell;
     private Bitmap title_texture;
+    private Bitmap avatar;
     private Enemy enemy;
 
     @Override
@@ -103,6 +104,7 @@ public class Player extends Entity implements Parcelable {
         equipment.add(null);
         equipment.add(null);
         user=new User("", "");
+        chat_mode=true;
     }
 
     public void research(Research research){
@@ -128,10 +130,6 @@ public class Player extends Entity implements Parcelable {
         }
         setGold(getGold()+enemy.getGiven_gold());
         addExperience(enemy.getGiven_exp());
-    }
-
-    public void register(String login, String password){
-
     }
 
     public void cast_spell(){
@@ -200,8 +198,10 @@ public class Player extends Entity implements Parcelable {
             setExperience(getExperience()-getExperience_to_next_level_required());
             setExperience_to_next_level_required(getLevel()*getLevel()*10);
             research_points+=3;
-            setMana(getMana()+10);
-            setHealth(getHealth()+10);
+            setMana(getMana()*1.6);
+            setHealth(getHealth()*1.6);
+            setMana_regen(getMana_regen()*1.7);
+            setHealth_regen(getHealth()*1.7);
         }
 
     }
@@ -312,5 +312,21 @@ public class Player extends Entity implements Parcelable {
 
     public void setRegistered(boolean registered) {
         this.registered = registered;
+    }
+
+    public boolean getChat_mode() {
+        return chat_mode;
+    }
+
+    public void setChat_mode(boolean chat_mode) {
+        this.chat_mode = chat_mode;
+    }
+
+    public Bitmap getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(Bitmap avatar) {
+        this.avatar = avatar;
     }
 }

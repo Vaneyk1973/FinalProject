@@ -24,8 +24,8 @@ import android.widget.TextView;
 import com.example.finalproject.R;
 
 public class StatusBarFragment extends Fragment {
-    private static ProgressBar mana_bar;
-    private static ProgressBar health_bar;
+
+    private static TextView health, mana;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,44 +34,65 @@ public class StatusBarFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        ImageView img = (ImageView) getView().findViewById(R.id.avatar);
-        TextView exp = (TextView) getView().findViewById(R.id.experience_amount);
-        TextView lvl = (TextView) getView().findViewById(R.id.level_value);
-        TextView gld = (TextView) getView().findViewById(R.id.gold_amount);
+        ImageView gold_img=getView().findViewById(R.id.gold_image),
+                health_img=getView().findViewById(R.id.health_image),
+                mana_img=getView().findViewById(R.id.mana_image),
+                avatar = (ImageView) getView().findViewById(R.id.avatar);
+        TextView lvl = (TextView) getView().findViewById(R.id.level),
+                gold=(TextView)getView().findViewById(R.id.gold);
+        health=(TextView)getView().findViewById(R.id.health);
+        mana=(TextView)getView().findViewById(R.id.mana);
         String txt = MainActivity.player.getExperience() + "/" + MainActivity.player.getExperience_to_next_level_required();
-        exp.setText(txt);
         txt = MainActivity.player.getLevel() + "";
         lvl.setText(txt);
         txt = MainActivity.player.getGold() + "";
-        gld.setText(txt);
-        Bitmap bm = Bitmap.createBitmap(MainActivity.avatar_width, MainActivity.avatar_width, Bitmap.Config.ARGB_8888);
-        bm.eraseColor(Color.GREEN);
-        img.setImageBitmap(bm);
-        mana_bar = (ProgressBar) getView().findViewById(R.id.mana_bar);
-        health_bar = (ProgressBar) getView().findViewById(R.id.health_bar);
-        health_bar.setProgressTintList(ColorStateList.valueOf(Color.RED));
-        health_bar.setMax(MainActivity.player.getMax_health());
-        health_bar.setProgress(MainActivity.player.getHealth());
-        mana_bar.setProgressTintList(ColorStateList.valueOf(Color.BLUE));
-        mana_bar.setProgress(MainActivity.player.getMana());
-        mana_bar.setMax(MainActivity.player.getMax_mana());
+        gold.setText(txt);
+        txt=MainActivity.player.getHealth()+"/"+MainActivity.player.getMax_health();
+        health.setText(txt);
+        txt=MainActivity.player.getMana()+"/"+MainActivity.player.getMax_mana();
+        mana.setText(txt);
+        Bitmap bm = Bitmap.createScaledBitmap
+                (MainActivity.b[5][5], MainActivity.avatar_width, MainActivity.avatar_width, false);
+        avatar.setImageBitmap(Bitmap.createBitmap(bm));
+        bm=Bitmap.createScaledBitmap
+                (MainActivity.b[0][3],MainActivity.status_images_width, MainActivity.status_images_width, false);
+        gold_img.setImageBitmap(Bitmap.createBitmap(bm));
+        bm=Bitmap.createScaledBitmap
+                (MainActivity.b[5][2], MainActivity.status_images_width, MainActivity.status_images_width, false);
+        health_img.setImageBitmap(Bitmap.createBitmap(bm));
+        mana_img.setImageBitmap(Bitmap.createBitmap(bm));
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.player.setChat_mode(!MainActivity.player.getChat_mode());
+            }
+        });
         Button chat = getView().findViewById(R.id.chat_button);
         FragmentManager fm = getParentFragmentManager();
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                if (MainActivity.player.getUser().isLogged_in())
-                    fragmentTransaction.add(R.id.chat, new ChatFragment());
-                else
-                    fragmentTransaction.add(R.id.registration, new RegistrationFragment());
-                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                if (MainActivity.player.getChat_mode()){
+                    if (MainActivity.player.getUser().isLogged_in()) {
+                        fragmentTransaction.add(R.id.chat, new ChatFragment());
+                    } else {
+                        fragmentTransaction.add(R.id.registration, new RegistrationFragment());
+                    }
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                }
+                else {
+                    if (MainActivity.player.getUser().isLogged_in()) {
+                        FragmentTransaction f=getChildFragmentManager().beginTransaction();
+                        f.add(R.id.chat_mini, new ChatMiniFragment());
+                        f.commit();
+                        chat.setVisibility(View.GONE);
+                    } else {
+                        fragmentTransaction.add(R.id.registration, new RegistrationFragment());
+                    }
+                }
                 fragmentTransaction.commit();
             }
         });
@@ -79,11 +100,10 @@ public class StatusBarFragment extends Fragment {
     }
 
     public static void update() {
-        health_bar.setProgressTintList(ColorStateList.valueOf(Color.RED));
-        health_bar.setMax(MainActivity.player.getMax_health());
-        health_bar.setProgress(MainActivity.player.getHealth());
-        mana_bar.setProgressTintList(ColorStateList.valueOf(Color.BLUE));
-        mana_bar.setProgress(MainActivity.player.getMana());
-        mana_bar.setMax(MainActivity.player.getMax_mana());
+        String txt;
+        txt=MainActivity.player.getHealth()+"/"+MainActivity.player.getMax_health();
+        health.setText(txt);
+        txt=MainActivity.player.getMana()+"/"+MainActivity.player.getMax_mana();
+        mana.setText(txt);
     }
 }

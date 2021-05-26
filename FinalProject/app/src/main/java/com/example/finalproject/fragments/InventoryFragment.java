@@ -49,18 +49,21 @@ public class InventoryFragment extends Fragment {
         Button back=(Button)getView().findViewById(R.id.back_button);
         FragmentManager fm=getParentFragmentManager();
         FragmentTransaction fr=fm.beginTransaction();
-        Bitmap bm = Bitmap.createBitmap(width/4, width/4, Bitmap.Config.ARGB_8888);
+        Bitmap bm = Bitmap.createScaledBitmap
+                (MainActivity.b[0][0], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.add(getView().findViewById(R.id.armor_weapons));
         categories.add(getView().findViewById(R.id.potions_food));
         categories.add(getView().findViewById(R.id.recourses));
         categories.add(getView().findViewById(R.id.other));
-        bm.eraseColor(Color.RED);
         categories.get(0).setImageBitmap(Bitmap.createBitmap(bm));
-        bm.eraseColor(Color.GREEN);
+        bm = Bitmap.createScaledBitmap
+                (MainActivity.b[1][0], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.get(1).setImageBitmap(Bitmap.createBitmap(bm));
-        bm.eraseColor(Color.BLUE);
+        bm = Bitmap.createScaledBitmap
+                (MainActivity.b[2][0], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.get(2).setImageBitmap(Bitmap.createBitmap(bm));
-        bm.eraseColor(Color.GRAY);
+        bm = Bitmap.createScaledBitmap
+                (MainActivity.b[3][0], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.get(3).setImageBitmap(Bitmap.createBitmap(bm));
         inventory.setAdapter(new InventoryAdapter(MainActivity.player.getInventory()));
         inventory.setLayoutManager(new LinearLayoutManager(getContext()));

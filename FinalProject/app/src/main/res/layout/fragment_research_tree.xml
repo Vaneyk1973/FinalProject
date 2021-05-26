@@ -27,6 +27,8 @@
                 android:layout_height="match_parent">
 
                 <TextView
+                    android:fontFamily="cursive"
+                    android:textSize="20dp"
                     android:id="@+id/basic_spell_creation"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
@@ -39,6 +41,8 @@
                 android:layout_height="match_parent">
 
                 <TextView
+                    android:fontFamily="cursive"
+                    android:textSize="20dp"
                     android:id="@+id/fire_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
@@ -46,6 +50,8 @@
                     android:textColor="@android:color/holo_red_dark"/>
 
                 <TextView
+                    android:fontFamily="cursive"
+                    android:textSize="20dp"
                     android:id="@+id/water_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
@@ -53,6 +59,8 @@
                     android:textColor="@android:color/holo_red_dark"/>
 
                 <TextView
+                    android:fontFamily="cursive"
+                    android:textSize="20dp"
                     android:id="@+id/air_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
@@ -60,6 +68,8 @@
                     android:textColor="@android:color/holo_red_dark"/>
 
                 <TextView
+                    android:fontFamily="cursive"
+                    android:textSize="20dp"
                     android:id="@+id/earth_mage"
                     android:layout_width="150dp"
                     android:layout_height="wrap_content"
@@ -79,6 +89,7 @@
 
     <Button
         android:id="@+id/back_button4"
+        android:fontFamily="cursive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="back"

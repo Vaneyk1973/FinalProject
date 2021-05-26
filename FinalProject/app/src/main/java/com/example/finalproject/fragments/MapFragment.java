@@ -50,7 +50,6 @@ public class MapFragment extends Fragment {
             public void onClick(View v) {
                 Pair<Integer, Integer> coords= find_title_coords((ImageView)v, visible_map),
                 player_coords=MainActivity.player.getCoordinates();
-                StatusBarFragment.update();
                 if (!MainActivity.player.getCoordinates().equals(coords)&&MainActivity.map[coords.first][coords.second].getType()!=0)
                 {
                     int dx=coords.first-player_coords.first,
@@ -148,6 +147,7 @@ public class MapFragment extends Fragment {
                         Log.d("KKJ", String.valueOf(MainActivity.player.getEnemy().getName()));
                     }
                 }
+                StatusBarFragment.update();
             }
         };
         for (int i=0;i<5;i++) {

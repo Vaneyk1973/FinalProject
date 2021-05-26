@@ -58,29 +58,19 @@ public class FightFragment extends Fragment {
         ImageView player_image = (ImageView) getView().findViewById(R.id.player);
         ImageView enemy_image = (ImageView) getView().findViewById(R.id.enemy);
 
-        ProgressBar your_health = getView().findViewById(R.id.your_health),
-                your_mana = getView().findViewById(R.id.your_mana),
-                enemy_health = getView().findViewById(R.id.enemy_health),
-                enemy_mana = getView().findViewById(R.id.enemy_mana);
-
-        your_health.setMax(MainActivity.player.getMax_health());
-        your_health.setProgress(MainActivity.player.getHealth());
-        your_mana.setMax(MainActivity.player.getMax_mana());
-        your_mana.setProgress(MainActivity.player.getMana());
-
-        enemy_health.setMax(MainActivity.player.getEnemy().getMax_health());
-        enemy_health.setProgress(MainActivity.player.getEnemy().getHealth());
-        enemy_mana.setMax(MainActivity.player.getEnemy().getMax_mana());
-        enemy_mana.setProgress(MainActivity.player.getEnemy().getMana());
+        TextView your_health=getView().findViewById(R.id.your_health),
+                your_mana=getView().findViewById(R.id.your_mana),
+                enemy_health=getView().findViewById(R.id.enemy_health),
+                enemy_mana=getView().findViewById(R.id.enemy_mana);
 
         Bitmap bm = Bitmap.createBitmap(width / 4, width / 4, Bitmap.Config.ARGB_8888);
         bm.eraseColor(Color.GREEN);
-        player_image.setImageBitmap(Bitmap.createBitmap(bm));
+        player_image.setImageBitmap(MainActivity.b[5][5]);
         enemy_image.setImageBitmap(MainActivity.player.getEnemy().getTexture());
-        your_health.setProgressTintList(ColorStateList.valueOf(Color.RED));
-        your_mana.setProgressTintList(ColorStateList.valueOf(Color.BLUE));
-        enemy_health.setProgressTintList(ColorStateList.valueOf(Color.RED));
-        enemy_mana.setProgressTintList(ColorStateList.valueOf(Color.BLUE));
+        your_health.setText(MainActivity.player.getHealth()+"/"+MainActivity.player.getMax_health());
+        your_mana.setText(MainActivity.player.getMana()+"/"+MainActivity.player.getMax_mana());
+        enemy_health.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
+        enemy_mana.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
         attack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -89,9 +79,10 @@ public class FightFragment extends Fragment {
                 MainActivity.player.attack();
                 MainActivity.player.getEnemy().fight();
                 Log.d("KK", MainActivity.player.getEnemy().getName());
-                enemy_health.setProgress(MainActivity.player.getEnemy().getHealth());
-                your_health.setProgress(MainActivity.player.getHealth());
-                your_mana.setProgress(MainActivity.player.getMana());
+                your_health.setText(MainActivity.player.getHealth()+"/"+MainActivity.player.getMax_health());
+                your_mana.setText(MainActivity.player.getMana()+"/"+MainActivity.player.getMax_mana());
+                enemy_health.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
+                enemy_mana.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
                 if (MainActivity.player.getEnemy().getHealth() <= 0) {
                     MainActivity.player.take_drop();
                     FragmentManager fm = getParentFragmentManager();
@@ -165,13 +156,14 @@ public class FightFragment extends Fragment {
                     ((RecyclerView) getView().findViewById(R.id.avaliable_spells)).setAdapter(new SpellsAdapter(new ArrayList<>()));
                     MainActivity.player.cast_spell();
                     MainActivity.player.getEnemy().attack(MainActivity.player);
-                    ProgressBar your_health = getView().findViewById(R.id.your_health),
-                            your_mana = getView().findViewById(R.id.your_mana),
-                            enemy_health = getView().findViewById(R.id.enemy_health),
-                            enemy_mana = getView().findViewById(R.id.enemy_mana);
-                    enemy_health.setProgress(MainActivity.player.getEnemy().getHealth());
-                    your_health.setProgress(MainActivity.player.getHealth());
-                    your_mana.setProgress(MainActivity.player.getMana());
+                    TextView your_health=getView().findViewById(R.id.your_health),
+                            your_mana=getView().findViewById(R.id.your_mana),
+                            enemy_health=getView().findViewById(R.id.enemy_health),
+                            enemy_mana=getView().findViewById(R.id.enemy_mana);
+                    your_health.setText(MainActivity.player.getHealth()+"/"+MainActivity.player.getMax_health());
+                    your_mana.setText(MainActivity.player.getMana()+"/"+MainActivity.player.getMax_mana());
+                    enemy_health.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
+                    enemy_mana.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
                     if (MainActivity.player.getEnemy().getHealth() <= 0) {
                         MainActivity.player.take_drop();
                         FragmentManager fm = getParentFragmentManager();

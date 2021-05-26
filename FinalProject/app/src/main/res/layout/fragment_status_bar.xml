@@ -7,7 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".fragments.StatusBarFragment">
 
-
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="wrap_content"
@@ -20,101 +19,91 @@
         app:layout_constraintVertical_bias="0.0"
         tools:src="@tools:sample/avatars" />
 
-    <ProgressBar
-        android:id="@+id/mana_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@+id/mana"
-        app:layout_constraintTop_toBottomOf="@+id/health_bar" />
-
-    <ProgressBar
-        android:id="@+id/health_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintStart_toEndOf="@+id/health"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <TextView
-        android:id="@+id/health"
-        android:layout_width="75dp"
-        android:layout_height="20dp"
-        android:text="Health"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/avatar"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/mana"
-        android:layout_width="75dp"
-        android:layout_height="20dp"
-        android:text="Mana"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/avatar"
-        app:layout_constraintTop_toBottomOf="@+id/health" />
-
-    <TextView
-        android:id="@+id/experience_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginStart="8dp"
-        android:text="0/100"
-        app:layout_constraintStart_toEndOf="@+id/experience"
-        app:layout_constraintTop_toBottomOf="@+id/mana_bar" />
-
-    <TextView
-        android:id="@+id/experience"
-        android:layout_width="75dp"
-        android:layout_height="20dp"
-        android:text="Experience"
-        app:layout_constraintStart_toEndOf="@+id/avatar"
-        app:layout_constraintTop_toBottomOf="@+id/mana" />
-
-    <TextView
+        android:fontFamily="cursive"
         android:id="@+id/level"
-        android:layout_width="75dp"
-        android:layout_height="20dp"
-        android:text="Level"
-        app:layout_constraintStart_toEndOf="@+id/avatar"
-        app:layout_constraintTop_toBottomOf="@+id/experience" />
-
-    <TextView
-        android:id="@+id/level_value"
+        android:background="@color/teal_700"
+        android:textColor="@color/green"
         android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="wrap_content"
+        android:textSize="36dp"
         android:text="0"
-        app:layout_constraintStart_toEndOf="@+id/level"
-        app:layout_constraintTop_toBottomOf="@+id/experience_amount" />
-
-    <TextView
-        android:id="@+id/gold_amount"
-        android:layout_width="wrap_content"
-        android:layout_height="20dp"
-        android:layout_marginStart="8dp"
-        android:text="0"
-        app:layout_constraintStart_toEndOf="@+id/gold"
-        app:layout_constraintTop_toBottomOf="@+id/level_value" />
-
-    <TextView
-        android:id="@+id/gold"
-        android:layout_width="75dp"
-        android:layout_height="20dp"
-        android:text="Gold"
-        app:layout_constraintStart_toEndOf="@+id/avatar"
-        app:layout_constraintTop_toBottomOf="@+id/level" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:fontFamily="cursive"
         android:id="@+id/chat_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Chat"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+
+    <TextView
+        android:id="@+id/health"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="cursive"
+        android:text="0/0"
+        app:layout_constraintStart_toEndOf="@+id/health_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/health_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/alert_dark_frame"
+        app:layout_constraintStart_toEndOf="@+id/avatar"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/mana_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/alert_dark_frame"
+        app:layout_constraintStart_toEndOf="@+id/avatar"
+        app:layout_constraintTop_toBottomOf="@+id/health_image" />
+
+    <ImageView
+        android:id="@+id/gold_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@android:drawable/alert_dark_frame"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/avatar" />
+
+    <TextView
+        android:id="@+id/mana"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:fontFamily="cursive"
+        android:text="0/0"
+        app:layout_constraintStart_toEndOf="@+id/mana_image"
+        app:layout_constraintTop_toBottomOf="@+id/health" />
+
+    <TextView
+        android:id="@+id/gold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="cursive"
+        android:text="0"
+        app:layout_constraintStart_toEndOf="@+id/gold_image"
+        app:layout_constraintTop_toBottomOf="@+id/avatar" />
+
+    <FrameLayout
+        android:id="@+id/chat_mini"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/gold_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
