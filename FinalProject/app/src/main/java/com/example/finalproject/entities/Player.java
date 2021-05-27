@@ -25,10 +25,10 @@ public class Player extends Entity implements Parcelable {
     private int gold, research_points;
     private boolean registered, chat_mode;
     private User user;
-    private ArrayList<Integer> element_bonuses=new ArrayList<>();
-    private ArrayList<Item> equipment=new ArrayList<>();
-    private ArrayList<Item> inventory=new ArrayList<>();
-    private ArrayList<Spell> spells=new ArrayList<>();
+    private ArrayList<Integer> element_bonuses = new ArrayList<>();
+    private ArrayList<Item> equipment = new ArrayList<>();
+    private ArrayList<Item> inventory = new ArrayList<>();
+    private ArrayList<Spell> spells = new ArrayList<>();
     private Pair<Integer, Integer> coordinates;
     private Spell chosen_spell;
     private Bitmap title_texture;
@@ -68,22 +68,22 @@ public class Player extends Entity implements Parcelable {
         super(in);
         gold = in.readInt();
         research_points = in.readInt();
-        element_bonuses=new ArrayList<> ((ArrayList<Integer>) in.readSerializable());
-        coordinates=new Pair<>(in.readInt(), in.readInt());
-        chosen_spell=new Spell((Spell)in.readSerializable());
-        equipment=new ArrayList<>((ArrayList)in.readSerializable());
-        inventory=new ArrayList<>((ArrayList)in.readSerializable());
-        spells=new ArrayList<>((ArrayList)in.readSerializable());
+        element_bonuses = new ArrayList<>((ArrayList<Integer>) in.readSerializable());
+        coordinates = new Pair<>(in.readInt(), in.readInt());
+        chosen_spell = new Spell((Spell) in.readSerializable());
+        equipment = new ArrayList<>((ArrayList) in.readSerializable());
+        inventory = new ArrayList<>((ArrayList) in.readSerializable());
+        spells = new ArrayList<>((ArrayList) in.readSerializable());
         title_texture = in.readParcelable(Bitmap.class.getClassLoader());
-        enemy=new Enemy(in.readParcelable(Enemy.class.getClassLoader()));
-        user=new Gson().fromJson(in.readString(), User.class);
+        enemy = new Enemy(in.readParcelable(Enemy.class.getClassLoader()));
+        user = new Gson().fromJson(in.readString(), User.class);
     }
 
     public Enemy getEnemy() {
         return enemy;
     }
 
-    public Player(int x, int y){
+    public Player(int x, int y) {
         setHealth_regen(3);
         setMana_regen(3);
         setDamage(10);
@@ -104,17 +104,19 @@ public class Player extends Entity implements Parcelable {
         equipment.add(null);
         equipment.add(null);
         equipment.add(null);
-        user=new User("", "");
-        chat_mode=true;
+        user = new User("", "");
+        user.log_out();
+        chat_mode = true;
+        registered = false;
     }
 
-    public void research(Research research){
-        if (research.isAvailable()&&research.getCost()<=research_points){
+    public void research(Research research) {
+        if (research.isAvailable() && research.getCost() <= research_points) {
             research.setResearched(true);
-            research_points-=research.getCost();
-            for (int i = 0; i< MainActivity.researches.size(); i++){
-                if (MainActivity.researches.get(i).getTier()>research.getTier()&&
-                        MainActivity.researches.get(i).getRequired_researches().contains(research)){
+            research_points -= research.getCost();
+            for (int i = 0; i < MainActivity.researches.size(); i++) {
+                if (MainActivity.researches.get(i).getTier() > research.getTier() &&
+                        MainActivity.researches.get(i).getRequired_researches().contains(research)) {
                     MainActivity.researches.get(i).enable();
                 }
             }
@@ -123,92 +125,90 @@ public class Player extends Entity implements Parcelable {
         }
     }
 
-    public void take_drop(){
-        for (int i=0;i<getEnemy().getDrop().size();i++){
-            if (new Random().nextInt(100)<=getEnemy().getDrop().get(i).second){
+    public void take_drop() {
+        for (int i = 0; i < getEnemy().getDrop().size(); i++) {
+            if (new Random().nextInt(100) <= getEnemy().getDrop().get(i).second) {
                 getInventory().add(getEnemy().getDrop().get(i).first);
             }
         }
-        setGold(getGold()+enemy.getGiven_gold());
+        setGold(getGold() + enemy.getGiven_gold());
         addExperience(enemy.getGiven_exp());
     }
 
-    public void cast_spell(){
+    public void cast_spell() {
         chosen_spell.affect(enemy);
     }
 
-    public void choose_spell(Spell spell){
-        chosen_spell=spell;
+    public void choose_spell(Spell spell) {
+        chosen_spell = spell;
     }
 
-    public void equip(Item item){
-        if (item.getClass()== Weapon.class)
-        {
+    public void equip(Item item) {
+        if (item.getClass() == Weapon.class) {
             equipment.set(0, item);
-            setDamage(getDamage()+((Weapon) item).getDamage());
-        }
-        else if (item.getClass()== Armor.class)
-        {
-            Armor item1=(Armor)item;
-            switch (item1.getType_of_armor()){
-                case 1:{
+            setDamage(getDamage() + ((Weapon) item).getDamage());
+        } else if (item.getClass() == Armor.class) {
+            Armor item1 = (Armor) item;
+            switch (item1.getType_of_armor()) {
+                case 1: {
                     equipment.set(1, item1);
-                    setArmor(getArmor()+ item1.getArmor());
+                    setArmor(getArmor() + item1.getArmor());
                     break;
                 }
-                case 2:{
+                case 2: {
                     equipment.set(2, item1);
-                    setArmor(getArmor()+ item1.getArmor());
+                    setArmor(getArmor() + item1.getArmor());
                     break;
                 }
-                case 3:{
+                case 3: {
                     equipment.set(3, item1);
-                    setArmor(getArmor()+ item1.getArmor());
+                    setArmor(getArmor() + item1.getArmor());
                     break;
                 }
-                case 4:{
+                case 4: {
                     equipment.set(4, item1);
-                    setArmor(getArmor()+ item1.getArmor());
+                    setArmor(getArmor() + item1.getArmor());
                     break;
                 }
-                case 5:{
+                case 5: {
                     equipment.set(5, item1);
-                    setArmor(getArmor()+ item1.getArmor());
+                    setArmor(getArmor() + item1.getArmor());
                     break;
                 }
             }
         }
     }
 
-    public void eat(Food food){
-        setHealth(getHealth()+ food.getHealth_recovery());
-        setMana(getMana()+ food.getMana_recovery());
-        if (getHealth()>getMax_health())
+    public void eat(Food food) {
+        setHealth(getHealth() + food.getHealth_recovery());
+        setMana(getMana() + food.getMana_recovery());
+        if (getHealth() > getMax_health())
             setHealth(getMax_health());
-        if (getMana()>getMax_mana())
+        if (getMana() > getMax_mana())
             setMana(getMax_mana());
     }
 
-    public void attack (){
+    public void attack() {
         getEnemy().take_damage(getDamage());
     }
 
-    public void level_up(){
-        if (getExperience()>=getExperience_to_next_level_required()) {
-            super.setLevel(this.getLevel()+1);
-            setExperience(getExperience()-getExperience_to_next_level_required());
-            setExperience_to_next_level_required(getLevel()*getLevel()*10);
-            research_points+=3;
-            setMana(getMana()*1.6);
-            setHealth(getHealth()*1.6);
-            setMana_regen(getMana_regen()*1.7);
-            setHealth_regen(getHealth()*1.7);
+    public void level_up() {
+        while (getExperience() >= getExperience_to_next_level_required()) {
+            super.setLevel(this.getLevel() + 1);
+            setExperience(getExperience() - getExperience_to_next_level_required());
+            setExperience_to_next_level_required(getLevel() * getLevel() * 10);
+            research_points += 3;
+            setMax_mana(getMana() * 1.6);
+            setMana(getMax_mana());
+            setMax_health(getMax_health() * 1.6);
+            setHealth(getMax_health());
+            setMana_regen(getMana_regen() * 1.7);
+            setHealth_regen(getHealth_regen() * 1.7);
         }
-
     }
 
-    public void addExperience(int exp){
-        setExperience(exp+getExperience());
+    public void addExperience(int exp) {
+        setExperience(exp + getExperience());
         level_up();
     }
 
@@ -281,7 +281,7 @@ public class Player extends Entity implements Parcelable {
     public String toString() {
         return "Player{" +
                 "gold=" + gold +
-                ", experience="+getExperience()+
+                ", experience=" + getExperience() +
                 ", research_points=" + research_points +
                 ", element_bonuses=" + element_bonuses +
                 ", coordinates=" + coordinates +

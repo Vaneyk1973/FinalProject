@@ -50,14 +50,14 @@ public class InventoryFragment extends Fragment {
         FragmentManager fm=getParentFragmentManager();
         FragmentTransaction fr=fm.beginTransaction();
         Bitmap bm = Bitmap.createScaledBitmap
-                (MainActivity.b[0][0], MainActivity.category_image_width, MainActivity.category_image_width, false);
+                (MainActivity.b[0][6], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.add(getView().findViewById(R.id.armor_weapons));
         categories.add(getView().findViewById(R.id.potions_food));
         categories.add(getView().findViewById(R.id.recourses));
         categories.add(getView().findViewById(R.id.other));
         categories.get(0).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[1][0], MainActivity.category_image_width, MainActivity.category_image_width, false);
+                (MainActivity.b[2][4], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.get(1).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
                 (MainActivity.b[2][0], MainActivity.category_image_width, MainActivity.category_image_width, false);

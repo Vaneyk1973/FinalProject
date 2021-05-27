@@ -66,13 +66,6 @@ public class ChatFragment extends Fragment {
                 fr.commit();
             }
         });
-        View.OnClickListener click=new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((EditText)v).setText("");
-                enter_message.setOnClickListener(null);
-            }
-        };
         Callback<ArrayList<Message>> f=new Callback<ArrayList<Message>>() {
             @Override
             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
@@ -91,7 +84,6 @@ public class ChatFragment extends Fragment {
         a.get_messages().enqueue(f);
         chat.setAdapter(new ChatAdapter(messages));
         chat.setLayoutManager(new LinearLayoutManager(getContext()));
-        enter_message.setOnClickListener(click);
         enter_message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
@@ -114,7 +106,6 @@ public class ChatFragment extends Fragment {
                     }
                 });
                 v.setText("");
-                enter_message.setOnClickListener(click);
                 return false;
             }
         });
@@ -124,7 +115,7 @@ public class ChatFragment extends Fragment {
                 a.log_out(MainActivity.player.getUser().getLogin()).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        MainActivity.player.getUser().log_in();
+                        MainActivity.player.getUser().log_out();
                         FragmentManager fm=getParentFragmentManager();
                         FragmentTransaction fr=fm.beginTransaction();
                         fr.remove(fm.findFragmentById(R.id.chat));

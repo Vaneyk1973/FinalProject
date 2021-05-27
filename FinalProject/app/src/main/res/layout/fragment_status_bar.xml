@@ -71,8 +71,18 @@
         android:id="@+id/gold_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
         android:src="@android:drawable/alert_dark_frame"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/avatar" />
+
+    <ImageView
+        android:id="@+id/exp_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:src="@android:drawable/alert_dark_frame"
+        app:layout_constraintStart_toEndOf="@+id/gold"
         app:layout_constraintTop_toBottomOf="@+id/avatar" />
 
     <TextView
@@ -105,5 +115,15 @@
         app:layout_constraintStart_toEndOf="@+id/avatar"
         app:layout_constraintTop_toTopOf="parent"
         tools:visibility="gone" />
+
+    <TextView
+        android:id="@+id/exp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:fontFamily="cursive"
+        android:text="0"
+        app:layout_constraintStart_toEndOf="@+id/exp_image"
+        app:layout_constraintTop_toBottomOf="@+id/avatar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

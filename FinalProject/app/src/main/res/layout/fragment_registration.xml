@@ -15,7 +15,7 @@
         android:ems="10"
         android:fontFamily="cursive"
         android:inputType="textPersonName"
-        android:text="Login"
+        android:hint="Login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back_button6" />
@@ -27,7 +27,7 @@
         android:ems="10"
         android:fontFamily="cursive"
         android:inputType="textPassword"
-        android:text="Password"
+        android:hint="Password"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
