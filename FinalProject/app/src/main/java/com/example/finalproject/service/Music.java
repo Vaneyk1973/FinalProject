@@ -8,7 +8,6 @@ import android.util.Log;
 
 public class Music {
     private MediaPlayer mPlayer;
-    private boolean paused = false;
 
     public Music(){}
 
@@ -17,7 +16,6 @@ public class Music {
             mPlayer.release();
             mPlayer = null;
         }
-        paused = false;
     }
 
     public void start(Context c, int track) {
@@ -29,7 +27,6 @@ public class Music {
                 start(c, track);
             }
         });
-        paused = false;
         mPlayer.start();
     }
 }

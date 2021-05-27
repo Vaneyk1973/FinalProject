@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
+import android.view.Window;
+import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
@@ -62,6 +64,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().hide();
         m=new Music();
         m.start(this, R.raw.main);
         setContentView(R.layout.activity_main);
@@ -121,9 +126,9 @@ public class MainActivity extends AppCompatActivity {
             avatar_width = width / 3;
             map_title_width = width * 100 / 500;
         } else {
-            map_title_width = height * 100 / 1000;
+            map_title_width = height * 100 / 900;
             menu_width = width / 4;
-            avatar_width = width / 5;
+            avatar_width = width / 4;
         }
         status_images_width=width/10;
         category_image_width=width/4;

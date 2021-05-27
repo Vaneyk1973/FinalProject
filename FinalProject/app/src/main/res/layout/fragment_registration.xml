@@ -8,62 +8,59 @@
     tools:context=".fragments.RegistrationFragment" >
 
     <EditText
-        android:fontFamily="cursive"
         android:id="@+id/login"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="128dp"
         android:ems="10"
+        android:fontFamily="cursive"
         android:inputType="textPersonName"
         android:text="Login"
-        app:layout_constraintBottom_toTopOf="@+id/password"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/back_button6" />
 
     <EditText
-        android:fontFamily="cursive"
         android:id="@+id/password"
-        android:inputType="textPassword"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:fontFamily="cursive"
+        android:inputType="textPassword"
         android:text="Password"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login" />
+        app:layout_constraintTop_toBottomOf="@+id/login"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:fontFamily="cursive"
         android:id="@+id/confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="cursive"
         android:text="Register"
-        app:layout_constraintBottom_toTopOf="@+id/password"
         app:layout_constraintEnd_toStartOf="@+id/log_in"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login" />
+        app:layout_constraintTop_toBottomOf="@+id/password" />
 
     <Button
-        android:fontFamily="cursive"
         android:id="@+id/back_button6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="cursive"
         android:text="Back"
-        app:layout_constraintBottom_toTopOf="@+id/login"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:fontFamily="cursive"
         android:id="@+id/log_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:fontFamily="cursive"
         android:text="Log in"
-        app:layout_constraintBottom_toTopOf="@+id/password"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/confirm"
-        app:layout_constraintTop_toBottomOf="@+id/login" />
+        app:layout_constraintTop_toBottomOf="@+id/password" />
 </androidx.constraintlayout.widget.ConstraintLayout>
