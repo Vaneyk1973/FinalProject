@@ -13,7 +13,7 @@ public interface A{
     Call<ArrayList<Message>> get_messages();
 
     @POST("/put_message")
-    Call<Message> put_message(@Query("message") String message);
+    Call<String> put_message(@Query("message") String message);
 
     @POST("/register")
     Call<String> register(@Query("login") String login, @Query("password") String password);

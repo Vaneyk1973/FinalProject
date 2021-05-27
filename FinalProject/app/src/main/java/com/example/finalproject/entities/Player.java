@@ -84,7 +84,8 @@ public class Player extends Entity implements Parcelable {
     }
 
     public Player(int x, int y){
-        setHealth_regen(1);
+        setHealth_regen(3);
+        setMana_regen(3);
         setDamage(10);
         setLevel(1);
         setExperience(0);

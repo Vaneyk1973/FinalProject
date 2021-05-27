@@ -86,27 +86,24 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<Boolean> call, Response<Boolean> response) {
                 if (response.body() != null) {
                     MainActivity.player.setRegistered(response.body());
-                    if (response.body()) {
-                        a.is_logged_in(MainActivity.player.getUser().getLogin()).enqueue(new Callback<Boolean>() {
-                            @Override
-                            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                                if (response.body())
-                                    MainActivity.player.getUser().log_in();
-                            }
-
-                            @Override
-                            public void onFailure(Call<Boolean> call, Throwable t) {
-                                Log.d("KKFF", t.toString());
-                            }
-                        });
-                    }
                 }
                 Log.d("KKKKKKKK", MainActivity.player.getUser().isLogged_in() + " " + MainActivity.player.isRegistered());
+            }
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
+                Log.d("KKPSS", t.toString());
+            }
+        });
+        a.is_logged_in(MainActivity.player.getUser().getLogin()).enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.body())
+                    MainActivity.player.getUser().log_in();
             }
 
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
-                Log.d("KKPSS", t.toString());
+                Log.d("KKFF", t.toString());
             }
         });
         player.setAvatar(Bitmap.createBitmap(b[5][5]));
@@ -276,6 +273,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        m.start(this, R.raw.main);
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
         player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         set_researches();
@@ -285,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
+        m.start(this, R.raw.main);
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
         player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         Log.d("KKR", player.toString());
@@ -293,6 +292,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onRestart() {
+        m.start(this, R.raw.main);
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
         player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         Log.d("KKRe", player.toString());
@@ -301,6 +301,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        m.stop();
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();
@@ -312,6 +313,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
+        m.stop();
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();
@@ -323,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
+        m.stop();
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();

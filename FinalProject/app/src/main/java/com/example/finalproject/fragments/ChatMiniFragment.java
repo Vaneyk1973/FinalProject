@@ -102,16 +102,16 @@ public class ChatMiniFragment extends Fragment {
                 m.message=v.getText().toString();
                 m.user=new Gson().toJson(MainActivity.player.getUser());
                 m.date=new Date();
-                Log.d("KKKR", m+"");
-                a.put_message(new Gson().toJson(m)).enqueue(new Callback<Message>() {
+                Log.d("KKKR", new Gson().toJson(m));
+                a.put_message(new Gson().toJson(m)).enqueue(new Callback<String>() {
                     @Override
-                    public void onResponse(Call<Message> call, Response<Message> response) {
-                        Log.d("KKR", response.body()+"");
+                    public void onResponse(Call<String> call, Response<String> response) {
+                        Log.d("KKR", response+"");
                         a.get_messages().enqueue(f);
                     }
 
                     @Override
-                    public void onFailure(Call<Message> call, Throwable t) {
+                    public void onFailure(Call<String> call, Throwable t) {
                         Log.d("KKE", t.toString());
                     }
                 });
