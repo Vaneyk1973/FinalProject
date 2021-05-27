@@ -12,8 +12,8 @@ import java.util.ArrayList;
 
 public class Enemy extends Entity implements Parcelable {
     private ArrayList<Pair<Item, Integer>> drop;
-    private int defence=0;
-    private boolean t=true;
+    private int defence = 0;
+    private boolean t = true;
     private Bitmap texture;
 
     public Enemy(String name, int health, int mana, int damage, int armor, int given_gold, int given_exp, ArrayList<Pair<Item, Integer>> drop, Bitmap b) {
@@ -30,7 +30,7 @@ public class Enemy extends Entity implements Parcelable {
         setTexture(b);
     }
 
-    public Enemy (Enemy enemy){
+    public Enemy(Enemy enemy) {
         setHealth_regen(enemy.getHealth_regen());
         setMana_regen(enemy.getMana_regen());
         setArmor(enemy.getArmor());
@@ -50,22 +50,21 @@ public class Enemy extends Entity implements Parcelable {
         setTexture(enemy.getTexture());
     }
 
-    public void attack (Player player){
+    public void attack(Player player) {
         player.take_damage(super.getDamage());
     }
 
-    public void fight(){
-        if (t){
+    public void fight() {
+        if (t) {
             attack(MainActivity.player);
-            t=false;
-        }
-        else {
+            t = false;
+        } else {
             defend();
-            t=true;
+            t = true;
         }
     }
 
-    public void defend(){
+    public void defend() {
 
     }
 
@@ -77,8 +76,8 @@ public class Enemy extends Entity implements Parcelable {
         this.drop = drop;
     }
 
-    public void be_affected_by_spell(Spell spell){
-        defence+=getResistances().get(spell)*spell.getDamage();
+    public void be_affected_by_spell(Spell spell) {
+        defence += getResistances().get(spell) * spell.getDamage();
     }
 
     public Bitmap getTexture() {

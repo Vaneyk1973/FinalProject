@@ -9,13 +9,14 @@ import com.example.finalproject.service.spell.Spell;
 import java.util.HashMap;
 
 public class Entity implements Parcelable {
-    private int level, experience,  power_level, experience_to_next_level_required,
+    private int level, experience, power_level, experience_to_next_level_required,
             damage, armor, given_exp, given_gold;
-    private double health, max_health, mana, max_mana,health_regen, mana_regen;
+    private double health, max_health, mana, max_mana, health_regen, mana_regen;
     private String name;
-    private HashMap<Spell, Double> resistances=new HashMap<>();
+    private HashMap<Spell, Double> resistances = new HashMap<>();
 
-    public Entity(){}
+    public Entity() {
+    }
 
     protected Entity(Parcel in) {
         level = in.readInt();
@@ -33,7 +34,7 @@ public class Entity implements Parcelable {
         given_exp = in.readInt();
         given_gold = in.readInt();
         name = in.readString();
-        resistances=new HashMap<>((HashMap<Spell, Double>) in.readBundle().getSerializable("resistances"));
+        resistances = new HashMap<>((HashMap<Spell, Double>) in.readBundle().getSerializable("resistances"));
     }
 
     public static final Creator<Entity> CREATOR = new Creator<Entity>() {
@@ -48,17 +49,17 @@ public class Entity implements Parcelable {
         }
     };
 
-    public void take_damage(int damage){
-        health-=damage;
+    public void take_damage(int damage) {
+        health -= damage;
     }
 
 
-    public void regenerate(){
-        setHealth(getHealth()+getHealth_regen());
-        setMana(getMana()+getMana_regen());
-        if (getMana()>getMax_mana())
+    public void regenerate() {
+        setHealth(getHealth() + getHealth_regen());
+        setMana(getMana() + getMana_regen());
+        if (getMana() > getMax_mana())
             setMana(getMax_mana());
-        if (getHealth()>getMax_health())
+        if (getHealth() > getMax_health())
             setHealth(getMax_health());
     }
 
@@ -212,7 +213,7 @@ public class Entity implements Parcelable {
         dest.writeInt(given_exp);
         dest.writeInt(given_gold);
         dest.writeString(name);
-        Bundle b=new Bundle();
+        Bundle b = new Bundle();
         b.putSerializable("resistances", resistances);
         dest.writeBundle(new Bundle(b));
     }

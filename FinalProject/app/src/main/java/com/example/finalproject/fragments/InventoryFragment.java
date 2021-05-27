@@ -44,11 +44,11 @@ public class InventoryFragment extends Fragment {
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
-        RecyclerView inventory=(RecyclerView)getView().findViewById(R.id.list);
-        ArrayList<ImageView> categories=new ArrayList<>();
-        Button back=(Button)getView().findViewById(R.id.back_button);
-        FragmentManager fm=getParentFragmentManager();
-        FragmentTransaction fr=fm.beginTransaction();
+        RecyclerView inventory = (RecyclerView) getView().findViewById(R.id.list);
+        ArrayList<ImageView> categories = new ArrayList<>();
+        Button back = (Button) getView().findViewById(R.id.back_button);
+        FragmentManager fm = getParentFragmentManager();
+        FragmentTransaction fr = fm.beginTransaction();
         Bitmap bm = Bitmap.createScaledBitmap
                 (MainActivity.b[0][6], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.add(getView().findViewById(R.id.armor_weapons));
@@ -72,7 +72,7 @@ public class InventoryFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction fragmentTransaction= fm.beginTransaction();
+                FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 fragmentTransaction.remove(fm.findFragmentById(R.id.inventory));
                 fragmentTransaction.add(R.id.map, new MapFragment());
                 fragmentTransaction.add(R.id.status, new StatusBarFragment());
@@ -82,18 +82,19 @@ public class InventoryFragment extends Fragment {
         });
     }
 
-    class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.InvenoryViewHolder>{
-        private final ArrayList<Item> data=new ArrayList<>();
+    class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.InvenoryViewHolder> {
+        private final ArrayList<Item> data = new ArrayList<>();
 
         public InventoryAdapter(ArrayList<Item> data) {
             this.data.addAll(data);
         }
 
-        public class InvenoryViewHolder extends RecyclerView.ViewHolder{
+        public class InvenoryViewHolder extends RecyclerView.ViewHolder {
             TextView name;
+
             public InvenoryViewHolder(@NonNull @NotNull View itemView) {
                 super(itemView);
-                name=(TextView) itemView.findViewById(R.id.textView);
+                name = (TextView) itemView.findViewById(R.id.textView);
             }
         }
 
@@ -101,7 +102,7 @@ public class InventoryFragment extends Fragment {
         @NotNull
         @Override
         public InventoryFragment.InventoryAdapter.InvenoryViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
-            View view=LayoutInflater.from(parent.getContext()).inflate(R.layout.inventory_item, parent, false);
+            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.inventory_item, parent, false);
             return new InvenoryViewHolder(view);
         }
 
@@ -111,13 +112,13 @@ public class InventoryFragment extends Fragment {
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentContainerView characteristics=getView().findViewById(R.id.characteristics);
-                    TextView name=(TextView)characteristics.findViewById(R.id.name_field);
-                    TextView category=(TextView)characteristics.findViewById(R.id.category_field);
-                    TextView cost=(TextView)characteristics.findViewById(R.id.cost_field);
+                    FragmentContainerView characteristics = getView().findViewById(R.id.characteristics);
+                    TextView name = (TextView) characteristics.findViewById(R.id.name_field);
+                    TextView category = (TextView) characteristics.findViewById(R.id.category_field);
+                    TextView cost = (TextView) characteristics.findViewById(R.id.cost_field);
                     name.setText(data.get(position).getName());
-                    category.setText(data.get(position).getCategory()+"");
-                    cost.setText(data.get(position).getCost()+"");
+                    category.setText(data.get(position).getCategory() + "");
+                    cost.setText(data.get(position).getCost() + "");
                 }
             });
         }

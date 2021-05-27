@@ -22,7 +22,6 @@ public class ItemCharacteristicsFragment extends Fragment {
     private Item item;
 
 
-
     @Nullable
     @org.jetbrains.annotations.Nullable
     @Override
@@ -35,7 +34,7 @@ public class ItemCharacteristicsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Bitmap bm = Bitmap.createScaledBitmap
                 (MainActivity.b[0][0], MainActivity.category_image_width, MainActivity.category_image_width, false);
-        ImageView imageView=(ImageView)(getView().findViewById(R.id.category_image));
+        ImageView imageView = (ImageView) (getView().findViewById(R.id.category_image));
         imageView.setImageBitmap(bm);
     }
 

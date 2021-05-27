@@ -45,20 +45,20 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Retrofit chat_server=new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).
+        Retrofit chat_server = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).
                 baseUrl("https://m5hw.herokuapp.com/").
                 build();
-        Button log_out=getView().findViewById(R.id.log_out);
-        A a=chat_server.create(A.class);
-        ArrayList<Message> messages=new ArrayList<>();
-        RecyclerView chat=getView().findViewById(R.id.chat_list);
-        EditText enter_message=getView().findViewById(R.id.message);
-        Button back=getView().findViewById(R.id.back_button_chat), register=getView().findViewById(R.id.log_out);
+        Button log_out = getView().findViewById(R.id.log_out);
+        A a = chat_server.create(A.class);
+        ArrayList<Message> messages = new ArrayList<>();
+        RecyclerView chat = getView().findViewById(R.id.chat_list);
+        EditText enter_message = getView().findViewById(R.id.message);
+        Button back = getView().findViewById(R.id.back_button_chat), register = getView().findViewById(R.id.log_out);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fm=getParentFragmentManager();
-                FragmentTransaction fr=fm.beginTransaction();
+                FragmentManager fm = getParentFragmentManager();
+                FragmentTransaction fr = fm.beginTransaction();
                 fr.add(R.id.map, new MapFragment());
                 fr.add(R.id.menu, new MenuFragment());
                 fr.add(R.id.status, new StatusBarFragment());
@@ -66,13 +66,13 @@ public class ChatFragment extends Fragment {
                 fr.commit();
             }
         });
-        Callback<ArrayList<Message>> f=new Callback<ArrayList<Message>>() {
+        Callback<ArrayList<Message>> f = new Callback<ArrayList<Message>>() {
             @Override
             public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
                 messages.clear();
                 messages.addAll(response.body());
                 chat.setAdapter(new ChatAdapter(messages));
-                chat.scrollToPosition(messages.size()-1);
+                chat.scrollToPosition(messages.size() - 1);
                 Log.d("KKU", messages.toString());
             }
 
@@ -88,15 +88,15 @@ public class ChatFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 Log.d("KKK", v.getText().toString());
-                Message m=new Message();
-                m.message=v.getText().toString();
-                m.user=new Gson().toJson(MainActivity.player.getUser());
-                m.date=new Date();
+                Message m = new Message();
+                m.message = v.getText().toString();
+                m.user = new Gson().toJson(MainActivity.player.getUser());
+                m.date = new Date();
                 Log.d("KKKR", new Gson().toJson(m));
                 a.put_message(new Gson().toJson(m)).enqueue(new Callback<String>() {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
-                        Log.d("KKR", response+"");
+                        Log.d("KKR", response + "");
                         a.get_messages().enqueue(f);
                     }
 
@@ -116,12 +116,12 @@ public class ChatFragment extends Fragment {
                     @Override
                     public void onResponse(Call<String> call, Response<String> response) {
                         MainActivity.player.getUser().log_out();
-                        FragmentManager fm=getParentFragmentManager();
-                        FragmentTransaction fr=fm.beginTransaction();
+                        FragmentManager fm = getParentFragmentManager();
+                        FragmentTransaction fr = fm.beginTransaction();
                         fr.remove(fm.findFragmentById(R.id.chat));
                         fr.add(R.id.registration, new RegistrationFragment());
                         fr.commit();
-                        Log.d("KKRE", response.body()+"");
+                        Log.d("KKRE", response.body() + "");
                     }
 
                     @Override
@@ -131,24 +131,25 @@ public class ChatFragment extends Fragment {
                 });
             }
         });
-        chat.scrollToPosition(messages.size()-1);
+        chat.scrollToPosition(messages.size() - 1);
     }
 
-    class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder>{
+    class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
         ArrayList<Message> data;
 
-        public ChatAdapter(ArrayList<Message> messages){
-            data=messages;
+        public ChatAdapter(ArrayList<Message> messages) {
+            data = messages;
         }
 
-        class ChatViewHolder extends RecyclerView.ViewHolder{
+        class ChatViewHolder extends RecyclerView.ViewHolder {
             TextView user, message, time;
+
             public ChatViewHolder(@NonNull @NotNull View itemView) {
                 super(itemView);
-                user=itemView.findViewById(R.id.user_list);
-                time=itemView.findViewById(R.id.time_list);
-                message=itemView.findViewById(R.id.message_list);
+                user = itemView.findViewById(R.id.user_list);
+                time = itemView.findViewById(R.id.time_list);
+                message = itemView.findViewById(R.id.message_list);
             }
         }
 
@@ -162,12 +163,12 @@ public class ChatFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ChatViewHolder holder, int position) {
             holder.message.setText(data.get(position).message);
-            long time=data.get(position).date.getTime()/1000/60;
+            long time = data.get(position).date.getTime() / 1000 / 60;
             String mins, hrs;
-            mins=time%60>=10?time%60+"":"0"+time%60;
-            time/=60;
-            hrs=(time%24+3)%24+"";
-            String date=hrs+":"+mins;
+            mins = time % 60 >= 10 ? time % 60 + "" : "0" + time % 60;
+            time /= 60;
+            hrs = (time % 24 + 3) % 24 + "";
+            String date = hrs + ":" + mins;
             holder.time.setText(date);
             holder.user.setText(new Gson().fromJson(data.get(position).user, User.class).getLogin());
         }

@@ -14,6 +14,7 @@ import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.finalproject.entities.Enemy;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static Player player;
     public static int menu_width, avatar_width, map_title_width, status_images_width, category_image_width;
+    public static boolean show_tutorial=true;
     public static HashMap<Integer, Integer> chances_of_fight = new HashMap<>();
     public static MapTitle[][] map = new MapTitle[32][32];
     public static Bitmap[] menu = new Bitmap[4];
@@ -73,9 +75,14 @@ public class MainActivity extends AppCompatActivity {
         display = getWindowManager().getDefaultDisplay();
         res = getResources();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.add(R.id.map, new MapFragment());
-        fragmentTransaction.add(R.id.status, new StatusBarFragment());
-        fragmentTransaction.add(R.id.menu, new MenuFragment());
+        if (show_tutorial){
+            fragmentTransaction.add(R.id.tutorial, new TutorialFragment());
+        }
+        else {
+            fragmentTransaction.add(R.id.map, new MapFragment());
+            fragmentTransaction.add(R.id.status, new StatusBarFragment());
+            fragmentTransaction.add(R.id.menu, new MenuFragment());
+        }
         fragmentTransaction.commit();
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
         player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);

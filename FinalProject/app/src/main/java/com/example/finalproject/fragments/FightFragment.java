@@ -58,19 +58,19 @@ public class FightFragment extends Fragment {
         ImageView player_image = (ImageView) getView().findViewById(R.id.player);
         ImageView enemy_image = (ImageView) getView().findViewById(R.id.enemy);
 
-        TextView your_health=getView().findViewById(R.id.your_health),
-                your_mana=getView().findViewById(R.id.your_mana),
-                enemy_health=getView().findViewById(R.id.enemy_health),
-                enemy_mana=getView().findViewById(R.id.enemy_mana);
+        TextView your_health = getView().findViewById(R.id.your_health),
+                your_mana = getView().findViewById(R.id.your_mana),
+                enemy_health = getView().findViewById(R.id.enemy_health),
+                enemy_mana = getView().findViewById(R.id.enemy_mana);
 
         Bitmap bm = Bitmap.createBitmap(width / 4, width / 4, Bitmap.Config.ARGB_8888);
         bm.eraseColor(Color.GREEN);
         player_image.setImageBitmap(MainActivity.b[5][5]);
         enemy_image.setImageBitmap(MainActivity.player.getEnemy().getTexture());
-        your_health.setText(MainActivity.player.getHealth()+"/"+MainActivity.player.getMax_health());
-        your_mana.setText(MainActivity.player.getMana()+"/"+MainActivity.player.getMax_mana());
-        enemy_health.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
-        enemy_mana.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
+        your_health.setText(MainActivity.player.getHealth() + "/" + MainActivity.player.getMax_health());
+        your_mana.setText(MainActivity.player.getMana() + "/" + MainActivity.player.getMax_mana());
+        enemy_health.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
+        enemy_mana.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
         attack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -81,8 +81,8 @@ public class FightFragment extends Fragment {
                 Log.d("KK", MainActivity.player.getEnemy().getName());
                 your_health.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMax_health()));
                 your_mana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMax_mana()));
-                enemy_health.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
-                enemy_mana.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
+                enemy_health.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
+                enemy_mana.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
                 if (MainActivity.player.getEnemy().getHealth() <= 0) {
                     MainActivity.player.take_drop();
                     FragmentManager fm = getParentFragmentManager();
@@ -94,8 +94,8 @@ public class FightFragment extends Fragment {
                     fragmentTransaction.commit();
                     MainActivity.m.start(getContext(), R.raw.main);
                 }
-                if (MainActivity.player.getHealth()<=0){
-                    MainActivity.player=new Player(2, 2);
+                if (MainActivity.player.getHealth() <= 0) {
+                    MainActivity.player = new Player(2, 2);
                     MainActivity.setInitialData();
                     Toast.makeText(getContext(), "You died \n All of your progress will be deleted \n Better luck this time", Toast.LENGTH_LONG).show();
                     FragmentManager fm = getParentFragmentManager();
@@ -156,14 +156,14 @@ public class FightFragment extends Fragment {
                     ((RecyclerView) getView().findViewById(R.id.avaliable_spells)).setAdapter(new SpellsAdapter(new ArrayList<>()));
                     MainActivity.player.cast_spell();
                     MainActivity.player.getEnemy().attack(MainActivity.player);
-                    TextView your_health=getView().findViewById(R.id.your_health),
-                            your_mana=getView().findViewById(R.id.your_mana),
-                            enemy_health=getView().findViewById(R.id.enemy_health),
-                            enemy_mana=getView().findViewById(R.id.enemy_mana);
-                    your_health.setText(MainActivity.player.getHealth()+"/"+MainActivity.player.getMax_health());
-                    your_mana.setText(MainActivity.player.getMana()+"/"+MainActivity.player.getMax_mana());
-                    enemy_health.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
-                    enemy_mana.setText(MainActivity.player.getEnemy().getHealth()+"/"+MainActivity.player.getEnemy().getMax_health());
+                    TextView your_health = getView().findViewById(R.id.your_health),
+                            your_mana = getView().findViewById(R.id.your_mana),
+                            enemy_health = getView().findViewById(R.id.enemy_health),
+                            enemy_mana = getView().findViewById(R.id.enemy_mana);
+                    your_health.setText(MainActivity.player.getHealth() + "/" + MainActivity.player.getMax_health());
+                    your_mana.setText(MainActivity.player.getMana() + "/" + MainActivity.player.getMax_mana());
+                    enemy_health.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
+                    enemy_mana.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
                     if (MainActivity.player.getEnemy().getHealth() <= 0) {
                         MainActivity.player.take_drop();
                         FragmentManager fm = getParentFragmentManager();
