@@ -8,10 +8,10 @@
 >
 
     <ImageView
-        android:id="@+id/other"
+        android:id="@+id/recourses"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toStartOf="@+id/recourses"
+        app:layout_constraintEnd_toStartOf="@+id/other"
         app:layout_constraintTop_toTopOf="parent"
         tools:src="@tools:sample/avatars" />
 
@@ -24,7 +24,7 @@
         tools:src="@tools:sample/avatars" />
 
     <ImageView
-        android:id="@+id/recourses"
+        android:id="@+id/other"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,7 +48,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/potions_food" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        app:icon="@drawable/sharp_arrow_back_black_18dp"
         android:fontFamily="cursive"
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
@@ -59,7 +60,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/characteristics" />
 
-    <androidx.fragment.app.FragmentContainerView
+    <FrameLayout
         android:id="@+id/characteristics"
         android:name="com.example.finalproject.fragments.ItemCharacteristicsFragment"
         android:layout_width="0dp"

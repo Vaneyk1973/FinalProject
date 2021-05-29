@@ -7,54 +7,64 @@
     android:layout_height="match_parent"
     tools:context=".fragments.SpellCreationFragment">
 
-    <ImageView
+    <Button
         android:id="@+id/mana_reservoir"
+        android:fontFamily="cursive"
+        android:textSize="12sp"
+        android:text="Choose\nreservoir"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <Button
         android:id="@+id/mana_channel"
+        android:fontFamily="cursive"
+        android:textSize="12sp"
+        android:text="Choose\nchannel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <ImageView
+    <Button
         android:id="@+id/type"
+        android:fontFamily="cursive"
+        android:textSize="12sp"
+        android:text="Choose\ntype"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
+    <Button
         android:id="@+id/form"
+        android:fontFamily="cursive"
+        android:textSize="12sp"
+        android:text="Choose\nform"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <ImageView
+    <Button
         android:id="@+id/element"
+        android:fontFamily="cursive"
+        android:textSize="12sp"
+        android:text="Choose\nelement"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:src="@tools:sample/avatars" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/spell_name"
-        android:fontFamily="cursive"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
+        android:fontFamily="cursive"
         android:inputType="textPersonName"
         android:text="Name"
         app:layout_constraintBottom_toTopOf="@+id/avaliable_components"
@@ -94,7 +104,8 @@
         app:layout_constraintStart_toEndOf="@+id/mana_channel"
         app:layout_constraintTop_toBottomOf="@id/spell_characteristics" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        app:icon="@drawable/sharp_arrow_back_black_18dp"
         android:fontFamily="cursive"
         android:id="@+id/back_button3"
         android:layout_width="wrap_content"

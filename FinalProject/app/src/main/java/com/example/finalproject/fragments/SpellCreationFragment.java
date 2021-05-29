@@ -90,16 +90,11 @@ public class SpellCreationFragment extends Fragment {
         });
         Bitmap bm=Bitmap.createBitmap(width/5, width/5, Bitmap.Config.ARGB_8888);
         bm.eraseColor(Color.YELLOW);
-        ImageView element_view=(ImageView)getView().findViewById(R.id.element);
-        element_view.setImageBitmap(bm);
-        ImageView mana_reservoir_view=(ImageView)getView().findViewById(R.id.mana_reservoir);
-        mana_reservoir_view.setImageBitmap(bm);
-        ImageView type_view=(ImageView)getView().findViewById(R.id.type);
-        type_view.setImageBitmap(bm);
-        ImageView mana_channel_view=(ImageView)getView().findViewById(R.id.mana_channel);
-        mana_channel_view.setImageBitmap(bm);
-        ImageView form_view=(ImageView)getView().findViewById(R.id.form);
-        form_view.setImageBitmap(bm);
+        Button element_view=(Button)getView().findViewById(R.id.element);
+        Button mana_reservoir_view=(Button)getView().findViewById(R.id.mana_reservoir);
+        Button type_view=(Button)getView().findViewById(R.id.type);
+        Button mana_channel_view=(Button)getView().findViewById(R.id.mana_channel);
+        Button form_view=(Button)getView().findViewById(R.id.form);
         RecyclerView comps=getView().findViewById(R.id.avaliable_components);
         comps.setLayoutManager(new LinearLayoutManager(getContext()));
         element_view.setOnClickListener(new View.OnClickListener() {
@@ -164,13 +159,13 @@ public class SpellCreationFragment extends Fragment {
         public void onBindViewHolder(@NonNull @NotNull SpellCreationFragment.SpellAdapter.ViewHolder holder, int position) {
             Class r=data.get(position).getClass();
             holder.comp.setText(String.valueOf(data.get(position).getName()));
-
             if (r.equals(Element.class)) {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         element=(Element)data.get(position);
-
+                        holder.comp.setBackgroundColor(Color.GREEN);
+                        holder.comp.setTextColor(Color.RED);
                     }
                 });
             }
@@ -179,6 +174,8 @@ public class SpellCreationFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         type=(Type)data.get(position);
+                        holder.comp.setBackgroundColor(Color.GREEN);
+                        holder.comp.setTextColor(Color.RED);
                     }
                 });
             }
@@ -187,6 +184,8 @@ public class SpellCreationFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         mana_reservoir=(ManaReservoir)data.get(position);
+                        holder.comp.setBackgroundColor(Color.GREEN);
+                        holder.comp.setTextColor(Color.RED);
                     }
                 });
             }
@@ -195,6 +194,8 @@ public class SpellCreationFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         mana_channel=(ManaChannel)data.get(position);
+                        holder.comp.setBackgroundColor(Color.GREEN);
+                        holder.comp.setTextColor(Color.RED);
                     }
                 });
             }
@@ -203,6 +204,8 @@ public class SpellCreationFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         form=(Form)data.get(position);
+                        holder.comp.setBackgroundColor(Color.GREEN);
+                        holder.comp.setTextColor(Color.RED);
                     }
                 });
             }

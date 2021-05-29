@@ -4,11 +4,13 @@ package com.example.finalproject.items;
 public class Armor extends Item {
     private final int armor, weight, type_of_armor;
 
-    public Armor(int armor, int weight, int type_of_armor, int rarity) {
+    public Armor(int cost, int armor, int weight, int type_of_armor, int rarity, String  name) {
+        super.setCost(cost);
         this.armor = armor;
         this.weight = weight;
         this.type_of_armor = type_of_armor;
         super.setRarity(rarity);
+        super.setName(name);
     }
 
     public int getArmor() {

@@ -50,7 +50,8 @@ public class Entity implements Parcelable {
     };
 
     public void take_damage(int damage) {
-        health -= damage;
+       damage=damage-armor<=0?0:damage-armor;
+       health-=damage;
     }
 
 

@@ -87,7 +87,8 @@
         </TableLayout>
     </HorizontalScrollView>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        app:icon="@drawable/sharp_arrow_back_black_18dp"
         android:id="@+id/back_button4"
         android:fontFamily="cursive"
         android:layout_width="wrap_content"

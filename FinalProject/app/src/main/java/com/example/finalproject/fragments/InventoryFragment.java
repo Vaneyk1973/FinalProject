@@ -14,6 +14,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.provider.ContactsContract;
+import android.util.Pair;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,9 +23,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalproject.items.Item;
 import com.example.finalproject.R;
+import com.google.android.material.button.MaterialButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -47,8 +51,12 @@ public class InventoryFragment extends Fragment {
         RecyclerView inventory = (RecyclerView) getView().findViewById(R.id.list);
         ArrayList<ImageView> categories = new ArrayList<>();
         Button back = (Button) getView().findViewById(R.id.back_button);
-        FragmentManager fm = getParentFragmentManager();
-        FragmentTransaction fr = fm.beginTransaction();
+        View.OnClickListener clickListener=new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                inventory.setAdapter(new InventoryAdapter(MainActivity.player.getInventory(), categories.indexOf(v)));
+            }
+        };
         Bitmap bm = Bitmap.createScaledBitmap
                 (MainActivity.b[0][6], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.add(getView().findViewById(R.id.armor_weapons));
@@ -57,21 +65,24 @@ public class InventoryFragment extends Fragment {
         categories.add(getView().findViewById(R.id.other));
         categories.get(0).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[2][4], MainActivity.category_image_width, MainActivity.category_image_width, false);
+                (MainActivity.b[1][6], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.get(1).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[2][0], MainActivity.category_image_width, MainActivity.category_image_width, false);
+                (MainActivity.b[2][6], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.get(2).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[3][0], MainActivity.category_image_width, MainActivity.category_image_width, false);
+                (MainActivity.b[3][6], MainActivity.category_image_width, MainActivity.category_image_width, false);
         categories.get(3).setImageBitmap(Bitmap.createBitmap(bm));
         inventory.setAdapter(new InventoryAdapter(MainActivity.player.getInventory()));
         inventory.setLayoutManager(new LinearLayoutManager(getContext()));
-        fr.add(R.id.characteristics, new ItemCharacteristicsFragment());
-        fr.commit();
+        categories.get(0).setOnClickListener(clickListener);
+        categories.get(1).setOnClickListener(clickListener);
+        categories.get(2).setOnClickListener(clickListener);
+        categories.get(3).setOnClickListener(clickListener);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FragmentManager fm=getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 fragmentTransaction.remove(fm.findFragmentById(R.id.inventory));
                 fragmentTransaction.add(R.id.map, new MapFragment());
@@ -83,9 +94,16 @@ public class InventoryFragment extends Fragment {
     }
 
     class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.InvenoryViewHolder> {
-        private final ArrayList<Item> data = new ArrayList<>();
+        private ArrayList<Pair<Item, Integer>> data = new ArrayList<>();
+        private final int category;
 
-        public InventoryAdapter(ArrayList<Item> data) {
+        public InventoryAdapter(ArrayList<Pair<Item, Integer>> data) {
+            this.data.addAll(data);
+            category=0;
+        }
+
+        public InventoryAdapter(ArrayList<Pair<Item, Integer>> data, int category) {
+            this.category=category;
             this.data.addAll(data);
         }
 
@@ -108,24 +126,37 @@ public class InventoryFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull InventoryFragment.InventoryAdapter.InvenoryViewHolder holder, int position) {
-            holder.name.setText(data.get(position).getName());
+            holder.name.setText(data.get(position).first.getName()+" "+data.get(position).second);
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    FragmentContainerView characteristics = getView().findViewById(R.id.characteristics);
-                    TextView name = (TextView) characteristics.findViewById(R.id.name_field);
-                    TextView category = (TextView) characteristics.findViewById(R.id.category_field);
-                    TextView cost = (TextView) characteristics.findViewById(R.id.cost_field);
-                    name.setText(data.get(position).getName());
-                    category.setText(data.get(position).getCategory() + "");
-                    cost.setText(data.get(position).getCost() + "");
+                    if (data.get(position).first.getCategory()==0){
+                        MainActivity.player.equip(data.get(position).first);
+                        Toast.makeText(getContext(), MainActivity.player.getArmor()+"", Toast.LENGTH_SHORT).show();
+                    }
+                    FragmentManager fm=getChildFragmentManager();
+                    FragmentTransaction fr=fm.beginTransaction();
+                    if (fm.findFragmentById(R.id.characteristics) != null)
+                        fr.remove(fm.findFragmentById(R.id.characteristics));
+                    fr.add(R.id.characteristics, new ItemCharacteristicsFragment(data.get(position).first));
+                    fr.commit();
                 }
             });
         }
 
         @Override
         public int getItemCount() {
-            return data.size();
+            if (category==-1)
+                return data.size();
+            else {
+                ArrayList<Pair<Item, Integer>> data1=new ArrayList<>();
+                for (int i=0;i<data.size();i++){
+                    if (data.get(i).first.getCategory()==category)
+                        data1.add(data.get(i));
+                }
+                data=new ArrayList<>(data1);
+                return data1.size();
+            }
         }
     }
 }

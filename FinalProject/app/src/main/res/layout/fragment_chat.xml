@@ -33,7 +33,8 @@
         app:layout_constraintStart_toStartOf="parent"
         android:textColor="@android:color/black"/>
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        app:icon="@drawable/sharp_arrow_back_black_24dp"
         android:id="@+id/back_button_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -43,7 +44,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        app:icon="@drawable/sharp_logout_black_24dp"
         android:id="@+id/log_out"
         android:fontFamily="cursive"
         android:layout_width="wrap_content"

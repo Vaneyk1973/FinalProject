@@ -31,7 +31,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        app:icon="@drawable/sharp_chat_black_24dp"
         android:id="@+id/chat_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -105,17 +106,6 @@
         app:layout_constraintStart_toEndOf="@+id/gold_image"
         app:layout_constraintTop_toBottomOf="@+id/avatar" />
 
-    <FrameLayout
-        android:id="@+id/chat_mini"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        app:layout_constraintBottom_toBottomOf="@+id/gold_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/avatar"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:visibility="gone" />
-
     <TextView
         android:id="@+id/exp"
         android:layout_width="wrap_content"
@@ -125,5 +115,16 @@
         android:text="0"
         app:layout_constraintStart_toEndOf="@+id/exp_image"
         app:layout_constraintTop_toBottomOf="@+id/avatar" />
+
+    <FrameLayout
+        android:id="@+id/chat_mini"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="@+id/gold_image"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/avatar"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

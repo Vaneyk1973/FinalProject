@@ -10,14 +10,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
-import android.view.Window;
 import android.view.WindowManager;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.finalproject.entities.Enemy;
+import com.example.finalproject.items.Armor;
 import com.example.finalproject.service.A;
 import com.example.finalproject.service.Music;
 import com.example.finalproject.service.Research;
@@ -58,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Form> forms = new ArrayList<>();
     public static ArrayList<ManaReservoir> mana_reservoirs = new ArrayList<>();
     public static ArrayList<Research> researches;
+    public static HashMap<Integer, String> categories=new HashMap<>();
     private static Display display;
     private static Resources res;
     public static Bitmap[][] b;
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         }
         status_images_width=width/10;
         category_image_width=width/4;
-        a = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.xxx), map_title_width * 10, map_title_width * 10, false);
+        a = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.textures), map_title_width * 10, map_title_width * 10, false);
         int n = 10, m = 10;
         b = new Bitmap[n][m];
         for (int i = 0; i < n; i++) {
@@ -215,14 +215,19 @@ public class MainActivity extends AppCompatActivity {
 
     private static void set_drop() {
         drop.put(0, new ArrayList<>());
-        drop.get(0).add(new Pair<>(new Item(2, "Rabbit's fur"), 70));
-        drop.get(0).add(new Pair<>(new Item(3, "Rabbit's leg"), 30));
+        drop.get(0).add(new Pair<>(new Item(2, 0, 2, "Rabbit's fur"), 70));
+        drop.get(0).add(new Pair<>(new Item(3, 0, 3,"Rabbit's leg"), 30));
         drop.put(1, new ArrayList<>());
-        drop.get(1).add(new Pair<>(new Item(5, "Dog's fur"), 100));
+        drop.get(1).add(new Pair<>(new Item(5, 0, 2,"Dog's fur"), 90));
+        drop.get(1).add(new Pair<>(new Item(30, 0, 2,"Dog's tooth"), 10));
         drop.put(2, new ArrayList<>());
+        drop.get(2).add(new Pair<>(new Item(15, 0, 2,"Wolf's fur"), 100));
         drop.put(3, new ArrayList<>());
+        drop.get(3).add(new Pair<>(new Item(20, 0, 2,"Fox's fur"), 100));
         drop.put(4, new ArrayList<>());
+        drop.get(4).add(new Pair<>(new Item(50, 0, 2,"Bear's fur"), 100));
         drop.put(5, new ArrayList<>());
+        drop.get(5).add(new Pair<>(new Armor(75, 15, 10, 1, 1, "Iron chestplate"), 50));
     }
 
     private static void set_enemies() {
@@ -276,6 +281,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected static void setInitialData() {
+        categories.put(0, "Armor/weapon");
+        categories.put(1, "Food/potions");
+        categories.put(2, "Resources");
+        categories.put(3, "Other");
         set_textures();
         set_researches();
         set_drop();

@@ -12,6 +12,7 @@ import com.example.finalproject.items.Armor;
 import com.example.finalproject.items.Food;
 import com.example.finalproject.items.Item;
 import com.example.finalproject.items.Weapon;
+import com.example.finalproject.service.A;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.User;
 import com.example.finalproject.service.spell.Spell;
@@ -27,7 +28,7 @@ public class Player extends Entity implements Parcelable {
     private User user;
     private ArrayList<Integer> element_bonuses = new ArrayList<>();
     private ArrayList<Item> equipment = new ArrayList<>();
-    private ArrayList<Item> inventory = new ArrayList<>();
+    private ArrayList<Pair<Item, Integer>> inventory = new ArrayList<>();
     private ArrayList<Spell> spells = new ArrayList<>();
     private Pair<Integer, Integer> coordinates;
     private Spell chosen_spell;
@@ -128,7 +129,14 @@ public class Player extends Entity implements Parcelable {
     public void take_drop() {
         for (int i = 0; i < getEnemy().getDrop().size(); i++) {
             if (new Random().nextInt(100) <= getEnemy().getDrop().get(i).second) {
-                getInventory().add(getEnemy().getDrop().get(i).first);
+                Item drop=getEnemy().getDrop().get(i).first;
+                if (contains(inventory, new Pair(drop, new Object()))){
+                    int a=get(inventory, drop);
+                    inventory.set(a, new Pair<>(drop, inventory.get(a).second+1));
+                }
+                else{
+                    inventory.add(new Pair<>(drop, 1));
+                }
             }
         }
         setGold(getGold() + enemy.getGiven_gold());
@@ -151,26 +159,36 @@ public class Player extends Entity implements Parcelable {
             Armor item1 = (Armor) item;
             switch (item1.getType_of_armor()) {
                 case 1: {
+                    if (equipment.get(((Armor) item).getType_of_armor())!=null)
+                        setArmor(getArmor()-((Armor)equipment.get(1)).getArmor());
                     equipment.set(1, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 2: {
+                    if (equipment.get(((Armor) item).getType_of_armor())!=null)
+                        setArmor(getArmor()-((Armor)equipment.get(2)).getArmor());
                     equipment.set(2, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 3: {
+                    if (equipment.get(((Armor) item).getType_of_armor())!=null)
+                        setArmor(getArmor()-((Armor)equipment.get(3)).getArmor());
                     equipment.set(3, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 4: {
+                    if (equipment.get(((Armor) item).getType_of_armor())!=null)
+                        setArmor(getArmor()-((Armor)equipment.get(4)).getArmor());
                     equipment.set(4, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 5: {
+                    if (equipment.get(((Armor) item).getType_of_armor())!=null)
+                        setArmor(getArmor()-((Armor)equipment.get(5)).getArmor());
                     equipment.set(5, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
@@ -212,11 +230,11 @@ public class Player extends Entity implements Parcelable {
         level_up();
     }
 
-    public ArrayList<Item> getInventory() {
+    public ArrayList<Pair<Item, Integer>> getInventory() {
         return inventory;
     }
 
-    public void setInventory(ArrayList<Item> inventory) {
+    public void setInventory(ArrayList<Pair<Item, Integer>> inventory) {
         this.inventory = inventory;
     }
 
@@ -329,5 +347,21 @@ public class Player extends Entity implements Parcelable {
 
     public void setAvatar(Bitmap avatar) {
         this.avatar = avatar;
+    }
+
+    private boolean contains(ArrayList<Pair<Item, Integer>> data, Pair element){
+        for (int i=0;i<data.size();i++){
+            if (data.get(i).first.equals(element.first))
+                return true;
+        }
+        return false;
+    }
+
+    private int get(ArrayList<Pair<Item, Integer>> data, Item element){
+        for (int i=0;i<data.size();i++){
+            if (data.get(i).first.equals(element))
+                return i;
+        }
+        return -1;
     }
 }

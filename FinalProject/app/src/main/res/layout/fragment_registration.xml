@@ -34,7 +34,8 @@
         app:layout_constraintTop_toBottomOf="@+id/login"
         app:layout_constraintVertical_bias="0.0" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        app:icon="@drawable/sharp_login_black_24dp"
         android:id="@+id/confirm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -44,7 +45,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        app:icon="@drawable/sharp_arrow_back_black_24dp"
         android:id="@+id/back_button6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -54,7 +56,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
+    <com.google.android.material.button.MaterialButton
+        app:icon="@drawable/sharp_login_black_24dp"
         android:id="@+id/log_in"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
