@@ -11,7 +11,7 @@
         android:id="@+id/spells_list"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/fragmentContainerView"
+        app:layout_constraintBottom_toTopOf="@+id/spells_char"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -27,8 +27,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainerView"
+    <FrameLayout
+        android:id="@+id/spells_char"
         android:name="com.example.finalproject.fragments.SpellCharacteristicsFragment"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

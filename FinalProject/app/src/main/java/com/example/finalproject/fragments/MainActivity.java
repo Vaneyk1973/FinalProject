@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         drop.put(4, new ArrayList<>());
         drop.get(4).add(new Pair<>(new Item(50, 0, 2,"Bear's fur"), 100));
         drop.put(5, new ArrayList<>());
-        drop.get(5).add(new Pair<>(new Armor(75, 15, 10, 1, 1, "Iron chestplate"), 50));
+        drop.get(5).add(new Pair<>(new Armor(75, 5, 10, 1, 1, "Iron chestplate"), 50));
     }
 
     private static void set_enemies() {
@@ -266,12 +266,12 @@ public class MainActivity extends AppCompatActivity {
 
     private static void set_magic() {
         elements.add(new Element("Pure mana", -1, 2, false));
-        elements.add(new Element("Fire", 0, 10, false));
-        elements.add(new Element("Water", 1, 5, false));
-        elements.add(new Element("Air", 2, 5, false));
-        elements.add(new Element("Earth", 3, 8, false));
-        elements.add(new Element("Life", 4, -5, false));
-        elements.add(new Element("Death", 5, 5, false));
+        elements.add(new Element("Fire", 1, 10, false));
+        elements.add(new Element("Water", 0, 5, false));
+        elements.add(new Element("Air", 3, 5, false));
+        elements.add(new Element("Earth", 2, 8, false));
+        elements.add(new Element("Life", 5, -5, false));
+        elements.add(new Element("Death", 4, 5, false));
         elements.add(new Element("Light", 6, 2, false));
         elements.add(new Element("Darkness", 7, 7, false));
         types.add(new Type("Self", 0, true));

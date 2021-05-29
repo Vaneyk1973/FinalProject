@@ -6,7 +6,6 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:fontFamily="cursive"
         android:textSize="20dp"
         android:id="@+id/message_list"
         android:layout_width="wrap_content"
@@ -20,7 +19,6 @@
         app:layout_constraintTop_toBottomOf="@+id/user_list" />
 
     <TextView
-        android:fontFamily="cursive"
         android:textSize="20dp"
         android:id="@+id/user_list"
         android:layout_width="wrap_content"
@@ -32,7 +30,6 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:fontFamily="cursive"
         android:textSize="20dp"
         android:id="@+id/time_list"
         android:layout_width="wrap_content"

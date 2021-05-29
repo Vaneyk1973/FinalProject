@@ -351,8 +351,11 @@ public class Player extends Entity implements Parcelable {
 
     private boolean contains(ArrayList<Pair<Item, Integer>> data, Pair element){
         for (int i=0;i<data.size();i++){
-            if (data.get(i).first.equals(element.first))
-                return true;
+            if (data.get(i).first!=null)
+            {
+                if (data.get(i).first.equals(element.first))
+                    return true;
+            }
         }
         return false;
     }

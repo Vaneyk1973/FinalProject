@@ -71,16 +71,12 @@ public class SpellsFragment extends Fragment {
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    ((TextView)(getView().findViewById(R.id.spell_name_char))).
-                            setText(spells.get(position).getName());
-                    ((TextView)(getView().findViewById(R.id.spell_type_char))).
-                            setText(spells.get(position).getType().getName());
-                    ((TextView)(getView().findViewById(R.id.spell_element_char))).
-                            setText(spells.get(position).getElement().getName());
-                    ((TextView)(getView().findViewById(R.id.spell_damage_char))).
-                            setText(String.valueOf(spells.get(position).getDamage()));
-                    ((TextView)(getView().findViewById(R.id.spell_mana_consumption_char))).
-                            setText(String.valueOf(spells.get(position).getMana_consumption()));
+                    FragmentManager fm=getChildFragmentManager();
+                    FragmentTransaction fr=fm.beginTransaction();
+                    if (fm.findFragmentById(R.id.spells_char)!=null)
+                        fr.remove(fm.findFragmentById(R.id.spells_char));
+                    fr.add(R.id.spells_char, new SpellCharacteristicsFragment(spells.get(position)));
+                    fr.commit();
                 }
             });
         }

@@ -163,9 +163,21 @@ public class SpellCreationFragment extends Fragment {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        FragmentManager fm=getChildFragmentManager();
+                        FragmentTransaction fr=fm.beginTransaction();
                         element=(Element)data.get(position);
-                        holder.comp.setBackgroundColor(Color.GREEN);
-                        holder.comp.setTextColor(Color.RED);
+                        if (fm.findFragmentById(R.id.spell_characteristics)!=null)
+                            fr.remove(fm.findFragmentById(R.id.spell_characteristics));
+                        fr.add(R.id.spell_characteristics,
+                                new SpellCharacteristicsFragment(
+                                        new Spell(element,
+                                                type,
+                                                form,
+                                                mana_channel,
+                                                mana_reservoir,
+                                                ((EditText)getView().findViewById(R.id.spell_name)).
+                                                        getText().toString())));
+                        fr.commit();
                     }
                 });
             }
@@ -173,9 +185,21 @@ public class SpellCreationFragment extends Fragment {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        FragmentManager fm=getChildFragmentManager();
+                        FragmentTransaction fr=fm.beginTransaction();
                         type=(Type)data.get(position);
-                        holder.comp.setBackgroundColor(Color.GREEN);
-                        holder.comp.setTextColor(Color.RED);
+                        if (fm.findFragmentById(R.id.spell_characteristics)!=null)
+                            fr.remove(fm.findFragmentById(R.id.spell_characteristics));
+                        fr.add(R.id.spell_characteristics,
+                                new SpellCharacteristicsFragment(
+                                        new Spell(element,
+                                                type,
+                                                form,
+                                                mana_channel,
+                                                mana_reservoir,
+                                                ((EditText)getView().findViewById(R.id.spell_name)).
+                                                        getText().toString())));
+                        fr.commit();
                     }
                 });
             }
@@ -183,9 +207,21 @@ public class SpellCreationFragment extends Fragment {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        FragmentManager fm=getChildFragmentManager();
+                        FragmentTransaction fr=fm.beginTransaction();
                         mana_reservoir=(ManaReservoir)data.get(position);
-                        holder.comp.setBackgroundColor(Color.GREEN);
-                        holder.comp.setTextColor(Color.RED);
+                        if (fm.findFragmentById(R.id.spell_characteristics)!=null)
+                            fr.remove(fm.findFragmentById(R.id.spell_characteristics));
+                        fr.add(R.id.spell_characteristics,
+                                new SpellCharacteristicsFragment(
+                                        new Spell(element,
+                                                type,
+                                                form,
+                                                mana_channel,
+                                                mana_reservoir,
+                                                ((EditText)getView().findViewById(R.id.spell_name)).
+                                                        getText().toString())));
+                        fr.commit();
                     }
                 });
             }
@@ -193,9 +229,21 @@ public class SpellCreationFragment extends Fragment {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        FragmentManager fm=getChildFragmentManager();
+                        FragmentTransaction fr=fm.beginTransaction();
                         mana_channel=(ManaChannel)data.get(position);
-                        holder.comp.setBackgroundColor(Color.GREEN);
-                        holder.comp.setTextColor(Color.RED);
+                        if (fm.findFragmentById(R.id.spell_characteristics)!=null)
+                            fr.remove(fm.findFragmentById(R.id.spell_characteristics));
+                        fr.add(R.id.spell_characteristics,
+                                new SpellCharacteristicsFragment(
+                                        new Spell(element,
+                                                type,
+                                                form,
+                                                mana_channel,
+                                                mana_reservoir,
+                                                ((EditText)getView().findViewById(R.id.spell_name)).
+                                                        getText().toString())));
+                        fr.commit();
                     }
                 });
             }
@@ -203,9 +251,21 @@ public class SpellCreationFragment extends Fragment {
                 holder.comp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        FragmentManager fm=getChildFragmentManager();
+                        FragmentTransaction fr=fm.beginTransaction();
                         form=(Form)data.get(position);
-                        holder.comp.setBackgroundColor(Color.GREEN);
-                        holder.comp.setTextColor(Color.RED);
+                        if (fm.findFragmentById(R.id.spell_characteristics)!=null)
+                            fr.remove(fm.findFragmentById(R.id.spell_characteristics));
+                        fr.add(R.id.spell_characteristics,
+                                new SpellCharacteristicsFragment(
+                                        new Spell(element,
+                                                type,
+                                                form,
+                                                mana_channel,
+                                                mana_reservoir,
+                                                ((EditText)getView().findViewById(R.id.spell_name)).
+                                                        getText().toString())));
+                        fr.commit();
                     }
                 });
             }

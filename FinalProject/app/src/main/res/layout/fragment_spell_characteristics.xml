@@ -16,52 +16,42 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:fontFamily="cursive"
-        android:textSize="20dp"
         android:id="@+id/textView6"
-        android:layout_width="125dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:fontFamily="cursive"
         android:text="Name:"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/element_picture"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:fontFamily="cursive"
-        android:textSize="20dp"
         android:id="@+id/textView7"
-        android:layout_width="125dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:fontFamily="cursive"
         android:text="Type:"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/element_picture"
         app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
     <TextView
-        android:fontFamily="cursive"
-        android:textSize="20dp"
-        android:id="@+id/textView8"
-        android:layout_width="125dp"
+        android:id="@+id/textView9"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:text="Element:"
+        android:fontFamily="cursive"
+        android:text="Damage:"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/element_picture"
         app:layout_constraintTop_toBottomOf="@+id/textView7" />
 
     <TextView
-        android:fontFamily="cursive"
-        android:textSize="20dp"
-        android:id="@+id/textView9"
-        android:layout_width="125dp"
-        android:layout_height="wrap_content"
-        android:text="Damage:"
-        app:layout_constraintStart_toEndOf="@+id/element_picture"
-        app:layout_constraintTop_toBottomOf="@+id/textView8" />
-
-    <TextView
-        android:fontFamily="cursive"
-        android:textSize="20dp"
         android:id="@+id/textView10"
-        android:layout_width="125dp"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:fontFamily="cursive"
         android:text="Mana consumption:"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/element_picture"
         app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
@@ -86,24 +76,14 @@
         app:layout_constraintTop_toBottomOf="@+id/spell_name_char" />
 
     <TextView
-        android:fontFamily="cursive"
-        android:id="@+id/spell_element_char"
-        android:textSize="20dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        app:layout_constraintStart_toEndOf="@+id/textView8"
-        app:layout_constraintTop_toBottomOf="@+id/spell_type_char" />
-
-    <TextView
-        android:fontFamily="cursive"
         android:id="@+id/spell_damage_char"
-        android:textSize="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
+        android:fontFamily="cursive"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/textView9"
-        app:layout_constraintTop_toBottomOf="@+id/spell_element_char" />
+        app:layout_constraintTop_toBottomOf="@+id/spell_type_char" />
 
     <TextView
         android:fontFamily="cursive"
