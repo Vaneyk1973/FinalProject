@@ -56,7 +56,8 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Type> types = new ArrayList<>();
     public static ArrayList<Form> forms = new ArrayList<>();
     public static ArrayList<ManaReservoir> mana_reservoirs = new ArrayList<>();
-    public static ArrayList<Research> researches;
+    public static ArrayList<Research> researches=new ArrayList<>();
+    public static ArrayList<String> researches1=new ArrayList<>();
     public static HashMap<Integer, String> categories=new HashMap<>();
     private static Display display;
     private static Resources res;
@@ -75,19 +76,11 @@ public class MainActivity extends AppCompatActivity {
         display = getWindowManager().getDefaultDisplay();
         res = getResources();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (show_tutorial){
-            fragmentTransaction.add(R.id.tutorial, new TutorialFragment());
-        }
-        else {
-            fragmentTransaction.add(R.id.map, new MapFragment());
-            fragmentTransaction.add(R.id.status, new StatusBarFragment());
-            fragmentTransaction.add(R.id.menu, new MenuFragment());
-        }
         fragmentTransaction.commit();
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
         player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
+        show_tutorial=sh.getBoolean("Tutorial", true);
         setInitialData();
-        Log.d("KKC", player.toString());
         player.setTitle_texture(Bitmap.createBitmap(map[player.getCoordinates().first][player.getCoordinates().second].texture));
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://m5hw.herokuapp.com/").
                 addConverterFactory(GsonConverterFactory.create()).
@@ -119,6 +112,23 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         player.setAvatar(Bitmap.createBitmap(b[5][5]));
+        if (show_tutorial){
+            fragmentTransaction.add(R.id.tutorial, new TutorialFragment());
+        }
+        else {
+            fragmentTransaction.add(R.id.map, new MapFragment());
+            fragmentTransaction.add(R.id.status, new StatusBarFragment());
+            fragmentTransaction.add(R.id.menu, new MenuFragment());
+        }
+        researches.clear();
+        researches1=(ArrayList<String>)new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class);
+        if (researches1!=null){
+            for (int i=0;i<researches1.size();i++)
+                researches.add(new Gson().fromJson(researches1.get(i), Research.class));
+        }
+        else
+            set_researches();
+        Log.d("KKC", player.toString());
     }
 
     private static void set_textures() {
@@ -203,7 +213,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static void set_researches() {
-        researches = new ArrayList<>();
+        researches=new ArrayList<>();
+        researches1=new ArrayList<>();
         ArrayList<Research> rqr = new ArrayList<>();
         researches.add(new Research(null, "Basic spell creation", 1, 0, 0, false, true));
         rqr.add(researches.get(0));
@@ -211,6 +222,8 @@ public class MainActivity extends AppCompatActivity {
         researches.add(new Research((ArrayList<Research>) rqr.clone(), "Water mage", 3, 1, 2, false, false));
         researches.add(new Research((ArrayList<Research>) rqr.clone(), "Earth mage", 3, 1, 3, false, false));
         researches.add(new Research((ArrayList<Research>) rqr.clone(), "Air mage", 3, 1, 4, false, false));
+        for (int i=0;i<researches.size();i++)
+            researches1.add(new Gson().toJson(researches.get(i)));
     }
 
     private static void set_drop() {
@@ -291,35 +304,6 @@ public class MainActivity extends AppCompatActivity {
         set_enemies();
         set_magic();
     }
-
-    @Override
-    protected void onStart() {
-        m.start(this, R.raw.main);
-        SharedPreferences sh = getPreferences(MODE_PRIVATE);
-        player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
-        set_researches();
-        Log.d("KKSt", player.toString());
-        super.onStart();
-    }
-
-    @Override
-    protected void onResume() {
-        m.start(this, R.raw.main);
-        SharedPreferences sh = getPreferences(MODE_PRIVATE);
-        player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
-        Log.d("KKR", player.toString());
-        super.onResume();
-    }
-
-    @Override
-    protected void onRestart() {
-        m.start(this, R.raw.main);
-        SharedPreferences sh = getPreferences(MODE_PRIVATE);
-        player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
-        Log.d("KKRe", player.toString());
-        super.onRestart();
-    }
-
     @Override
     protected void onDestroy() {
         m.stop();
@@ -327,6 +311,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();
         ed.putString("Player", new Gson().toJson(player));
+        ed.putBoolean("Tutorial", show_tutorial);
+        ed.putString("Researches",new Gson().toJson(researches1));
         ed.apply();
         Log.d("KKD", player.toString());
         super.onDestroy();
@@ -339,6 +325,8 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();
         ed.putString("Player", new Gson().toJson(player));
+        ed.putBoolean("Tutorial", show_tutorial);
+        ed.putString("Researches",new Gson().toJson(researches1));
         ed.apply();
         Log.d("KKS", player.toString());
         super.onStop();
@@ -351,8 +339,13 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();
         ed.putString("Player", new Gson().toJson(player));
+        ed.putBoolean("Tutorial", show_tutorial);
+        ed.putString("Researches",new Gson().toJson(researches1));
         ed.apply();
         Log.d("KKP", player.toString());
+        Log.d("KKKLLL", new Gson().toJson(MainActivity.researches));
+        Log.d("KKKLL!", new Gson().toJson(MainActivity.researches1));
+        Log.d("KKKLLLLL", sh.getString("Researches", ""));
         super.onPause();
     }
 
@@ -388,6 +381,4 @@ public class MainActivity extends AppCompatActivity {
             this.type = type;
         }
     }
-
-
 }

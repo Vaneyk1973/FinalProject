@@ -41,12 +41,14 @@ public class Player extends Entity implements Parcelable {
         super.writeToParcel(dest, flags);
         dest.writeInt(gold);
         dest.writeInt(research_points);
+        dest.writeString(registered+"");
+        dest.writeString(chat_mode+"");
         dest.writeSerializable(element_bonuses);
         dest.writeInt(coordinates.first);
         dest.writeInt(coordinates.second);
         dest.writeSerializable(chosen_spell);
         dest.writeSerializable(equipment);
-        dest.writeSerializable(inventory);
+        dest.writeParcelable((Parcelable) inventory, flags);
         dest.writeSerializable(spells);
         dest.writeParcelable(title_texture, flags);
         dest.writeParcelable(enemy, flags);
@@ -69,11 +71,13 @@ public class Player extends Entity implements Parcelable {
         super(in);
         gold = in.readInt();
         research_points = in.readInt();
+        registered=new Boolean(in.readString());
+        chat_mode=new Boolean(in.readString());
         element_bonuses = new ArrayList<>((ArrayList<Integer>) in.readSerializable());
         coordinates = new Pair<>(in.readInt(), in.readInt());
         chosen_spell = new Spell((Spell) in.readSerializable());
         equipment = new ArrayList<>((ArrayList) in.readSerializable());
-        inventory = new ArrayList<>((ArrayList) in.readSerializable());
+        inventory = new ArrayList<>((ArrayList) in.readParcelable(ArrayList.class.getClassLoader()));
         spells = new ArrayList<>((ArrayList) in.readSerializable());
         title_texture = in.readParcelable(Bitmap.class.getClassLoader());
         enemy = new Enemy(in.readParcelable(Enemy.class.getClassLoader()));
@@ -349,11 +353,11 @@ public class Player extends Entity implements Parcelable {
         this.avatar = avatar;
     }
 
-    private boolean contains(ArrayList<Pair<Item, Integer>> data, Pair element){
+    private boolean contains(ArrayList<Pair<Item, Integer>> data, Pair<Item, Integer> element){
         for (int i=0;i<data.size();i++){
             if (data.get(i).first!=null)
             {
-                if (data.get(i).first.equals(element.first))
+                if (data.get(i).first.getName().equals(element.first.getName()))
                     return true;
             }
         }
@@ -362,7 +366,7 @@ public class Player extends Entity implements Parcelable {
 
     private int get(ArrayList<Pair<Item, Integer>> data, Item element){
         for (int i=0;i<data.size();i++){
-            if (data.get(i).first.equals(element))
+            if (data.get(i).first.getName().equals(element.getName()))
                 return i;
         }
         return -1;

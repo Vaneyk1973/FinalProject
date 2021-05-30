@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.example.finalproject.R;
 import com.example.finalproject.service.Research;
+import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -36,6 +37,8 @@ public class ResearchTreeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         research_hash_map=new HashMap<>();
         research_hash_map1=new HashMap<>();
+        Log.d("KKKLLL", new Gson().toJson(MainActivity.researches));
+        Log.d("KKKLL!", new Gson().toJson(MainActivity.researches1));
         research_hash_map.put(MainActivity.researches.get(0), (TextView) getView().findViewById(R.id.basic_spell_creation));
         research_hash_map.put(MainActivity.researches.get(1), (TextView) getView().findViewById(R.id.fire_mage));
         research_hash_map.put(MainActivity.researches.get(2), (TextView) getView().findViewById(R.id.water_mage));
@@ -50,11 +53,14 @@ public class ResearchTreeFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 MainActivity.player.research(research_hash_map1.get(v));
+                MainActivity.researches1.clear();
+                for (int i=0;i<MainActivity.researches.size();i++)
+                    MainActivity.researches1.add(new Gson().toJson(MainActivity.researches.get(i)));
+                Log.d("KKKLLL", new Gson().toJson(MainActivity.researches));
+                Log.d("KKKLL!", new Gson().toJson(MainActivity.researches1));
             }
         };
-        Log.d("KKTT", MainActivity.researches.size()+"");
         for (int i = 0; i < MainActivity.researches.size(); i++) {
-
             research_hash_map.get(MainActivity.researches.get(i)).setText(MainActivity.researches.get(i).getName());
             research_hash_map.get(MainActivity.researches.get(i)).setOnClickListener(n);
             if (MainActivity.researches.get(i).isResearched())

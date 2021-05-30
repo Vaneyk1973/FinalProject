@@ -132,7 +132,6 @@ public class InventoryFragment extends Fragment {
                 public void onClick(View v) {
                     if (data.get(position).first.getCategory()==0){
                         MainActivity.player.equip(data.get(position).first);
-                        Toast.makeText(getContext(), MainActivity.player.getArmor()+"", Toast.LENGTH_SHORT).show();
                     }
                     FragmentManager fm=getChildFragmentManager();
                     FragmentTransaction fr=fm.beginTransaction();

@@ -41,6 +41,7 @@ public class TutorialFragment extends Fragment {
         close_tutorial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity.show_tutorial=sw.isChecked();
                 FragmentManager fm=getParentFragmentManager();
                 FragmentTransaction fr=fm.beginTransaction();
                 fr.add(R.id.status, new StatusBarFragment());
