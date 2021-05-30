@@ -58,6 +58,7 @@ class MenuFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {}
 }
 
+
 class RegistrationFragment extends Fragment {
 
     @Override
@@ -231,5 +232,5 @@ class ChatAdapter extends RecyclerView.Adapter{
 class ViewHolder extends RecyclerView.ViewHolder{
     TextView user, message, time;
     public ViewHolder(@NonNull @NotNull View itemView) {}
-}
+    }
 @enduml

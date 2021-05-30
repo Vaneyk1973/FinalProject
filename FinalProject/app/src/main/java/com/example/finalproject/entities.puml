@@ -1,0 +1,92 @@
+@startuml
+'https://plantuml.com/class-diagram
+class Enemy extends Entity implements Parcelable {
+    private ArrayList<Pair<Item, Integer>> drop;
+    private int defence = 0;
+    private boolean t = true;
+    private Bitmap texture;
+
+    public Enemy(String name, int health, int mana, int damage, int armor, int given_gold, int given_exp, ArrayList<Pair<Item, Integer>> drop, Bitmap b) {}
+
+    public Enemy(Enemy enemy) {}
+
+    public void attack(Player player) {}
+
+    public void fight() {}
+
+    public void be_affected_by_spell(Spell spell) {}
+}
+
+class Entity implements Parcelable {
+    private int level, experience, power_level, experience_to_next_level_required,
+            damage, armor, given_exp, given_gold;
+    private double health, max_health, mana, max_mana, health_regen, mana_regen;
+    private String name;
+    private HashMap<Spell, Double> resistances = new HashMap<>();
+
+    public Entity() {}
+
+    protected Entity(Parcel in) {}
+
+    public static final Creator<Entity> CREATOR;
+
+    public void take_damage(int damage) {}
+
+    public void regenerate() {}
+
+    public int describeContents() {}
+
+    public void writeToParcel(Parcel dest, int flags) {}
+}
+
+class Player extends Entity implements Parcelable {
+
+    private int gold, research_points;
+    private boolean registered, chat_mode;
+    private User user;
+    private ArrayList<Integer> element_bonuses = new ArrayList<>();
+    private ArrayList<Item> equipment = new ArrayList<>();
+    private ArrayList<Pair<Item, Integer>> inventory = new ArrayList<>();
+    private ArrayList<Spell> spells = new ArrayList<>();
+    private Pair<Integer, Integer> coordinates;
+    private Spell chosen_spell;
+    private Bitmap title_texture;
+    private Bitmap avatar;
+    private Enemy enemy;
+
+    public void writeToParcel(Parcel dest, int flags) {}
+
+    public static final Creator<Player> CREATOR;
+
+    protected Player(Parcel in) {}
+
+    public Player(int x, int y) {}
+
+    public void research(Research research) {}
+
+    public void take_drop() {}
+
+    public void cast_spell() {}
+
+    public void choose_spell(Spell spell) {}
+
+    public void equip(Item item) {}
+
+    public void eat(Food food) {}
+
+    public void attack() {}
+
+    public void level_up() {}
+
+    public void addExperience(int exp) {}
+
+    public int describeContents() {}
+
+    public String toString() {}
+
+    private boolean contains(ArrayList<Pair<Item, Integer>> data, Pair<Item, Integer> element){}
+
+    private int get(ArrayList<Pair<Item, Integer>> data, Item element){}
+}
+
+@enduml

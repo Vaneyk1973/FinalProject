@@ -1,0 +1,44 @@
+@startuml
+'https://plantuml.com/class-diagram
+class Armor extends Item {
+    private final int armor, weight, type_of_armor;
+
+    public Armor(int cost, int armor, int weight, int type_of_armor, int rarity, String  name) {}
+}
+
+class Food extends Item {
+    private int mana_recovery, health_recovery, weight;
+
+    public Food(int mana_recovery, int health_recovery, int weight) {}
+}
+
+class Item{
+    private int cost, rarity, category;
+    private String name;
+
+    public Item(){}
+
+    public Item(String name){}
+
+    public Item(int cost, String name) {}
+
+    public Item(int cost, int rarity, String name) {}
+
+    public Item(int cost, int rarity, int category, String name) {}
+}
+
+class Potion extends Item {
+    public int lasting_time, strength, effect;
+
+    public Potion(int effect, String name) {}
+}
+
+class Resources extends Item {}
+
+class Weapon extends Item {
+    private int damage, type_of_damage, type_of_weapon;
+
+    public Weapon(int damage, int type_of_damage, int type_of_weapon, String name) {}
+}
+
+@enduml
