@@ -10,7 +10,7 @@ import retrofit2.http.Query;
 
 public interface A{
     @GET("/get_messages")
-    Call<ArrayList<Message>> get_messages();
+    Call<ArrayList<String>> get_messages();
 
     @POST("/put_message")
     Call<String> put_message(@Query("message") String message);

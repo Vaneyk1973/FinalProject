@@ -50,7 +50,7 @@ public class ChatFragment extends Fragment {
                 build();
         Button log_out = getView().findViewById(R.id.log_out);
         A a = chat_server.create(A.class);
-        ArrayList<Message> messages = new ArrayList<>();
+        ArrayList<String> messages = new ArrayList<>();
         RecyclerView chat = getView().findViewById(R.id.chat_list);
         EditText enter_message = getView().findViewById(R.id.message);
         Button back = getView().findViewById(R.id.back_button_chat), register = getView().findViewById(R.id.log_out);
@@ -66,9 +66,9 @@ public class ChatFragment extends Fragment {
                 fr.commit();
             }
         });
-        Callback<ArrayList<Message>> f = new Callback<ArrayList<Message>>() {
+        Callback<ArrayList<String>> f = new Callback<ArrayList<String>>() {
             @Override
-            public void onResponse(Call<ArrayList<Message>> call, Response<ArrayList<Message>> response) {
+            public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
                 messages.clear();
                 messages.addAll(response.body());
                 chat.setAdapter(new ChatAdapter(messages));
@@ -77,7 +77,7 @@ public class ChatFragment extends Fragment {
             }
 
             @Override
-            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<String>> call, Throwable t) {
                 Log.d("KKD", t.toString());
             }
         };
@@ -136,9 +136,9 @@ public class ChatFragment extends Fragment {
 
     class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
-        ArrayList<Message> data;
+        ArrayList<String> data;
 
-        public ChatAdapter(ArrayList<Message> messages) {
+        public ChatAdapter(ArrayList<String> messages) {
             data = messages;
         }
 
@@ -162,15 +162,15 @@ public class ChatFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ChatViewHolder holder, int position) {
-            holder.message.setText(data.get(position).message);
-            long time = data.get(position).date.getTime() / 1000 / 60;
+            holder.message.setText(new Gson().fromJson(data.get(position), Message.class).message);
+            long time = new Gson().fromJson(data.get(position), Message.class).date.getTime() / 1000 / 60;
             String mins, hrs;
             mins = time % 60 >= 10 ? time % 60 + "" : "0" + time % 60;
             time /= 60;
             hrs = (time % 24 + 3) % 24 + "";
             String date = hrs + ":" + mins;
             holder.time.setText(date);
-            holder.user.setText(new Gson().fromJson(data.get(position).user, User.class).getLogin());
+            holder.user.setText(new Gson().fromJson(new Gson().fromJson(data.get(position), Message.class).user, User.class).getLogin());
         }
 
         @Override
