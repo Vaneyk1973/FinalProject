@@ -2,6 +2,7 @@ package com.example.finalproject.service;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -14,6 +15,9 @@ public interface A{
 
     @POST("/put_message")
     Call<String> put_message(@Query("message") String message);
+
+    @GET("/is_new_message")
+    Call<Boolean> is_new_message(@Query("login") String login);
 
     @POST("/register")
     Call<String> register(@Query("login") String login, @Query("password") String password);

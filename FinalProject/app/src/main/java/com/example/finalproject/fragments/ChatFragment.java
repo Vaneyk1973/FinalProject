@@ -37,6 +37,9 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ChatFragment extends Fragment {
+    ArrayList<String> messages = new ArrayList<>();
+    RecyclerView chat;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_chat, container, false);
@@ -48,10 +51,9 @@ public class ChatFragment extends Fragment {
         Retrofit chat_server = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).
                 baseUrl("https://m5hw.herokuapp.com/").
                 build();
-        Button log_out = getView().findViewById(R.id.log_out);
         A a = chat_server.create(A.class);
-        ArrayList<String> messages = new ArrayList<>();
-        RecyclerView chat = getView().findViewById(R.id.chat_list);
+        Button log_out = getView().findViewById(R.id.log_out);
+        chat = getView().findViewById(R.id.chat_list);
         EditText enter_message = getView().findViewById(R.id.message);
         Button back = getView().findViewById(R.id.back_button_chat), register = getView().findViewById(R.id.log_out);
         back.setOnClickListener(new View.OnClickListener() {
@@ -132,6 +134,40 @@ public class ChatFragment extends Fragment {
             }
         });
         chat.scrollToPosition(messages.size() - 1);
+        class ChatUpdater implements Runnable {
+
+            @Override
+            public void run() {
+                boolean[] b = new boolean[1];
+                while (true) {
+                    a.is_new_message(MainActivity.player.getUser().getLogin()).enqueue(new Callback<Boolean>() {
+                        @Override
+                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                            b[0]=response.body();
+                            Log.d("KKGGG", b[0]+"");
+                        }
+
+                        @Override
+                        public void onFailure(Call<Boolean> call, Throwable t) {
+                            Log.d("KKTTT", t.toString());
+                        }
+                    });
+                    if (b[0]) {
+                        a.get_messages().enqueue(f);
+                        Log.d("KKJJ", "::");
+                    }
+                    synchronized (this) {
+                        try {
+                            wait(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                            Log.d("KKJJ", "::))");
+                        }
+                    }
+                }
+            }
+        }
+        new Thread(new ChatUpdater()).start();
     }
 
     class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
