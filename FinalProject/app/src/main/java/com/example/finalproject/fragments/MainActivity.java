@@ -305,6 +305,7 @@ public class MainActivity extends AppCompatActivity {
         set_enemies();
         set_magic();
     }
+
     @Override
     protected void onDestroy() {
         m.stop();
