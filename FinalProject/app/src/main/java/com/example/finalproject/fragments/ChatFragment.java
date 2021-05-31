@@ -39,6 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ChatFragment extends Fragment {
     ArrayList<String> messages = new ArrayList<>();
     RecyclerView chat;
+    Thread t;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -143,8 +144,8 @@ public class ChatFragment extends Fragment {
                     a.is_new_message(MainActivity.player.getUser().getLogin()).enqueue(new Callback<Boolean>() {
                         @Override
                         public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                            b[0]=response.body();
-                            Log.d("KKGGG", b[0]+"");
+                            b[0] = response.body();
+                            Log.d("KKGGG", b[0] + "");
                         }
 
                         @Override
@@ -158,7 +159,7 @@ public class ChatFragment extends Fragment {
                     }
                     synchronized (this) {
                         try {
-                            wait(100);
+                            wait(1000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                             Log.d("KKJJ", "::))");
@@ -167,7 +168,8 @@ public class ChatFragment extends Fragment {
                 }
             }
         }
-        new Thread(new ChatUpdater()).start();
+        t = new Thread(new ChatUpdater());
+        t.start();
     }
 
     class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
