@@ -136,7 +136,6 @@ public class ChatFragment extends Fragment {
         });
         chat.scrollToPosition(messages.size() - 1);
         class ChatUpdater implements Runnable {
-
             @Override
             public void run() {
                 boolean[] b = new boolean[1];

@@ -33,7 +33,6 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import okio.Utf8;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -106,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
                 if (response.body())
                     MainActivity.player.getUser().log_in();
             }
-
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
                 Log.d("KKFF", t.toString());
@@ -244,6 +242,10 @@ public class MainActivity extends AppCompatActivity {
         drop.get(5).add(new Pair<>(new Armor(75, 5, 10, 1, 1, "Iron chestplate"), 50));
     }
 
+
+    /**
+     *
+     */
     private static void set_enemies() {
         enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0), b[2][5]));
         enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1), b[4][5]));
@@ -279,15 +281,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static void set_magic() {
-        elements.add(new Element("Pure mana", 8, 2, false));
+        elements.add(new Element("Pure mana", 6, 2, false));
         elements.add(new Element("Fire", 1, 10, false));
         elements.add(new Element("Water", 0, 5, false));
         elements.add(new Element("Air", 3, 5, false));
         elements.add(new Element("Earth", 2, 8, false));
         elements.add(new Element("Life", 5, -5, false));
         elements.add(new Element("Death", 4, 5, false));
-        elements.add(new Element("Light", 6, 2, false));
-        elements.add(new Element("Darkness", 7, 7, false));
+/*        elements.add(new Element("Light", 6, 2, false));
+        elements.add(new Element("Darkness", 7, 7, false));*/
         types.add(new Type("Self", 0, true));
         forms.add(new Form("Sphere", 0, true));
         mana_reservoirs.add(new ManaReservoir("Basic", 1, true));

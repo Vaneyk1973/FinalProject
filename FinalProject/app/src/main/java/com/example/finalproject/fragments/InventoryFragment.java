@@ -126,7 +126,7 @@ public class InventoryFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull InventoryFragment.InventoryAdapter.InvenoryViewHolder holder, int position) {
-            holder.name.setText(data.get(position).first.getName()+" "+data.get(position).second);
+            holder.name.setText(">"+data.get(position).first.getName()+":"+data.get(position).second+"\n");
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
