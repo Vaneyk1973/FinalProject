@@ -31,13 +31,13 @@ public class TutorialFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Switch sw=getView().findViewById(R.id.show_tutorial);
-        sw.setChecked(true);
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 MainActivity.show_tutorial=sw.isChecked();
             }
         });
+        sw.setChecked(true);
         Button close_tutorial=getView().findViewById(R.id.close_tutorial);
         close_tutorial.setOnClickListener(new View.OnClickListener() {
             @Override

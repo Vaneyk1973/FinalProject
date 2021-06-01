@@ -309,6 +309,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        m.start(this, R.raw.main);
+    }
+
+    @Override
     protected void onDestroy() {
         m.stop();
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
