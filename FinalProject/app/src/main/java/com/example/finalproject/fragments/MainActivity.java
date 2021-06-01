@@ -279,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static void set_magic() {
-        elements.add(new Element("Pure mana", -1, 2, false));
+        elements.add(new Element("Pure mana", 8, 2, false));
         elements.add(new Element("Fire", 1, 10, false));
         elements.add(new Element("Water", 0, 5, false));
         elements.add(new Element("Air", 3, 5, false));
