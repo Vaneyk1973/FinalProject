@@ -78,11 +78,12 @@ public class ResearchTreeFragment extends Fragment {
                     MainActivity.mana_reservoirs1.add(new Gson().toJson(MainActivity.mana_reservoirs.get(i)));
                 Log.d("KKKLLL", new Gson().toJson(MainActivity.researches));
                 Log.d("KKKLL!", new Gson().toJson(MainActivity.researches1));
+                Log.d("KKKLLLLLL", MainActivity.player.getResearch_points()+"");
             }
         };
         for (int i = 0; i < MainActivity.researches.size(); i++) {
-            research_hash_map.get(MainActivity.researches.get(i)).setText(MainActivity.researches.get(i).getName()+
-                    " : " +MainActivity.researches.get(i).getCost());
+            research_hash_map.get(MainActivity.researches.get(i)).setText("\n"+MainActivity.researches.get(i).getName()+
+                    " : " +MainActivity.researches.get(i).getCost()+"\n");
             research_hash_map.get(MainActivity.researches.get(i)).setOnClickListener(n);
             if (MainActivity.researches.get(i).isResearched())
                 research_hash_map.get(MainActivity.researches.get(i)).setBackgroundColor(Color.GREEN);

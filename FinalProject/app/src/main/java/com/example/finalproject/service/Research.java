@@ -4,6 +4,7 @@ import com.example.finalproject.entities.Player;
 import com.example.finalproject.fragments.MainActivity;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class Research {
     private final ArrayList<Research> required_researches;
@@ -70,5 +71,18 @@ public class Research {
             if (effect==i)
                 MainActivity.elements.get(i).setAvailable();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Research research = (Research) o;
+        return Objects.equals(name, research.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

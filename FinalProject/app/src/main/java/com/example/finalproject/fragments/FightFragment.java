@@ -115,7 +115,6 @@ public class FightFragment extends Fragment {
                 int a = new Random().nextInt(100);
                 MainActivity.player.regenerate();
                 MainActivity.player.getEnemy().regenerate();
-                MainActivity.player.attack();
                 MainActivity.player.getEnemy().fight();
                 Log.d("KK", MainActivity.player.getEnemy().getName());
                 your_health.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMax_health()));
@@ -136,10 +135,6 @@ public class FightFragment extends Fragment {
         cast_spell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.player.regenerate();
-                MainActivity.player.getEnemy().regenerate();
-                MainActivity.player.attack();
-                MainActivity.player.getEnemy().fight();
                 Log.d("KK", MainActivity.player.getEnemy().getName());
                 your_health.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMax_health()));
                 your_mana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMax_mana()));
@@ -173,7 +168,9 @@ public class FightFragment extends Fragment {
                     MainActivity.player.choose_spell(data.get(position));
                     ((RecyclerView) getView().findViewById(R.id.avaliable_spells)).setAdapter(new SpellsAdapter(new ArrayList<>()));
                     MainActivity.player.cast_spell();
-                    MainActivity.player.getEnemy().attack(MainActivity.player);
+                    MainActivity.player.regenerate();
+                    MainActivity.player.getEnemy().regenerate();
+                    MainActivity.player.getEnemy().fight();
                     TextView your_health = getView().findViewById(R.id.your_health),
                             your_mana = getView().findViewById(R.id.your_mana),
                             enemy_health = getView().findViewById(R.id.enemy_health),
