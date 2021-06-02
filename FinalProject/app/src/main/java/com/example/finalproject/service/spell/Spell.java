@@ -1,6 +1,7 @@
 package com.example.finalproject.service.spell;
 
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.finalproject.entities.Enemy;
 import com.example.finalproject.fragments.MainActivity;
@@ -45,9 +46,6 @@ public class Spell implements Serializable {
         if (MainActivity.player.getMana()>=mana_consumption){
             consume_mana();
             enemy.take_damage(damage);
-        }
-        else {
-            Log.d("TTTTT", "Not enough mana");
         }
     }
 

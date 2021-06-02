@@ -1,10 +1,18 @@
 package com.example.finalproject.fragments;
 
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.Display;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,19 +22,8 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.example.finalproject.entities.Player;
 import com.example.finalproject.R;
+import com.example.finalproject.entities.Player;
 import com.example.finalproject.service.spell.Spell;
 
 import org.jetbrains.annotations.NotNull;
@@ -167,6 +164,8 @@ public class FightFragment extends Fragment {
                 public void onClick(View v) {
                     MainActivity.player.choose_spell(data.get(position));
                     ((RecyclerView) getView().findViewById(R.id.avaliable_spells)).setAdapter(new SpellsAdapter(new ArrayList<>()));
+                    if (MainActivity.player.getMana()<data.get(position).getMana_consumption())
+                        Toast.makeText(getContext(), "Not enough mana", Toast.LENGTH_SHORT).show();
                     MainActivity.player.cast_spell();
                     MainActivity.player.regenerate();
                     MainActivity.player.getEnemy().regenerate();
@@ -175,8 +174,8 @@ public class FightFragment extends Fragment {
                             your_mana = getView().findViewById(R.id.your_mana),
                             enemy_health = getView().findViewById(R.id.enemy_health),
                             enemy_mana = getView().findViewById(R.id.enemy_mana);
-                    your_health.setText(MainActivity.player.getHealth() + "/" + MainActivity.player.getMax_health());
-                    your_mana.setText(MainActivity.player.getMana() + "/" + MainActivity.player.getMax_mana());
+                    your_health.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMax_health()));
+                    your_mana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMax_mana()));
                     enemy_health.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
                     enemy_mana.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
                     if (MainActivity.player.getEnemy().getHealth() <= 0) {

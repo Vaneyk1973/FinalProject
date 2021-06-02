@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -224,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
         else {
             researches1 = new ArrayList<>();
             ArrayList<Research> rqr = new ArrayList<>();
-            researches.add(new Research(null, "Basic spell creation", 1, 0, 0, false, true));
+            researches.add(new Research(new ArrayList<Research>(), "Basic spell creation", 1, 0, 0, false, true));
             rqr.add(researches.get(0));
             researches.add(new Research((ArrayList<Research>) rqr.clone(), "Fire mage", 6, 1, 1, false, false));
             researches.add(new Research((ArrayList<Research>) rqr.clone(), "Water mage", 2, 1, 2, false, false));

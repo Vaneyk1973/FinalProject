@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 import android.util.Pair;
 
 import com.example.finalproject.fragments.MainActivity;
@@ -90,11 +91,11 @@ public class Player extends Entity implements Parcelable {
 
     public Player(int x, int y) {
         setHealth_regen(3);
-        setMana_regen(3);
+        setMana_regen(0.3);
         setDamage(10);
         setLevel(1);
         setExperience(0);
-        setHealth(100);
+        setHealth(50);
         setMana(10);
         setMax_health(getHealth());
         setMax_mana(getMana());
@@ -120,10 +121,7 @@ public class Player extends Entity implements Parcelable {
             research.setResearched(true);
             research_points -= research.getCost();
             for (int i = 0; i < MainActivity.researches.size(); i++) {
-                if (MainActivity.researches.get(i).getTier() > research.getTier() &&
-                        MainActivity.researches.get(i).getRequired_researches().contains(research)) {
-                    MainActivity.researches.get(i).enable();
-                }
+                MainActivity.researches.get(i).enable();
             }
             ResearchTreeFragment.research_hash_map.get(research).setBackgroundColor(Color.GREEN);
             research.affect(this);
@@ -148,6 +146,7 @@ public class Player extends Entity implements Parcelable {
 
     public void cast_spell() {
         chosen_spell.affect(enemy);
+        Log.d("KKKGGGG", chosen_spell.getMana_consumption()+" "+getMana()+" "+getMana_regen());
     }
 
     public void choose_spell(Spell spell) {

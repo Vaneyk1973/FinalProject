@@ -19,7 +19,7 @@ public class Research {
         this.tier = tier;
         this.researched = researched;
         this.available = available;
-        this.effect=effect;
+        this.effect = effect;
     }
 
     public boolean isResearched() {
@@ -34,7 +34,7 @@ public class Research {
         return available;
     }
 
-    public void setAvailable(boolean available) {
+    private void setAvailable(boolean available) {
         this.available = available;
     }
 
@@ -55,20 +55,21 @@ public class Research {
     }
 
     public void enable() {
-        for (int i=0;i<required_researches.size();i++){
-            if (!required_researches.get(i).isResearched())
-                return;
-        }
-        available=true;
+        if (required_researches != null)
+            for (int i = 0; i < required_researches.size(); i++) {
+                if (!MainActivity.researches.get(MainActivity.researches.indexOf(required_researches.get(i))).isResearched())
+                    return;
+            }
+        available = true;
     }
 
     public int getEffect() {
         return effect;
     }
 
-    public void affect(Player player){
-        for (int i=0;i<10;i++){
-            if (effect==i)
+    public void affect(Player player) {
+        for (int i = 0; i < 10; i++) {
+            if (effect == i)
                 MainActivity.elements.get(i).setAvailable();
         }
     }
