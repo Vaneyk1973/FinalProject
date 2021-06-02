@@ -49,19 +49,40 @@ public class ResearchTreeFragment extends Fragment {
         research_hash_map1.put((TextView) getView().findViewById(R.id.water_mage), MainActivity.researches.get(2));
         research_hash_map1.put((TextView) getView().findViewById(R.id.earth_mage), MainActivity.researches.get(3));
         research_hash_map1.put((TextView) getView().findViewById(R.id.air_mage), MainActivity.researches.get(4));
+        TextView rpa=getView().findViewById(R.id.research_points_amount);
+        rpa.setText("Your research points amount: "+
+                MainActivity.player.getResearch_points()+"");
         View.OnClickListener n = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainActivity.player.research(research_hash_map1.get(v));
+                rpa.setText("Your research points amount: "+
+                        MainActivity.player.getResearch_points()+"");
                 MainActivity.researches1.clear();
                 for (int i=0;i<MainActivity.researches.size();i++)
                     MainActivity.researches1.add(new Gson().toJson(MainActivity.researches.get(i)));
+                MainActivity.elements1.clear();
+                for (int i=0;i<MainActivity.elements.size();i++)
+                    MainActivity.elements1.add(new Gson().toJson(MainActivity.elements.get(i)));
+                MainActivity.forms1.clear();
+                for (int i=0;i<MainActivity.forms.size();i++)
+                    MainActivity.forms1.add(new Gson().toJson(MainActivity.forms.get(i)));
+                MainActivity.types1.clear();
+                for (int i=0;i<MainActivity.types.size();i++)
+                    MainActivity.types1.add(new Gson().toJson(MainActivity.types.get(i)));
+                MainActivity.mana_channels1.clear();
+                for (int i=0;i<MainActivity.mana_channels.size();i++)
+                    MainActivity.mana_channels1.add(new Gson().toJson(MainActivity.mana_channels.get(i)));
+                MainActivity.mana_reservoirs1.clear();
+                for (int i=0;i<MainActivity.mana_reservoirs.size();i++)
+                    MainActivity.mana_reservoirs1.add(new Gson().toJson(MainActivity.mana_reservoirs.get(i)));
                 Log.d("KKKLLL", new Gson().toJson(MainActivity.researches));
                 Log.d("KKKLL!", new Gson().toJson(MainActivity.researches1));
             }
         };
         for (int i = 0; i < MainActivity.researches.size(); i++) {
-            research_hash_map.get(MainActivity.researches.get(i)).setText(MainActivity.researches.get(i).getName());
+            research_hash_map.get(MainActivity.researches.get(i)).setText(MainActivity.researches.get(i).getName()+
+                    " : " +MainActivity.researches.get(i).getCost());
             research_hash_map.get(MainActivity.researches.get(i)).setOnClickListener(n);
             if (MainActivity.researches.get(i).isResearched())
                 research_hash_map.get(MainActivity.researches.get(i)).setBackgroundColor(Color.GREEN);

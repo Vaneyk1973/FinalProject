@@ -41,8 +41,8 @@ public class Player extends Entity implements Parcelable {
         super.writeToParcel(dest, flags);
         dest.writeInt(gold);
         dest.writeInt(research_points);
-        dest.writeString(registered+"");
-        dest.writeString(chat_mode+"");
+        dest.writeString(registered + "");
+        dest.writeString(chat_mode + "");
         dest.writeSerializable(element_bonuses);
         dest.writeInt(coordinates.first);
         dest.writeInt(coordinates.second);
@@ -71,8 +71,8 @@ public class Player extends Entity implements Parcelable {
         super(in);
         gold = in.readInt();
         research_points = in.readInt();
-        registered=new Boolean(in.readString());
-        chat_mode=new Boolean(in.readString());
+        registered = new Boolean(in.readString());
+        chat_mode = new Boolean(in.readString());
         element_bonuses = new ArrayList<>((ArrayList<Integer>) in.readSerializable());
         coordinates = new Pair<>(in.readInt(), in.readInt());
         chosen_spell = new Spell((Spell) in.readSerializable());
@@ -95,7 +95,7 @@ public class Player extends Entity implements Parcelable {
         setLevel(1);
         setExperience(0);
         setHealth(100);
-        setMana(100);
+        setMana(10);
         setMax_health(getHealth());
         setMax_mana(getMana());
         setPower_level(0);
@@ -116,7 +116,7 @@ public class Player extends Entity implements Parcelable {
     }
 
     public void research(Research research) {
-        if (research.isAvailable() && research.getCost() <= research_points) {
+        if (research.isAvailable() && !research.isResearched() && research.getCost() <= research_points) {
             research.setResearched(true);
             research_points -= research.getCost();
             for (int i = 0; i < MainActivity.researches.size(); i++) {
@@ -133,12 +133,11 @@ public class Player extends Entity implements Parcelable {
     public void take_drop() {
         for (int i = 0; i < getEnemy().getDrop().size(); i++) {
             if (new Random().nextInt(100) <= getEnemy().getDrop().get(i).second) {
-                Item drop=getEnemy().getDrop().get(i).first;
-                if (contains(inventory, new Pair(drop, new Object()))){
-                    int a=get(inventory, drop);
-                    inventory.set(a, new Pair<>(drop, inventory.get(a).second+1));
-                }
-                else{
+                Item drop = getEnemy().getDrop().get(i).first;
+                if (contains(inventory, new Pair(drop, new Object()))) {
+                    int a = get(inventory, drop);
+                    inventory.set(a, new Pair<>(drop, inventory.get(a).second + 1));
+                } else {
                     inventory.add(new Pair<>(drop, 1));
                 }
             }
@@ -163,36 +162,36 @@ public class Player extends Entity implements Parcelable {
             Armor item1 = (Armor) item;
             switch (item1.getType_of_armor()) {
                 case 1: {
-                    if (equipment.get(((Armor) item).getType_of_armor())!=null)
-                        setArmor(getArmor()-((Armor)equipment.get(1)).getArmor());
+                    if (equipment.get(((Armor) item).getType_of_armor()) != null)
+                        setArmor(getArmor() - ((Armor) equipment.get(1)).getArmor());
                     equipment.set(1, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 2: {
-                    if (equipment.get(((Armor) item).getType_of_armor())!=null)
-                        setArmor(getArmor()-((Armor)equipment.get(2)).getArmor());
+                    if (equipment.get(((Armor) item).getType_of_armor()) != null)
+                        setArmor(getArmor() - ((Armor) equipment.get(2)).getArmor());
                     equipment.set(2, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 3: {
-                    if (equipment.get(((Armor) item).getType_of_armor())!=null)
-                        setArmor(getArmor()-((Armor)equipment.get(3)).getArmor());
+                    if (equipment.get(((Armor) item).getType_of_armor()) != null)
+                        setArmor(getArmor() - ((Armor) equipment.get(3)).getArmor());
                     equipment.set(3, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 4: {
-                    if (equipment.get(((Armor) item).getType_of_armor())!=null)
-                        setArmor(getArmor()-((Armor)equipment.get(4)).getArmor());
+                    if (equipment.get(((Armor) item).getType_of_armor()) != null)
+                        setArmor(getArmor() - ((Armor) equipment.get(4)).getArmor());
                     equipment.set(4, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 5: {
-                    if (equipment.get(((Armor) item).getType_of_armor())!=null)
-                        setArmor(getArmor()-((Armor)equipment.get(5)).getArmor());
+                    if (equipment.get(((Armor) item).getType_of_armor()) != null)
+                        setArmor(getArmor() - ((Armor) equipment.get(5)).getArmor());
                     equipment.set(5, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
@@ -353,10 +352,9 @@ public class Player extends Entity implements Parcelable {
         this.avatar = avatar;
     }
 
-    private boolean contains(ArrayList<Pair<Item, Integer>> data, Pair<Item, Integer> element){
-        for (int i=0;i<data.size();i++){
-            if (data.get(i).first!=null)
-            {
+    private boolean contains(ArrayList<Pair<Item, Integer>> data, Pair<Item, Integer> element) {
+        for (int i = 0; i < data.size(); i++) {
+            if (data.get(i).first != null) {
                 if (data.get(i).first.getName().equals(element.first.getName()))
                     return true;
             }
@@ -364,8 +362,8 @@ public class Player extends Entity implements Parcelable {
         return false;
     }
 
-    private int get(ArrayList<Pair<Item, Integer>> data, Item element){
-        for (int i=0;i<data.size();i++){
+    private int get(ArrayList<Pair<Item, Integer>> data, Item element) {
+        for (int i = 0; i < data.size(); i++) {
             if (data.get(i).first.getName().equals(element.getName()))
                 return i;
         }

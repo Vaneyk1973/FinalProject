@@ -67,8 +67,8 @@ public class FightFragment extends Fragment {
         bm.eraseColor(Color.GREEN);
         player_image.setImageBitmap(MainActivity.b[5][5]);
         enemy_image.setImageBitmap(MainActivity.player.getEnemy().getTexture());
-        your_health.setText(MainActivity.player.getHealth() + "/" + MainActivity.player.getMax_health());
-        your_mana.setText(MainActivity.player.getMana() + "/" + MainActivity.player.getMax_mana());
+        your_health.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMax_health()));
+        your_mana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMax_mana()));
         enemy_health.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
         enemy_mana.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
         attack.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +113,15 @@ public class FightFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 int a = new Random().nextInt(100);
+                MainActivity.player.regenerate();
+                MainActivity.player.getEnemy().regenerate();
+                MainActivity.player.attack();
+                MainActivity.player.getEnemy().fight();
+                Log.d("KK", MainActivity.player.getEnemy().getName());
+                your_health.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMax_health()));
+                your_mana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMax_mana()));
+                enemy_health.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
+                enemy_mana.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
                 if (a >= 50) {
                     FragmentManager fm = getParentFragmentManager();
                     FragmentTransaction fragmentTransaction = fm.beginTransaction();
@@ -127,6 +136,15 @@ public class FightFragment extends Fragment {
         cast_spell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainActivity.player.regenerate();
+                MainActivity.player.getEnemy().regenerate();
+                MainActivity.player.attack();
+                MainActivity.player.getEnemy().fight();
+                Log.d("KK", MainActivity.player.getEnemy().getName());
+                your_health.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMax_health()));
+                your_mana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMax_mana()));
+                enemy_health.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
+                enemy_mana.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
                 spells.setAdapter(new SpellsAdapter(MainActivity.player.getSpells()));
             }
         });

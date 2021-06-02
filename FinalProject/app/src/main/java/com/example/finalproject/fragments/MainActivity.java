@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static Player player;
     public static int menu_width, avatar_width, map_title_width, status_images_width, category_image_width;
-    public static boolean show_tutorial=true;
+    public static boolean show_tutorial = true;
     public static HashMap<Integer, Integer> chances_of_fight = new HashMap<>();
     public static MapTitle[][] map = new MapTitle[32][32];
     public static Bitmap[] menu = new Bitmap[4];
@@ -56,13 +56,19 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Type> types = new ArrayList<>();
     public static ArrayList<Form> forms = new ArrayList<>();
     public static ArrayList<ManaReservoir> mana_reservoirs = new ArrayList<>();
-    public static ArrayList<Research> researches=new ArrayList<>();
-    public static ArrayList<String> researches1=new ArrayList<>();
-    public static HashMap<Integer, String> categories=new HashMap<>();
+    public static ArrayList<Research> researches = new ArrayList<>();
+    public static ArrayList<String> researches1 = new ArrayList<>(),
+            elements1 = new ArrayList<>(),
+            mana_channels1 = new ArrayList<>(),
+            types1 = new ArrayList<>(),
+            forms1 = new ArrayList<>(),
+            mana_reservoirs1 = new ArrayList<>();
+    public static HashMap<Integer, String> categories = new HashMap<>();
     private static Display display;
     private static Resources res;
     public static Bitmap[][] b;
     public static Music m;
+    private SharedPreferences sh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,16 +76,22 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
-        m=new Music();
+        sh = getPreferences(MODE_PRIVATE);
+        researches1 = new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class);
+        elements1 = new Gson().fromJson(sh.getString("Elements", ""), ArrayList.class);
+        types1 = new Gson().fromJson(sh.getString("Types", ""), ArrayList.class);
+        forms1 = new Gson().fromJson(sh.getString("Forms", ""), ArrayList.class);
+        mana_channels1 = new Gson().fromJson(sh.getString("Mana channels", ""), ArrayList.class);
+        mana_reservoirs1 = new Gson().fromJson(sh.getString("Mana reservoirs", ""), ArrayList.class);
+        m = new Music();
         m.start(this, R.raw.main);
         setContentView(R.layout.activity_main);
         display = getWindowManager().getDefaultDisplay();
         res = getResources();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.commit();
-        SharedPreferences sh = getPreferences(MODE_PRIVATE);
         player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
-        show_tutorial=sh.getBoolean("Tutorial", true);
+        show_tutorial = sh.getBoolean("Tutorial", true);
         setInitialData();
         player.setTitle_texture(Bitmap.createBitmap(map[player.getCoordinates().first][player.getCoordinates().second].texture));
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://m5hw.herokuapp.com/").
@@ -94,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 Log.d("KKKKKKKK", MainActivity.player.getUser().isLogged_in() + " " + MainActivity.player.isRegistered());
             }
+
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
                 Log.d("KKPSS", t.toString());
@@ -105,28 +118,20 @@ public class MainActivity extends AppCompatActivity {
                 if (response.body())
                     MainActivity.player.getUser().log_in();
             }
+
             @Override
             public void onFailure(Call<Boolean> call, Throwable t) {
                 Log.d("KKFF", t.toString());
             }
         });
         player.setAvatar(Bitmap.createBitmap(b[5][5]));
-        if (show_tutorial){
+        if (show_tutorial) {
             fragmentTransaction.add(R.id.tutorial, new TutorialFragment());
-        }
-        else {
+        } else {
             fragmentTransaction.add(R.id.map, new MapFragment());
             fragmentTransaction.add(R.id.status, new StatusBarFragment());
             fragmentTransaction.add(R.id.menu, new MenuFragment());
         }
-        researches.clear();
-        researches1=(ArrayList<String>)new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class);
-        if (researches1!=null){
-            for (int i=0;i<researches1.size();i++)
-                researches.add(new Gson().fromJson(researches1.get(i), Research.class));
-        }
-        else
-            set_researches();
         Log.d("KKC", player.toString());
     }
 
@@ -146,8 +151,8 @@ public class MainActivity extends AppCompatActivity {
             menu_width = width / 4;
             avatar_width = width / 4;
         }
-        status_images_width=width/10;
-        category_image_width=width/4;
+        status_images_width = width / 10;
+        category_image_width = width / 4;
         a = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(res, R.drawable.textures), map_title_width * 10, map_title_width * 10, false);
         int n = 10, m = 10;
         b = new Bitmap[n][m];
@@ -212,40 +217,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static void set_researches() {
-        researches=new ArrayList<>();
-        researches1=new ArrayList<>();
-        ArrayList<Research> rqr = new ArrayList<>();
-        researches.add(new Research(null, "Basic spell creation", 1, 0, 0, false, true));
-        rqr.add(researches.get(0));
-        researches.add(new Research((ArrayList<Research>) rqr.clone(), "Fire mage", 3, 1, 1, false, false));
-        researches.add(new Research((ArrayList<Research>) rqr.clone(), "Water mage", 3, 1, 2, false, false));
-        researches.add(new Research((ArrayList<Research>) rqr.clone(), "Earth mage", 3, 1, 3, false, false));
-        researches.add(new Research((ArrayList<Research>) rqr.clone(), "Air mage", 3, 1, 4, false, false));
-        for (int i=0;i<researches.size();i++)
-            researches1.add(new Gson().toJson(researches.get(i)));
+        researches = new ArrayList<>();
+        if (researches1 != null)
+            for (int i = 0; i < researches1.size(); i++)
+                researches.add(new Gson().fromJson(researches1.get(i), Research.class));
+        else {
+            researches1 = new ArrayList<>();
+            ArrayList<Research> rqr = new ArrayList<>();
+            researches.add(new Research(null, "Basic spell creation", 1, 0, 0, false, true));
+            rqr.add(researches.get(0));
+            researches.add(new Research((ArrayList<Research>) rqr.clone(), "Fire mage", 6, 1, 1, false, false));
+            researches.add(new Research((ArrayList<Research>) rqr.clone(), "Water mage", 2, 1, 2, false, false));
+            researches.add(new Research((ArrayList<Research>) rqr.clone(), "Earth mage", 4, 1, 3, false, false));
+            researches.add(new Research((ArrayList<Research>) rqr.clone(), "Air mage", 3, 1, 4, false, false));
+            for (int i = 0; i < researches.size(); i++)
+                researches1.add(new Gson().toJson(researches.get(i)));
+        }
+
     }
 
     private static void set_drop() {
         drop.put(0, new ArrayList<>());
         drop.get(0).add(new Pair<>(new Item(2, 0, 2, "Rabbit's fur"), 70));
-        drop.get(0).add(new Pair<>(new Item(3, 0, 3,"Rabbit's leg"), 30));
+        drop.get(0).add(new Pair<>(new Item(3, 0, 3, "Rabbit's leg"), 30));
         drop.put(1, new ArrayList<>());
-        drop.get(1).add(new Pair<>(new Item(5, 0, 2,"Dog's fur"), 90));
-        drop.get(1).add(new Pair<>(new Item(30, 0, 2,"Dog's tooth"), 10));
+        drop.get(1).add(new Pair<>(new Item(5, 0, 2, "Dog's fur"), 90));
+        drop.get(1).add(new Pair<>(new Item(30, 0, 2, "Dog's tooth"), 10));
         drop.put(2, new ArrayList<>());
-        drop.get(2).add(new Pair<>(new Item(15, 0, 2,"Wolf's fur"), 100));
+        drop.get(2).add(new Pair<>(new Item(15, 0, 2, "Wolf's fur"), 100));
         drop.put(3, new ArrayList<>());
-        drop.get(3).add(new Pair<>(new Item(20, 0, 2,"Fox's fur"), 100));
+        drop.get(3).add(new Pair<>(new Item(20, 0, 2, "Fox's fur"), 100));
         drop.put(4, new ArrayList<>());
-        drop.get(4).add(new Pair<>(new Item(50, 0, 2,"Bear's fur"), 100));
+        drop.get(4).add(new Pair<>(new Item(50, 0, 2, "Bear's fur"), 100));
         drop.put(5, new ArrayList<>());
         drop.get(5).add(new Pair<>(new Armor(75, 5, 10, 1, 1, "Iron chestplate"), 50));
     }
 
 
-    /**
-     *
-     */
     private static void set_enemies() {
         enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0), b[2][5]));
         enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1), b[4][5]));
@@ -281,19 +289,69 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static void set_magic() {
-        elements.add(new Element("Pure mana", 6, 2, false));
-        elements.add(new Element("Fire", 1, 10, false));
-        elements.add(new Element("Water", 0, 5, false));
-        elements.add(new Element("Air", 3, 5, false));
-        elements.add(new Element("Earth", 2, 8, false));
-        elements.add(new Element("Life", 5, -5, false));
-        elements.add(new Element("Death", 4, 5, false));
+        elements.clear();
+        types.clear();
+        forms.clear();
+        mana_reservoirs.clear();
+        mana_channels.clear();
+        if (elements1 != null)
+            for (int i = 0; i < elements1.size(); i++)
+                elements.add(new Gson().fromJson(elements1.get(i), Element.class));
+        else {
+            elements.add(new Element("Pure mana", 6, 2, false));
+            elements.add(new Element("Fire", 1, 10, false));
+            elements.add(new Element("Water", 0, 5, false));
+            elements.add(new Element("Air", 3, 4, false));
+            elements.add(new Element("Earth", 2, 8, false));
+            elements.add(new Element("Life", 5, -5, false));
+            elements.add(new Element("Death", 4, 5, false));
 /*        elements.add(new Element("Light", 6, 2, false));
         elements.add(new Element("Darkness", 7, 7, false));*/
-        types.add(new Type("Self", 0, true));
-        forms.add(new Form("Sphere", 0, true));
-        mana_reservoirs.add(new ManaReservoir("Basic", 1, true));
-        mana_channels.add(new ManaChannel("Basic", 2, true));
+            elements1 = new ArrayList<>();
+            for (int i = 0; i < elements.size(); i++)
+                elements1.add(new Gson().toJson(elements.get(i)));
+        }
+
+        if (types1 != null)
+            for (int i = 0; i < types1.size(); i++)
+                types.add(new Gson().fromJson(types1.get(i), Type.class));
+        else {
+            types.add(new Type("On enemy", 0, true));
+            types1 = new ArrayList<>();
+            for (int i = 0; i < types.size(); i++)
+                types1.add(new Gson().toJson(types.get(i)));
+        }
+
+        if (forms1 != null)
+            for (int i = 0; i < forms1.size(); i++)
+                forms.add(new Gson().fromJson(forms1.get(i), Form.class));
+        else {
+            forms.add(new Form("Sphere", 0, true));
+            forms1 = new ArrayList<>();
+            for (int i = 0; i < forms.size(); i++)
+                forms1.add(new Gson().toJson(forms.get(i)));
+        }
+
+        if (mana_reservoirs1 != null)
+            for (int i = 0; i < mana_reservoirs1.size(); i++)
+                mana_reservoirs.add(new Gson().fromJson(mana_reservoirs1.get(i), ManaReservoir.class));
+        else {
+            mana_reservoirs.add(new ManaReservoir("Basic", 1, true));
+            mana_reservoirs.add(new ManaReservoir("Big", 10, true));
+            mana_reservoirs1 = new ArrayList<>();
+            for (int i = 0; i < mana_reservoirs.size(); i++)
+                mana_reservoirs1.add(new Gson().toJson(mana_reservoirs.get(i)));
+        }
+
+        if (mana_channels1 != null)
+            for (int i = 0; i < mana_channels1.size(); i++)
+                mana_channels.add(new Gson().fromJson(mana_channels1.get(i), ManaChannel.class));
+        else {
+            mana_channels.add(new ManaChannel("Basic", 2, true));
+            mana_channels1 = new ArrayList<>();
+            for (int i = 0; i < mana_channels.size(); i++)
+                mana_channels1.add(new Gson().toJson(mana_channels.get(i)));
+        }
     }
 
     protected static void setInitialData() {
@@ -314,15 +372,17 @@ public class MainActivity extends AppCompatActivity {
         m.start(this, R.raw.main);
     }
 
-    @Override
+/*    @Override
     protected void onDestroy() {
         m.stop();
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();
-        ed.putString("Player", new Gson().toJson(player));
-        ed.putBoolean("Tutorial", show_tutorial);
-        ed.putString("Researches",new Gson().toJson(researches1));
+        ed.putString("Elements", new Gson().toJson(elements1));
+        ed.putString("Types", new Gson().toJson(types1));
+        ed.putString("Forms", new Gson().toJson(forms1));
+        ed.putString("Mana channels", new Gson().toJson(mana_channels1));
+        ed.putString("Mana reservoirs", new Gson().toJson(mana_reservoirs1));
         ed.apply();
         Log.d("KKD", player.toString());
         super.onDestroy();
@@ -334,23 +394,30 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences sh = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();
-        ed.putString("Player", new Gson().toJson(player));
-        ed.putBoolean("Tutorial", show_tutorial);
-        ed.putString("Researches",new Gson().toJson(researches1));
+        ed.putString("Elements", new Gson().toJson(elements1));
+        ed.putString("Types", new Gson().toJson(types1));
+        ed.putString("Forms", new Gson().toJson(forms1));
+        ed.putString("Mana channels", new Gson().toJson(mana_channels1));
+        ed.putString("Mana reservoirs", new Gson().toJson(mana_reservoirs1));
         ed.apply();
         Log.d("KKS", player.toString());
         super.onStop();
-    }
+    }*/
 
     @Override
     protected void onPause() {
         m.stop();
-        SharedPreferences sh = getPreferences(MODE_PRIVATE);
+        sh = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();
         ed.putString("Player", new Gson().toJson(player));
         ed.putBoolean("Tutorial", show_tutorial);
-        ed.putString("Researches",new Gson().toJson(researches1));
+        ed.putString("Researches", new Gson().toJson(researches1));
+        ed.putString("Elements", new Gson().toJson(elements1));
+        ed.putString("Types", new Gson().toJson(types1));
+        ed.putString("Forms", new Gson().toJson(forms1));
+        ed.putString("Mana channels", new Gson().toJson(mana_channels1));
+        ed.putString("Mana reservoirs", new Gson().toJson(mana_reservoirs1));
         ed.apply();
         Log.d("KKP", player.toString());
         Log.d("KKKLLL", new Gson().toJson(MainActivity.researches));

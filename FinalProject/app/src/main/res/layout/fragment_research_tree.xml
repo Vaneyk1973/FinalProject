@@ -12,9 +12,9 @@
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/back_button4"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/research_points_amount"
         app:layout_constraintVertical_bias="0.0">
 
         <TableLayout
@@ -27,13 +27,13 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:fontFamily="cursive"
-                    android:textSize="20dp"
                     android:id="@+id/basic_spell_creation"
-                    android:layout_width="150dp"
+                    android:layout_width="175dp"
                     android:layout_height="wrap_content"
+                    android:fontFamily="cursive"
                     android:text="TextView"
-                    android:textColor="@android:color/holo_red_dark"/>
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="20dp" />
             </TableRow>
 
             <TableRow
@@ -41,40 +41,40 @@
                 android:layout_height="match_parent">
 
                 <TextView
-                    android:fontFamily="cursive"
-                    android:textSize="20dp"
                     android:id="@+id/fire_mage"
-                    android:layout_width="150dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:fontFamily="cursive"
                     android:text="TextView"
-                    android:textColor="@android:color/holo_red_dark"/>
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="20dp" />
 
                 <TextView
-                    android:fontFamily="cursive"
-                    android:textSize="20dp"
                     android:id="@+id/water_mage"
-                    android:layout_width="150dp"
+                    android:layout_width="175dp"
                     android:layout_height="wrap_content"
+                    android:fontFamily="cursive"
                     android:text="TextView"
-                    android:textColor="@android:color/holo_red_dark"/>
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="20dp" />
 
                 <TextView
-                    android:fontFamily="cursive"
-                    android:textSize="20dp"
                     android:id="@+id/air_mage"
-                    android:layout_width="150dp"
+                    android:layout_width="175dp"
                     android:layout_height="wrap_content"
+                    android:fontFamily="cursive"
                     android:text="TextView"
-                    android:textColor="@android:color/holo_red_dark"/>
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="20dp" />
 
                 <TextView
-                    android:fontFamily="cursive"
-                    android:textSize="20dp"
                     android:id="@+id/earth_mage"
-                    android:layout_width="150dp"
+                    android:layout_width="175dp"
                     android:layout_height="wrap_content"
+                    android:fontFamily="cursive"
                     android:text="TextView"
-                    android:textColor="@android:color/holo_red_dark"/>
+                    android:textColor="@android:color/holo_red_dark"
+                    android:textSize="20dp" />
             </TableRow>
 
             <TableRow
@@ -97,5 +97,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/research_points_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:fontFamily="cursive"
+        android:textSize="20dp"
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
