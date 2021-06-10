@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "550925414310",
+    "firebase_url": "https://m5hw-a961f-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "m5hw-a961f",
+    "storage_bucket": "m5hw-a961f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:550925414310:android:ab11ba4b8b7d4b29a52967",
+        "android_client_info": {
+          "package_name": "com.example.finalproject"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "550925414310-fg11m5aprfoo6uok7gn2u356nr82o6cq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCz7CTWSWAprt5-wWMocNsFujRHwOM6W8k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "550925414310-fg11m5aprfoo6uok7gn2u356nr82o6cq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -20,24 +20,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.service.A;
 import com.example.finalproject.service.Message;
 import com.example.finalproject.service.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
+import java.util.HashMap;
 
 public class ChatFragment extends Fragment {
-    ArrayList<String> messages = new ArrayList<>();
+    ArrayList<Message> messages = new ArrayList<>();
     RecyclerView chat;
     Thread t;
 
@@ -49,14 +48,26 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Retrofit chat_server = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).
-                baseUrl("https://m5hw.herokuapp.com/").
-                build();
-        A a = chat_server.create(A.class);
+        FirebaseDatabase root = FirebaseDatabase.getInstance();
+        DatabaseReference ref = root.getReference("Message");
         Button log_out = getView().findViewById(R.id.log_out);
         chat = getView().findViewById(R.id.chat_list);
         EditText enter_message = getView().findViewById(R.id.message);
-        Button back = getView().findViewById(R.id.back_button_chat), register = getView().findViewById(R.id.log_out);
+        Button back = getView().findViewById(R.id.back_button_chat);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                messages.clear();
+                snapshot.getChildren().forEach(e -> messages.add(toMessage((HashMap<String, Object>) e.getValue())));
+                chat.setAdapter(new ChatAdapter(messages));
+                chat.scrollToPosition(messages.size() - 1);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -69,22 +80,6 @@ public class ChatFragment extends Fragment {
                 fr.commit();
             }
         });
-        Callback<ArrayList<String>> f = new Callback<ArrayList<String>>() {
-            @Override
-            public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
-                messages.clear();
-                messages.addAll(response.body());
-                chat.setAdapter(new ChatAdapter(messages));
-                chat.scrollToPosition(messages.size() - 1);
-                Log.d("KKU", messages.toString());
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<String>> call, Throwable t) {
-                Log.d("KKD", t.toString());
-            }
-        };
-        a.get_messages().enqueue(f);
         chat.setAdapter(new ChatAdapter(messages));
         chat.setLayoutManager(new LinearLayoutManager(getContext()));
         enter_message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -94,20 +89,10 @@ public class ChatFragment extends Fragment {
                 Message m = new Message();
                 m.message = v.getText().toString();
                 m.user = new Gson().toJson(MainActivity.player.getUser());
-                m.date = new Date();
+                m.date = new Date().getTime();
+                m.gmt = new Date().getTimezoneOffset();
                 Log.d("KKKR", new Gson().toJson(m));
-                a.put_message(new Gson().toJson(m)).enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        Log.d("KKR", response + "");
-                        a.get_messages().enqueue(f);
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                        Log.d("KKE", t.toString());
-                    }
-                });
+                ref.child(messages.size() + "").setValue(m);
                 v.setText("");
                 return false;
             }
@@ -115,67 +100,24 @@ public class ChatFragment extends Fragment {
         log_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                a.log_out(MainActivity.player.getUser().getLogin()).enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        MainActivity.player.getUser().log_out();
-                        FragmentManager fm = getParentFragmentManager();
-                        FragmentTransaction fr = fm.beginTransaction();
-                        fr.remove(fm.findFragmentById(R.id.chat));
-                        fr.add(R.id.registration, new RegistrationFragment());
-                        fr.commit();
-                        Log.d("KKRE", response.body() + "");
-                    }
 
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                        Log.d("KKRE", t.toString());
-                    }
-                });
             }
         });
         chat.scrollToPosition(messages.size() - 1);
-        class ChatUpdater implements Runnable {
-            @Override
-            public void run() {
-                boolean[] b = new boolean[1];
-                while (true) {
-                    a.is_new_message(MainActivity.player.getUser().getLogin()).enqueue(new Callback<Boolean>() {
-                        @Override
-                        public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                            b[0] = response.body();
-                            Log.d("KKGGG", b[0] + "");
-                        }
+    }
 
-                        @Override
-                        public void onFailure(Call<Boolean> call, Throwable t) {
-                            Log.d("KKTTT", t.toString());
-                        }
-                    });
-                    if (b[0]) {
-                        a.get_messages().enqueue(f);
-                        Log.d("KKJJ", "::");
-                    }
-                    synchronized (this) {
-                        try {
-                            wait(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            Log.d("KKJJ", "::))");
-                        }
-                    }
-                }
-            }
-        }
-        t = new Thread(new ChatUpdater());
-        t.start();
+    private Message toMessage(HashMap<String, Object> r) {
+        return new Message(r.get("message").toString(),
+                r.get("user").toString(),
+                Long.parseLong(r.get("date").toString()),
+                Integer.parseInt(r.get("gmt").toString()));
     }
 
     class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
 
-        ArrayList<String> data;
+        ArrayList<Message> data;
 
-        public ChatAdapter(ArrayList<String> messages) {
+        public ChatAdapter(ArrayList<Message> messages) {
             data = messages;
         }
 
@@ -199,15 +141,15 @@ public class ChatFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ChatViewHolder holder, int position) {
-            holder.message.setText(new Gson().fromJson(data.get(position), Message.class).message);
-            long time = new Gson().fromJson(data.get(position), Message.class).date.getTime() / 1000 / 60;
+            holder.message.setText(data.get(position).message);
+            long time = data.get(position).date / 1000 / 60 + data.get(position).gmt * 60 - new Date().getTimezoneOffset() * 60;
             String mins, hrs;
             mins = time % 60 >= 10 ? time % 60 + "" : "0" + time % 60;
             time /= 60;
             hrs = (time % 24 + 3) % 24 + "";
             String date = hrs + ":" + mins;
             holder.time.setText(date);
-            holder.user.setText(new Gson().fromJson(new Gson().fromJson(data.get(position), Message.class).user, User.class).getLogin());
+            holder.user.setText(new Gson().fromJson(data.get(position).user, User.class).getLogin());
         }
 
         @Override

@@ -38,6 +38,7 @@ public class StatusBarFragment extends Fragment {
                 gold_img = getView().findViewById(R.id.gold_image),
                 health_img = getView().findViewById(R.id.health_image),
                 mana_img = getView().findViewById(R.id.mana_image),
+                settings_img=getActivity().findViewById(R.id.settings_button),
                 avatar = getView().findViewById(R.id.avatar);
         TextView lvl = getView().findViewById(R.id.level),
                 gold = getView().findViewById(R.id.gold),
@@ -59,39 +60,36 @@ public class StatusBarFragment extends Fragment {
                 (MainActivity.b[5][5], MainActivity.avatar_width, MainActivity.avatar_width, false);
         avatar.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[5][3], MainActivity.status_images_width, MainActivity.status_images_width, false);
+                (MainActivity.b[3][5], MainActivity.status_images_width, MainActivity.status_images_width, false);
         gold_img.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[5][2], MainActivity.status_images_width, MainActivity.status_images_width, false);
+                (MainActivity.b[2][5], MainActivity.status_images_width, MainActivity.status_images_width, false);
         health_img.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[1][3], MainActivity.status_images_width, MainActivity.status_images_width, false);
+                (MainActivity.b[3][1], MainActivity.status_images_width, MainActivity.status_images_width, false);
         mana_img.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[4][3], MainActivity.status_images_width, MainActivity.status_images_width, false);
+                (MainActivity.b[3][4], MainActivity.status_images_width, MainActivity.status_images_width, false);
         exp_img.setImageBitmap(Bitmap.createBitmap(bm));
-        avatar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                MainActivity.player.setChat_mode(!MainActivity.player.getChat_mode());
-            }
-        });
+        bm=Bitmap.createScaledBitmap
+                (MainActivity.b[3][0], MainActivity.status_images_width, MainActivity.status_images_width, false);
+        settings_img.setImageBitmap(Bitmap.createBitmap(bm));
         Button chat = getView().findViewById(R.id.chat_button);
         FragmentManager fm = getParentFragmentManager();
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                if (MainActivity.player.getChat_mode()) {
-                    if (MainActivity.player.getUser().isLogged_in() && MainActivity.player.isRegistered()) {
+                //if (MainActivity.player.getChat_mode()) {
+                //    if (MainActivity.player.getUser().isLogged_in() && MainActivity.player.isRegistered()) {
                         fragmentTransaction.add(R.id.chat, new ChatFragment());
-                    } else {
+/*                    } else {
                         fragmentTransaction.add(R.id.registration, new RegistrationFragment());
-                    }
+                    }*/
                     fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                     fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
                     fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                } else {
+                /*} else {
                     if (MainActivity.player.getUser().isLogged_in()) {
                         FragmentTransaction f = getChildFragmentManager().beginTransaction();
                         f.add(R.id.chat_mini, new ChatMiniFragment());
@@ -102,8 +100,8 @@ public class StatusBarFragment extends Fragment {
                         fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                         fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
                         fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                    }
-                }
+                    }*/
+                //}
                 fragmentTransaction.commit();
             }
         });

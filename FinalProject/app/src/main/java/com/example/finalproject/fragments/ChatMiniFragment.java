@@ -45,11 +45,7 @@ public class ChatMiniFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Retrofit chat_server = new Retrofit.Builder().addConverterFactory(GsonConverterFactory.create()).
-                baseUrl("https://m5hw.herokuapp.com/").
-                build();
-        A a = chat_server.create(A.class);
-        ArrayList<String> messages = new ArrayList<>();
+        ArrayList<Message> messages = new ArrayList<>();
         RecyclerView chat = getView().findViewById(R.id.chat_list);
         EditText enter_message = getView().findViewById(R.id.message);
         Button back = getView().findViewById(R.id.back_button_chat), register = getView().findViewById(R.id.log_out);
@@ -75,23 +71,6 @@ public class ChatMiniFragment extends Fragment {
                 enter_message.setOnClickListener(null);
             }
         };
-        Callback<ArrayList<String>> f = new Callback<ArrayList<String>>() {
-            @Override
-            public void onResponse(Call<ArrayList<String>> call, Response<ArrayList<String>> response) {
-                messages.clear();
-                messages.addAll(response.body());
-                chat.setAdapter(new ChatMiniFragment.ChatAdapter(messages));
-                chat.scrollToPosition(messages.size() - 1);
-                Log.d("KKU", messages.toString());
-            }
-
-            @Override
-            public void onFailure(Call<ArrayList<String>> call, Throwable t) {
-                Log.d("KKD", t.toString());
-            }
-        };
-        a.get_messages().enqueue(f);
-        chat.setAdapter(new ChatMiniFragment.ChatAdapter(messages));
         chat.setLayoutManager(new LinearLayoutManager(getContext()));
         enter_message.setOnClickListener(click);
         enter_message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -101,20 +80,7 @@ public class ChatMiniFragment extends Fragment {
                 Message m = new Message();
                 m.message = v.getText().toString();
                 m.user = new Gson().toJson(MainActivity.player.getUser());
-                m.date = new Date();
                 Log.d("KKKR", new Gson().toJson(m));
-                a.put_message(new Gson().toJson(m)).enqueue(new Callback<String>() {
-                    @Override
-                    public void onResponse(Call<String> call, Response<String> response) {
-                        Log.d("KKR", response + "");
-                        a.get_messages().enqueue(f);
-                    }
-
-                    @Override
-                    public void onFailure(Call<String> call, Throwable t) {
-                        Log.d("KKE", t.toString());
-                    }
-                });
                 v.setText("");
                 enter_message.setOnClickListener(click);
                 return false;
@@ -125,9 +91,9 @@ public class ChatMiniFragment extends Fragment {
 
     class ChatAdapter extends RecyclerView.Adapter<ChatMiniFragment.ChatAdapter.ChatViewHolder> {
 
-        ArrayList<String> data;
+        ArrayList<Message> data;
 
-        public ChatAdapter(ArrayList<String> messages) {
+        public ChatAdapter(ArrayList<Message> messages) {
             data = messages;
         }
 
@@ -151,15 +117,15 @@ public class ChatMiniFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull ChatMiniFragment.ChatAdapter.ChatViewHolder holder, int position) {
-            holder.message.setText(new Gson().fromJson(data.get(position), Message.class).message);
-            long time = new Gson().fromJson(data.get(position), Message.class).date.getTime() / 1000 / 60;
+            holder.message.setText(data.get(position).message);
+            long time = data.get(position).date / 1000 / 60 +data.get(position).gmt*60 -new Date().getTimezoneOffset()*60;
             String mins, hrs;
             mins = time % 60 >= 10 ? time % 60 + "" : "0" + time % 60;
             time /= 60;
             hrs = (time % 24 + 3) % 24 + "";
             String date = hrs + ":" + mins;
             holder.time.setText(date);
-            holder.user.setText(new Gson().fromJson(new Gson().fromJson(data.get(position), Message.class).user, User.class).getLogin());
+            holder.user.setText(new Gson().fromJson(data.get(position).user, User.class).getLogin());
         }
 
         @Override

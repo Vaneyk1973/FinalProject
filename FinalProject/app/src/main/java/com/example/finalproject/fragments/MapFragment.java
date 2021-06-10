@@ -39,7 +39,6 @@ public class MapFragment extends Fragment {
         Display display = getActivity().getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
-        int width = size.x;
         TableLayout table=getView().findViewById(R.id.tableLayout);
         TableRow[] rows=new TableRow[table.getChildCount()];
         for (int i=0;i<table.getChildCount();i++)
@@ -49,15 +48,17 @@ public class MapFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 Pair<Integer, Integer> coords= find_title_coords((ImageView)v, visible_map),
-                player_coords=MainActivity.player.getCoordinates();
-                if (!MainActivity.player.getCoordinates().equals(coords)&&MainActivity.map[coords.first][coords.second].getType()!=0)
+                        player_coords=MainActivity.player.getCoordinates();
+                if (!MainActivity.player.getCoordinates().equals(coords)
+                        &&MainActivity.map.get(0).getMap()[coords.first][coords.second].getType()!=0)
                 {
                     int dx=coords.first-player_coords.first,
                             dy=coords.second-player_coords.second;
                     if (Math.abs(dx)<=1&&Math.abs(dy)<=1){
                         MainActivity.player.regenerate();
                         int a=new Random().nextInt(100);
-                        if (a<MainActivity.chances_of_fight.get(MainActivity.map[coords.first][coords.second].getType())) {
+                        if (a<MainActivity.chances_of_fight.get(
+                                MainActivity.map.get(0).getMap()[coords.first][coords.second].getType())) {
                             FragmentManager fm=getParentFragmentManager();
                             FragmentTransaction fragmentTransaction= fm.beginTransaction();
                             fragmentTransaction.remove(fm.findFragmentById(R.id.map));
@@ -67,48 +68,48 @@ public class MapFragment extends Fragment {
                             fragmentTransaction.commit();
                         }
                         MainActivity.player.setTitle_texture(
-                                MainActivity.title_textures.get(
-                                        MainActivity.map[player_coords.first][player_coords.second].getType()));
+                                MainActivity.map_textures.get(
+                                        MainActivity.map.get(0).getMap()[player_coords.first][player_coords.second].getType()));
                         Log.d("KKKK", MainActivity.player.getTitle_texture()+"");
-                        MainActivity.map[player_coords.first][player_coords.second].setTexture(
+                        MainActivity.map.get(0).getMap()[player_coords.first][player_coords.second].setTexture(
                                 Bitmap.createBitmap(MainActivity.player.getTitle_texture()));
                         MainActivity.player.setCoordinates(
                                 new Pair<>(player_coords.first+dx, player_coords.second+dy));
                         player_coords=MainActivity.player.getCoordinates();
                         MainActivity.player.setTitle_texture(
                                 Bitmap.createBitmap(
-                                        MainActivity.map[player_coords.first][player_coords.second].getTexture()));
-                        MainActivity.map[player_coords.first][player_coords.second].getTexture().eraseColor(Color.BLUE);
+                                        MainActivity.map.get(0).getMap()[player_coords.first][player_coords.second].getTexture()));
+                        MainActivity.map.get(0).getMap()[player_coords.first][player_coords.second].getTexture().eraseColor(Color.BLUE);
                         if (player_coords.first+dx>=2&&player_coords.second+dy>=2){
                             for (int i=0;i<5;i++) {
                                 for (int j = 0; j < 5; j++) {
-                                    visible_map[i][j].setImageBitmap(MainActivity.map[player_coords.first-2+i][player_coords.second-2+j].getTexture());
+                                    visible_map[i][j].setImageBitmap(MainActivity.map.get(0).getMap()[player_coords.first-2+i][player_coords.second-2+j].getTexture());
                                 }
                             }
                         }
                         else if (player_coords.first+dx>=2) {
                             for (int i=0;i<5;i++) {
                                 for (int j = 0; j < 5; j++) {
-                                    visible_map[i][j].setImageBitmap(MainActivity.map[player_coords.first-2+i][j].getTexture());
+                                    visible_map[i][j].setImageBitmap(MainActivity.map.get(0).getMap()[player_coords.first-2+i][j].getTexture());
                                 }
                             }
                         }
                         else if (player_coords.second+dy>=2){
                             for (int i=0;i<5;i++) {
                                 for (int j = 0; j < 5; j++) {
-                                    visible_map[i][j].setImageBitmap(MainActivity.map[i][player_coords.second-2+j].getTexture());
+                                    visible_map[i][j].setImageBitmap(MainActivity.map.get(0).getMap()[i][player_coords.second-2+j].getTexture());
                                 }
                             }
                         }
                         else {
                             for (int i=0;i<5;i++) {
                                 for (int j = 0; j < 5; j++) {
-                                    visible_map[i][j].setImageBitmap(MainActivity.map[i][j].getTexture());
+                                    visible_map[i][j].setImageBitmap(MainActivity.map.get(0).getMap()[i][j].getTexture());
                                 }
                             }
                         }
                         a=new Random().nextInt(100);
-                        switch (MainActivity.map[coords.first][coords.second].getType()){
+                        switch (MainActivity.map.get(0).getMap()[coords.first][coords.second].getType()){
                             case 1:{
                                 if (a<30)
                                     MainActivity.player.setEnemy(new Enemy(MainActivity.chances_of_enemy.get(1).get(30)));
@@ -153,7 +154,7 @@ public class MapFragment extends Fragment {
         for (int i=0;i<5;i++) {
             for (int j = 0; j < 5; j++) {
                 visible_map[i][j] = (ImageView) rows[i].getChildAt(j);
-                visible_map[i][j].setImageBitmap(MainActivity.map[player_coords.first-2+i][player_coords.second-2+j].getTexture());
+                visible_map[i][j].setImageBitmap(MainActivity.map.get(0).getMap()[player_coords.first-2+i][player_coords.second-2+j].getTexture());
                 visible_map[i][j].setOnClickListener(onClickListener);
             }
         }

@@ -1,21 +1,55 @@
 package com.example.finalproject.service;
 
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
-
-import java.util.Date;
-import java.util.Objects;
-
 public class Message{
-    @Expose
-    @SerializedName("message")
+
     public String message;
-    @Expose
-    @SerializedName("user")
+
     public String user;
-    @Expose
-    @SerializedName("date")
-    public Date date;
+
+    public long date;
+
+    public int gmt;
+
+    public Message (){}
+
+    public Message(String message, String user, long date, int gmt) {
+        this.message = message;
+        this.user = user;
+        this.date = date;
+        this.gmt = gmt;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public long getDate() {
+        return date;
+    }
+
+    public void setDate(long date) {
+        this.date = date;
+    }
+
+    public int getGmt() {
+        return gmt;
+    }
+
+    public void setGmt(int gmt) {
+        this.gmt = gmt;
+    }
 
     @Override
     public String toString() {
