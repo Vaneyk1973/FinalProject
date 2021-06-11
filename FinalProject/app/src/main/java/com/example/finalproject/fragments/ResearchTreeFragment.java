@@ -37,8 +37,6 @@ public class ResearchTreeFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         research_hash_map=new HashMap<>();
         research_hash_map1=new HashMap<>();
-        Log.d("KKKLLL", new Gson().toJson(MainActivity.researches));
-        Log.d("KKKLL!", new Gson().toJson(MainActivity.researches1));
         research_hash_map.put(MainActivity.researches.get(0), (TextView) getView().findViewById(R.id.basic_spell_creation));
         research_hash_map.put(MainActivity.researches.get(1), (TextView) getView().findViewById(R.id.fire_mage));
         research_hash_map.put(MainActivity.researches.get(2), (TextView) getView().findViewById(R.id.water_mage));
@@ -76,9 +74,6 @@ public class ResearchTreeFragment extends Fragment {
                 MainActivity.mana_reservoirs1.clear();
                 for (int i=0;i<MainActivity.mana_reservoirs.size();i++)
                     MainActivity.mana_reservoirs1.add(new Gson().toJson(MainActivity.mana_reservoirs.get(i)));
-                Log.d("KKKLLL", new Gson().toJson(MainActivity.researches));
-                Log.d("KKKLL!", new Gson().toJson(MainActivity.researches1));
-                Log.d("KKKLLLLLL", MainActivity.player.getResearch_points()+"");
             }
         };
         for (int i = 0; i < MainActivity.researches.size(); i++) {

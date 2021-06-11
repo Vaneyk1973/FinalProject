@@ -40,7 +40,6 @@ public class SignInFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.d("JJJJJJJ", MainActivity.player.getUser().isLogged_in()+"");
         Button back = getView().findViewById(R.id.log_in_back_button),
                 log_in = getView().findViewById(R.id.sign_in);
         EditText email = getView().findViewById(R.id.email),

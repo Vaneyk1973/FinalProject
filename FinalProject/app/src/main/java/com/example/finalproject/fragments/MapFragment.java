@@ -70,7 +70,6 @@ public class MapFragment extends Fragment {
                         MainActivity.player.setTitle_texture(
                                 MainActivity.map_textures.get(
                                         MainActivity.map.get(0).getMap()[player_coords.first][player_coords.second].getType()));
-                        Log.d("KKKK", MainActivity.player.getTitle_texture()+"");
                         MainActivity.map.get(0).getMap()[player_coords.first][player_coords.second].setTexture(
                                 Bitmap.createBitmap(MainActivity.player.getTitle_texture()));
                         MainActivity.player.setCoordinates(
@@ -145,7 +144,6 @@ public class MapFragment extends Fragment {
                                 break;
                             }
                         }
-                        Log.d("KKJ", String.valueOf(MainActivity.player.getEnemy().getName()));
                     }
                 }
                 StatusBarFragment.update();

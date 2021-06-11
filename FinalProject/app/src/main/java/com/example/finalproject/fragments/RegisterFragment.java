@@ -52,9 +52,7 @@ public class RegisterFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction fr = getParentFragmentManager().beginTransaction();
                 fr.remove(getParentFragmentManager().findFragmentById(R.id.register));
-                fr.add(R.id.map, new MapFragment());
-                fr.add(R.id.status, new StatusBarFragment());
-                fr.add(R.id.menu, new MenuFragment());
+                fr.add(R.id.log_in, new SignInFragment());
                 fr.commit();
             }
         });

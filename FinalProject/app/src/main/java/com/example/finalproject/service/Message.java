@@ -8,15 +8,12 @@ public class Message{
 
     public long date;
 
-    public int gmt;
-
     public Message (){}
 
-    public Message(String message, String user, long date, int gmt) {
+    public Message(String message, String user, long date) {
         this.message = message;
         this.user = user;
         this.date = date;
-        this.gmt = gmt;
     }
 
     public String getMessage() {
@@ -41,14 +38,6 @@ public class Message{
 
     public void setDate(long date) {
         this.date = date;
-    }
-
-    public int getGmt() {
-        return gmt;
-    }
-
-    public void setGmt(int gmt) {
-        this.gmt = gmt;
     }
 
     @Override

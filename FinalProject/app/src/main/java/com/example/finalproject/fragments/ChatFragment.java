@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
@@ -33,6 +34,7 @@ import com.google.gson.Gson;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 
@@ -49,8 +51,9 @@ public class ChatFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        FirebaseDatabase root = FirebaseDatabase.getInstance();
-        DatabaseReference ref = root.getReference("Message");
+        ProgressBar t=getView().findViewById(R.id.progressBar);
+        t.animate();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Message");
         Button log_out = getView().findViewById(R.id.log_out);
         chat = getView().findViewById(R.id.chat_list);
         EditText enter_message = getView().findViewById(R.id.message);
@@ -62,6 +65,7 @@ public class ChatFragment extends Fragment {
                 snapshot.getChildren().forEach(e -> messages.add(toMessage((HashMap<String, Object>) e.getValue())));
                 chat.setAdapter(new ChatAdapter(messages));
                 chat.scrollToPosition(messages.size() - 1);
+                t.setVisibility(View.GONE);
             }
 
             @Override
@@ -86,13 +90,10 @@ public class ChatFragment extends Fragment {
         enter_message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Log.d("KKK", v.getText().toString());
                 Message m = new Message();
                 m.message = v.getText().toString();
                 m.user = new Gson().toJson(MainActivity.player.getUser());
-                m.date = new Date().getTime();
-                m.gmt = new Date().getTimezoneOffset();
-                Log.d("KKKR", new Gson().toJson(m));
+                m.date = new Date().getTime()-Calendar.getInstance().getTimeZone().getOffset(new Date().getTime())*60*1000;
                 ref.child(messages.size() + "").setValue(m);
                 v.setText("");
                 return false;
@@ -114,8 +115,7 @@ public class ChatFragment extends Fragment {
     private Message toMessage(HashMap<String, Object> r) {
         return new Message(r.get("message").toString(),
                 r.get("user").toString(),
-                Long.parseLong(r.get("date").toString()),
-                Integer.parseInt(r.get("gmt").toString()));
+                Long.parseLong(r.get("date").toString()));
     }
 
     class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {
@@ -147,7 +147,7 @@ public class ChatFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ChatViewHolder holder, int position) {
             holder.message.setText(data.get(position).message);
-            long time = data.get(position).date / 1000 / 60 - data.get(position).gmt + new Date().getTimezoneOffset();
+            long time = data.get(position).date / 1000 / 60 + Calendar.getInstance().getTimeZone().getOffset(new Date().getTime());
             String mins, hrs;
             mins = time % 60 >= 10 ? time % 60 + "" : "0" + time % 60;
             time /= 60;

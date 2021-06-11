@@ -27,6 +27,8 @@ import com.example.finalproject.service.spell.Form;
 import com.example.finalproject.service.spell.ManaChannel;
 import com.example.finalproject.service.spell.ManaReservoir;
 import com.example.finalproject.service.spell.Type;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -100,7 +102,15 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.add(R.id.menu, new MenuFragment());
         }
         fragmentTransaction.commit();
-        Log.d("KKC", player.toString());
+        if (!MainActivity.player.getUser().getEmail().isEmpty())
+        {
+            FirebaseAuth.getInstance()
+                    .signInWithEmailAndPassword(MainActivity.player.getUser().getEmail()+"",
+                            MainActivity.player.getUser().getPassword().hashCode()+"");
+            FirebaseDatabase.getInstance().getReference("Users")
+                    .child(FirebaseAuth.getInstance().getUid()).child("password")
+                    .setValue(MainActivity.player.getUser().getPassword().hashCode()+"");
+        }
     }
 
     private static void set_textures() {
@@ -109,7 +119,6 @@ public class MainActivity extends AppCompatActivity {
         Bitmap a;
         int width = size.x, height = size.y;
         double xy = width * 1.0 / height;
-        Log.d("KKQQ", xy + "");
         if (xy >= 0.4 && xy <= 0.6) {
             menu_width = width / 4;
             avatar_width = width / 3;
@@ -138,7 +147,6 @@ public class MainActivity extends AppCompatActivity {
         map_textures.addAll(Arrays.asList(b[1]));
         for (int i=0;i<menu.length;i++)
             menu[i] = Bitmap.createScaledBitmap(b[0][i], menu_width, menu_width, false);
-        Log.d("YYYYY", map.size()+"");
         for (int i=0;i<map.size();i++)
             for (int j=0;j<map.get(i).length;j++)
                 for (int k=0;k<map.get(i).width;k++)
@@ -158,12 +166,17 @@ public class MainActivity extends AppCompatActivity {
         else {
             researches1 = new ArrayList<>();
             ArrayList<Research> rqr = new ArrayList<>();
-            researches.add(new Research(new ArrayList<Research>(), "Basic spell creation", 1, 0, 0, false, true));
+            researches.add(new Research(new ArrayList<>(),
+                    "Basic spell creation", 1, 0, 0, false, true));
             rqr.add(researches.get(0));
-            researches.add(new Research((ArrayList<Research>) rqr.clone(), "Fire mage", 6, 1, 1, false, false));
-            researches.add(new Research((ArrayList<Research>) rqr.clone(), "Water mage", 2, 1, 2, false, false));
-            researches.add(new Research((ArrayList<Research>) rqr.clone(), "Earth mage", 4, 1, 3, false, false));
-            researches.add(new Research((ArrayList<Research>) rqr.clone(), "Air mage", 3, 1, 4, false, false));
+            researches.add(new Research((ArrayList<Research>) rqr.clone(),
+                    "Fire mage", 6, 1, 1, false, false));
+            researches.add(new Research((ArrayList<Research>) rqr.clone(),
+                    "Water mage", 2, 1, 2, false, false));
+            researches.add(new Research((ArrayList<Research>) rqr.clone(),
+                    "Earth mage", 4, 1, 3, false, false));
+            researches.add(new Research((ArrayList<Research>) rqr.clone(),
+                    "Air mage", 3, 1, 4, false, false));
             for (int i = 0; i < researches.size(); i++)
                 researches1.add(new Gson().toJson(researches.get(i)));
         }
@@ -326,10 +339,6 @@ public class MainActivity extends AppCompatActivity {
         ed.putString("Mana channels", new Gson().toJson(mana_channels1));
         ed.putString("Mana reservoirs", new Gson().toJson(mana_reservoirs1));
         ed.apply();
-        Log.d("KKP", player.toString());
-        Log.d("KKKLLL", new Gson().toJson(MainActivity.researches));
-        Log.d("KKKLL!", new Gson().toJson(MainActivity.researches1));
-        Log.d("KKKLLLLL", sh.getString("Researches", ""));
         super.onPause();
     }
 

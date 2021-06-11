@@ -22,12 +22,19 @@ import android.widget.TextView;
 import com.example.finalproject.R;
 import com.example.finalproject.service.Message;
 import com.example.finalproject.service.User;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 
 public class ChatMiniFragment extends Fragment {
     @Override
@@ -39,47 +46,56 @@ public class ChatMiniFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ArrayList<Message> messages = new ArrayList<>();
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Message");
         RecyclerView chat = getView().findViewById(R.id.chat_list);
         EditText enter_message = getView().findViewById(R.id.message);
         Button back = getView().findViewById(R.id.chat_mini_back_button), register = getView().findViewById(R.id.log_out);
+        ref.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                messages.clear();
+                snapshot.getChildren().forEach(e -> messages.add(toMessage((HashMap<String, Object>) e.getValue())));
+                chat.setAdapter(new ChatMiniFragment.ChatAdapter(messages));
+                chat.scrollToPosition(messages.size() - 1);
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentManager fm = getParentFragmentManager();
-                FragmentTransaction fr = fm.beginTransaction();
-                fr.remove(fm.findFragmentById(R.id.chat_mini));
+                FragmentTransaction fr=fm.beginTransaction();
+                fr.remove(fm.findFragmentById(R.id.status));
                 fr.commit();
-                FragmentTransaction f = getParentFragment().getParentFragmentManager().beginTransaction();
-                f.remove(getParentFragment().getParentFragmentManager().findFragmentById(R.id.status));
-                f.commit();
-                f = getParentFragment().getParentFragmentManager().beginTransaction();
-                f.add(R.id.status, new StatusBarFragment());
-                f.commit();
+                fr=fm.beginTransaction();
+                fr.add(R.id.status, new StatusBarFragment());
+                fr.commit();
             }
         });
-        View.OnClickListener click = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((EditText) v).setText("");
-                enter_message.setOnClickListener(null);
-            }
-        };
         chat.setLayoutManager(new LinearLayoutManager(getContext()));
-        enter_message.setOnClickListener(click);
         enter_message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Log.d("KKK", v.getText().toString());
                 Message m = new Message();
                 m.message = v.getText().toString();
                 m.user = new Gson().toJson(MainActivity.player.getUser());
-                Log.d("KKKR", new Gson().toJson(m));
+                m.date=new Date().getTime()-Calendar.getInstance().getTimeZone().getOffset(new Date().getTime())*60*1000;
+                ref.child(messages.size() + "").setValue(m);
                 v.setText("");
-                enter_message.setOnClickListener(click);
                 return false;
             }
         });
         chat.scrollToPosition(messages.size() - 1);
+    }
+
+    private Message toMessage(HashMap<String, Object> r) {
+        return new Message(r.get("message").toString(),
+                r.get("user").toString(),
+                Long.parseLong(r.get("date").toString()));
     }
 
     class ChatAdapter extends RecyclerView.Adapter<ChatMiniFragment.ChatAdapter.ChatViewHolder> {
@@ -111,7 +127,7 @@ public class ChatMiniFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull @NotNull ChatMiniFragment.ChatAdapter.ChatViewHolder holder, int position) {
             holder.message.setText(data.get(position).message);
-            long time = data.get(position).date / 1000 / 60 +data.get(position).gmt*60 -new Date().getTimezoneOffset()*60;
+            long time = data.get(position).date / 1000 / 60 +new Date().getTimezoneOffset()*60;
             String mins, hrs;
             mins = time % 60 >= 10 ? time % 60 + "" : "0" + time % 60;
             time /= 60;

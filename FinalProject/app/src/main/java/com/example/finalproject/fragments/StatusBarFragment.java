@@ -66,25 +66,36 @@ public class StatusBarFragment extends Fragment {
                 (MainActivity.b[3][4], MainActivity.status_images_width, MainActivity.status_images_width, false);
         exp_img.setImageBitmap(Bitmap.createBitmap(bm));
         Button chat = getView().findViewById(R.id.chat_button);
+        chat.setVisibility(View.VISIBLE);
         FragmentManager fm = getParentFragmentManager();
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                 if (MainActivity.player.getUser().isLogged_in())
-                {
-                    fragmentTransaction.add(R.id.chat, new ChatFragment());
-                }else fragmentTransaction.add(R.id.log_in, new SignInFragment());
+                    if (MainActivity.player.getChat_mode()){
+                        fragmentTransaction.add(R.id.chat_mini, new ChatMiniFragment());
+                        chat.setVisibility(View.GONE);
+                    }
+                    else {
+                        fragmentTransaction.add(R.id.chat, new ChatFragment());
+                        fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                        fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                        fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                    }
+                else {
+                    fragmentTransaction.add(R.id.log_in, new SignInFragment());
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                    fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                }
                 fragmentTransaction.commit();
             }
         });
         avatar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction fr=fm.beginTransaction();
+                FragmentTransaction fr = fm.beginTransaction();
                 fr.remove(fm.findFragmentById(R.id.map));
                 fr.remove(fm.findFragmentById(R.id.menu));
                 fr.remove(fm.findFragmentById(R.id.status));

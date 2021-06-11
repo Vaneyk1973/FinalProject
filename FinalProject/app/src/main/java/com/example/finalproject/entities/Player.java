@@ -108,7 +108,7 @@ public class Player extends Entity implements Parcelable {
         equipment.add(null);
         equipment.add(null);
         user = new User("", "", "");
-        chat_mode = true;
+        chat_mode = false;
     }
 
     public void research(Research research) {

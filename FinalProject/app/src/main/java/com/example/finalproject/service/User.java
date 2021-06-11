@@ -17,10 +17,10 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 public class User {
-    public String login;
-    public String email;
+    private String login;
+    private String email;
     private String password;
-    public boolean logged_in;
+    private boolean logged_in;
 
     public User(){}
 
