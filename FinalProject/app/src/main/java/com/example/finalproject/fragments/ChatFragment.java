@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.example.finalproject.R;
 import com.example.finalproject.service.Message;
 import com.example.finalproject.service.User;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -53,7 +54,7 @@ public class ChatFragment extends Fragment {
         Button log_out = getView().findViewById(R.id.log_out);
         chat = getView().findViewById(R.id.chat_list);
         EditText enter_message = getView().findViewById(R.id.message);
-        Button back = getView().findViewById(R.id.back_button_chat);
+        Button back = getView().findViewById(R.id.chat_back_button);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
@@ -100,7 +101,11 @@ public class ChatFragment extends Fragment {
         log_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                MainActivity.player.getUser().log_out();
+                FragmentTransaction fr=getParentFragmentManager().beginTransaction();
+                fr.remove(getParentFragmentManager().findFragmentById(R.id.chat));
+                fr.add(R.id.log_in, new SignInFragment());
+                fr.commit();
             }
         });
         chat.scrollToPosition(messages.size() - 1);
@@ -142,7 +147,7 @@ public class ChatFragment extends Fragment {
         @Override
         public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ChatViewHolder holder, int position) {
             holder.message.setText(data.get(position).message);
-            long time = data.get(position).date / 1000 / 60 + data.get(position).gmt * 60 - new Date().getTimezoneOffset() * 60;
+            long time = data.get(position).date / 1000 / 60 - data.get(position).gmt + new Date().getTimezoneOffset();
             String mins, hrs;
             mins = time % 60 >= 10 ? time % 60 + "" : "0" + time % 60;
             time /= 60;

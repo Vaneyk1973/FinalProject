@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
@@ -38,7 +37,7 @@ public class TutorialFragment extends Fragment {
             }
         });
         sw.setChecked(true);
-        Button close_tutorial=getView().findViewById(R.id.close_tutorial);
+        Button close_tutorial=getView().findViewById(R.id.close_tutorial_button);
         close_tutorial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

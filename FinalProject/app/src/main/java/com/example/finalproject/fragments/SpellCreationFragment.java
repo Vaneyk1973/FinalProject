@@ -20,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.finalproject.service.spell.Component;
@@ -75,7 +74,7 @@ public class SpellCreationFragment extends Fragment {
 
             }
         });
-        Button back=(Button)getView().findViewById(R.id.back_button3);
+        Button back=(Button)getView().findViewById(R.id.spell_creation_back_button);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

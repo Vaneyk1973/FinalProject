@@ -1,20 +1,17 @@
 package com.example.finalproject.fragments;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.provider.ContactsContract;
 import android.util.Pair;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -23,11 +20,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.finalproject.items.Item;
 import com.example.finalproject.R;
-import com.google.android.material.button.MaterialButton;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -50,7 +45,7 @@ public class InventoryFragment extends Fragment {
         int width = size.x;
         RecyclerView inventory = (RecyclerView) getView().findViewById(R.id.list);
         ArrayList<ImageView> categories = new ArrayList<>();
-        Button back = (Button) getView().findViewById(R.id.back_button);
+        Button back = (Button) getView().findViewById(R.id.inventory_back_button);
         View.OnClickListener clickListener=new View.OnClickListener() {
             @Override
             public void onClick(View v) {

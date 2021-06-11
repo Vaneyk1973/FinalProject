@@ -13,7 +13,6 @@ import com.example.finalproject.items.Armor;
 import com.example.finalproject.items.Food;
 import com.example.finalproject.items.Item;
 import com.example.finalproject.items.Weapon;
-import com.example.finalproject.service.A;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.User;
 import com.example.finalproject.service.spell.Spell;
@@ -25,7 +24,7 @@ import java.util.Random;
 public class Player extends Entity implements Parcelable {
 
     private int gold, research_points;
-    private boolean registered, chat_mode;
+    private boolean chat_mode;
     private User user;
     private ArrayList<Integer> element_bonuses = new ArrayList<>();
     private ArrayList<Item> equipment = new ArrayList<>();
@@ -42,7 +41,6 @@ public class Player extends Entity implements Parcelable {
         super.writeToParcel(dest, flags);
         dest.writeInt(gold);
         dest.writeInt(research_points);
-        dest.writeString(registered + "");
         dest.writeString(chat_mode + "");
         dest.writeSerializable(element_bonuses);
         dest.writeInt(coordinates.first);
@@ -72,7 +70,6 @@ public class Player extends Entity implements Parcelable {
         super(in);
         gold = in.readInt();
         research_points = in.readInt();
-        registered = new Boolean(in.readString());
         chat_mode = new Boolean(in.readString());
         element_bonuses = new ArrayList<>((ArrayList<Integer>) in.readSerializable());
         coordinates = new Pair<>(in.readInt(), in.readInt());
@@ -100,7 +97,7 @@ public class Player extends Entity implements Parcelable {
         setMax_health(getHealth());
         setMax_mana(getMana());
         setPower_level(0);
-        setExperience_to_next_level_required(10);
+        setExperience_to_next_level_required((int)Math.ceil(exp_formula(1.0)));
         setGold(0);
         setResearch_points(1);
         setCoordinates(new Pair<>(x, y));
@@ -110,10 +107,8 @@ public class Player extends Entity implements Parcelable {
         equipment.add(null);
         equipment.add(null);
         equipment.add(null);
-        user = new User("", "");
-        user.log_out();
+        user = new User("", "", "");
         chat_mode = true;
-        registered = false;
     }
 
     public void research(Research research) {
@@ -216,15 +211,21 @@ public class Player extends Entity implements Parcelable {
         while (getExperience() >= getExperience_to_next_level_required()) {
             super.setLevel(this.getLevel() + 1);
             setExperience(getExperience() - getExperience_to_next_level_required());
-            setExperience_to_next_level_required(getLevel() * getLevel() * 10);
-            research_points += 3;
-            setMax_mana(getMana() * 1.6);
+            setExperience_to_next_level_required((int)Math.ceil(exp_formula(getLevel())));
+            research_points += 1;
+            setMax_mana(getMana() * 1.3);
             setMana(getMax_mana());
-            setMax_health(getMax_health() * 1.6);
+            setMax_health(getMax_health() * 1.3);
             setHealth(getMax_health());
-            setMana_regen(getMana_regen() * 1.7);
-            setHealth_regen(getHealth_regen() * 1.7);
+            setMana_regen(getMana_regen() * 1.4);
+            setHealth_regen(getHealth_regen() * 1.4);
         }
+    }
+
+    private double exp_formula(double x){
+        return ((Math.pow(x,Math.PI)-Math.pow(Math.PI, Math.E))
+                *Math.cbrt(Math.pow(x, Math.E)-Math.PI))
+                /(Math.pow(x, Math.E/7));
     }
 
     public void addExperience(int exp) {
@@ -325,14 +326,6 @@ public class Player extends Entity implements Parcelable {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public boolean isRegistered() {
-        return registered;
-    }
-
-    public void setRegistered(boolean registered) {
-        this.registered = registered;
     }
 
     public boolean getChat_mode() {

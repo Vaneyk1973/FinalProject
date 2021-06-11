@@ -20,7 +20,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
-import com.example.finalproject.service.A;
 import com.example.finalproject.service.Message;
 import com.example.finalproject.service.User;
 import com.google.gson.Gson;
@@ -29,12 +28,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Date;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ChatMiniFragment extends Fragment {
     @Override
@@ -48,7 +41,7 @@ public class ChatMiniFragment extends Fragment {
         ArrayList<Message> messages = new ArrayList<>();
         RecyclerView chat = getView().findViewById(R.id.chat_list);
         EditText enter_message = getView().findViewById(R.id.message);
-        Button back = getView().findViewById(R.id.back_button_chat), register = getView().findViewById(R.id.log_out);
+        Button back = getView().findViewById(R.id.chat_mini_back_button), register = getView().findViewById(R.id.log_out);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -1,9 +1,6 @@
 package com.example.finalproject.fragments;
 
-import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.Point;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,13 +9,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.finalproject.R;
@@ -38,14 +33,13 @@ public class StatusBarFragment extends Fragment {
                 gold_img = getView().findViewById(R.id.gold_image),
                 health_img = getView().findViewById(R.id.health_image),
                 mana_img = getView().findViewById(R.id.mana_image),
-                settings_img=getActivity().findViewById(R.id.settings_button),
                 avatar = getView().findViewById(R.id.avatar);
         TextView lvl = getView().findViewById(R.id.level),
                 gold = getView().findViewById(R.id.gold),
                 exp = getView().findViewById(R.id.exp);
         health = (TextView) getView().findViewById(R.id.health);
         mana = (TextView) getView().findViewById(R.id.mana);
-        String txt = MainActivity.player.getExperience() + "/" + MainActivity.player.getExperience_to_next_level_required();
+        String txt;
         txt = MainActivity.player.getLevel() + "";
         lvl.setText(txt);
         txt = MainActivity.player.getGold() + "";
@@ -71,38 +65,31 @@ public class StatusBarFragment extends Fragment {
         bm = Bitmap.createScaledBitmap
                 (MainActivity.b[3][4], MainActivity.status_images_width, MainActivity.status_images_width, false);
         exp_img.setImageBitmap(Bitmap.createBitmap(bm));
-        bm=Bitmap.createScaledBitmap
-                (MainActivity.b[3][0], MainActivity.status_images_width, MainActivity.status_images_width, false);
-        settings_img.setImageBitmap(Bitmap.createBitmap(bm));
         Button chat = getView().findViewById(R.id.chat_button);
         FragmentManager fm = getParentFragmentManager();
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                //if (MainActivity.player.getChat_mode()) {
-                //    if (MainActivity.player.getUser().isLogged_in() && MainActivity.player.isRegistered()) {
-                        fragmentTransaction.add(R.id.chat, new ChatFragment());
-/*                    } else {
-                        fragmentTransaction.add(R.id.registration, new RegistrationFragment());
-                    }*/
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                /*} else {
-                    if (MainActivity.player.getUser().isLogged_in()) {
-                        FragmentTransaction f = getChildFragmentManager().beginTransaction();
-                        f.add(R.id.chat_mini, new ChatMiniFragment());
-                        f.commit();
-                        chat.setVisibility(View.GONE);
-                    } else {
-                        fragmentTransaction.add(R.id.registration, new RegistrationFragment());
-                        fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                        fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                        fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                    }*/
-                //}
+                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                if (MainActivity.player.getUser().isLogged_in())
+                {
+                    fragmentTransaction.add(R.id.chat, new ChatFragment());
+                }else fragmentTransaction.add(R.id.log_in, new SignInFragment());
                 fragmentTransaction.commit();
+            }
+        });
+        avatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fr=fm.beginTransaction();
+                fr.remove(fm.findFragmentById(R.id.map));
+                fr.remove(fm.findFragmentById(R.id.menu));
+                fr.remove(fm.findFragmentById(R.id.status));
+                fr.add(R.id.settings_menu, new SettingsMenuFragment());
+                fr.commit();
             }
         });
         super.onViewCreated(view, savedInstanceState);

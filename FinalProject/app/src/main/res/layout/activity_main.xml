@@ -8,7 +8,7 @@
     tools:context=".fragments.MainActivity">
 
     <FrameLayout
-        android:id="@+id/registration"
+        android:id="@+id/log_in"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteY="731dp" />
@@ -24,6 +24,30 @@
 
     <FrameLayout
         android:id="@+id/inventory"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/register"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/restore_password"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/settings_menu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@+id/settings"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
     </FrameLayout>

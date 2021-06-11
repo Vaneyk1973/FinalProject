@@ -107,7 +107,7 @@
     <com.google.android.material.button.MaterialButton
         app:icon="@drawable/sharp_arrow_back_black_18dp"
         android:fontFamily="cursive"
-        android:id="@+id/back_button3"
+        android:id="@+id/spell_creation_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Back"

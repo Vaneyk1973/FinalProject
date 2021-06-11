@@ -20,7 +20,6 @@ import com.example.finalproject.entities.Enemy;
 import com.example.finalproject.entities.Player;
 import com.example.finalproject.items.Armor;
 import com.example.finalproject.items.Item;
-import com.example.finalproject.service.A;
 import com.example.finalproject.service.Music;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.spell.Element;
@@ -38,9 +37,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -85,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
         Retrofit retrofit = new Retrofit.Builder().baseUrl("https://m5hw.herokuapp.com/").
                 addConverterFactory(GsonConverterFactory.create()).
                 build();
-        A a = retrofit.create(A.class);
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         XmlPullParser parser=getResources().getXml(R.xml.start_map);
         map.add(new Map(parser));
@@ -97,32 +92,6 @@ public class MainActivity extends AppCompatActivity {
         player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         show_tutorial = sh.getBoolean("Tutorial", true);
         setInitialData();
-        a.is_registered(MainActivity.player.getUser().getLogin()).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.body() != null) {
-                    MainActivity.player.setRegistered(response.body());
-                }
-                Log.d("KKKKKKKK", MainActivity.player.getUser().isLogged_in() + " " + MainActivity.player.isRegistered());
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Log.d("KKPSS", t.toString());
-            }
-        });
-        a.is_logged_in(MainActivity.player.getUser().getLogin()).enqueue(new Callback<Boolean>() {
-            @Override
-            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
-                if (response.body())
-                    MainActivity.player.getUser().log_in();
-            }
-
-            @Override
-            public void onFailure(Call<Boolean> call, Throwable t) {
-                Log.d("KKFF", t.toString());
-            }
-        });
         if (show_tutorial) {
             fragmentTransaction.add(R.id.tutorial, new TutorialFragment());
         } else {
@@ -220,7 +189,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static void set_enemies() {
         enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0), b[2][5]));
-        enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1), b[4][5]));
+        enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5000, drop.get(1), b[4][5]));
         enemies.add(new Enemy("Wolf", 35, 0, 5, 0, 10, 10, drop.get(2), b[0][5]));
         enemies.add(new Enemy("Fox", 20, 0, 3, 0, 7, 6, drop.get(3), b[1][5]));
         enemies.add(new Enemy("Bear", 100, 10, 15, 0, 50, 200, drop.get(4), b[3][5]));

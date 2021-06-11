@@ -36,7 +36,7 @@ public class SpellsFragment extends Fragment {
         RecyclerView spells=(RecyclerView)getView().findViewById(R.id.spells_list);
         spells.setLayoutManager(new LinearLayoutManager(getContext()));
         spells.setAdapter(new SpellsAdapter(MainActivity.player.getSpells()));
-        Button back=(Button)getView().findViewById(R.id.back_button2);
+        Button back=(Button)getView().findViewById(R.id.spells_back_button);
         FragmentManager f=getParentFragmentManager();
         back.setOnClickListener(new View.OnClickListener() {
             @Override

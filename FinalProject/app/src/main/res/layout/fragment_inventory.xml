@@ -53,7 +53,7 @@
     <com.google.android.material.button.MaterialButton
         app:icon="@drawable/sharp_arrow_back_black_18dp"
         android:fontFamily="cursive"
-        android:id="@+id/back_button"
+        android:id="@+id/inventory_back_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Back"
@@ -68,7 +68,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/back_button"
+        app:layout_constraintBottom_toTopOf="@+id/inventory_back_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"

@@ -88,7 +88,7 @@ public class ResearchTreeFragment extends Fragment {
             if (MainActivity.researches.get(i).isResearched())
                 research_hash_map.get(MainActivity.researches.get(i)).setBackgroundColor(Color.GREEN);
         }
-        Button back = getView().findViewById(R.id.back_button4);
+        Button back = getView().findViewById(R.id.research_tree_back_button);
         FragmentManager fm = getParentFragmentManager();
         TableLayout k = getView().findViewById(R.id.research_table);
         back.setOnClickListener(new View.OnClickListener() {

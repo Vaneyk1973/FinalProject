@@ -34,7 +34,7 @@
         android:textColor="@android:color/black"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/back_button_chat"
+        android:id="@+id/chat_mini_back_button"
         android:layout_width="66dp"
         android:layout_height="35dp"
         app:icon="@drawable/sharp_arrow_back_black_18dp"

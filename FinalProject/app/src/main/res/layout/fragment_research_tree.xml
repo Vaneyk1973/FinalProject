@@ -10,7 +10,7 @@
     <HorizontalScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/back_button4"
+        app:layout_constraintBottom_toTopOf="@+id/research_tree_back_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +89,7 @@
 
     <com.google.android.material.button.MaterialButton
         app:icon="@drawable/sharp_arrow_back_black_18dp"
-        android:id="@+id/back_button4"
+        android:id="@+id/research_tree_back_button"
         android:fontFamily="cursive"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
