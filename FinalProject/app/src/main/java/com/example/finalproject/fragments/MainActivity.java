@@ -4,7 +4,6 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
@@ -31,8 +30,6 @@ import com.example.finalproject.service.spell.ManaReservoir;
 import com.example.finalproject.service.spell.Type;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
@@ -367,18 +364,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static class MapTitle {
-        private final Pair<Integer, Integer> coords;
+        private final Pair<Integer, Integer> coordinates;
         private Bitmap texture;
         private int type;
 
-        public MapTitle(Pair<Integer, Integer> coords, Bitmap texture, int type) {
-            this.coords = coords;
+        public MapTitle(Pair<Integer, Integer> coordinates, Bitmap texture, int type) {
+            this.coordinates = coordinates;
             this.texture = texture;
             this.type = type;
         }
 
-        public Pair<Integer, Integer> getCoords() {
-            return coords;
+        public Pair<Integer, Integer> getCoordinates() {
+            return coordinates;
         }
 
         public void setTexture(Bitmap texture) {
