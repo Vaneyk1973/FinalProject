@@ -25,8 +25,8 @@ public class Enemy extends Entity implements Parcelable {
         setMax_health(health);
         setMax_mana(mana);
         setDrop(drop);
-        setGiven_exp(given_exp);
-        setGiven_gold(given_gold);
+        setGivenExp(given_exp);
+        setGivenGold(given_gold);
         setTexture(b);
     }
 
@@ -37,16 +37,16 @@ public class Enemy extends Entity implements Parcelable {
         setDrop(enemy.getDrop());
         setDamage(enemy.getDamage());
         setExperience(enemy.getExperience());
-        setExperience_to_next_level_required(enemy.getExperience_to_next_level_required());
+        setExperienceToNextLevelRequired(enemy.getExperienceToNextLevelRequired());
         setHealth(enemy.getHealth());
         setLevel(enemy.getLevel());
         setMana(enemy.getMana());
         setMax_health(enemy.getMax_health());
         setMax_mana(enemy.getMax_mana());
         setName(enemy.getName());
-        setPower_level(enemy.getPower_level());
-        setGiven_exp(enemy.getGiven_exp());
-        setGiven_gold(enemy.getGiven_gold());
+        setPowerLevel(enemy.getPowerLevel());
+        setGivenExp(enemy.getGivenExp());
+        setGivenGold(enemy.getGivenGold());
         setTexture(enemy.getTexture());
     }
 

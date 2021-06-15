@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,7 +22,6 @@ import android.widget.TextView;
 import com.example.finalproject.R;
 import com.example.finalproject.service.Message;
 import com.example.finalproject.service.User;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -54,15 +52,15 @@ public class ChatFragment extends Fragment {
         ProgressBar t=getView().findViewById(R.id.progressBar);
         t.animate();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Message");
-        Button log_out = getView().findViewById(R.id.log_out);
+        Button logOut = getView().findViewById(R.id.log_out);
         chat = getView().findViewById(R.id.chat_list);
-        EditText enter_message = getView().findViewById(R.id.message);
+        EditText enterMessage = getView().findViewById(R.id.message);
         Button back = getView().findViewById(R.id.chat_back_button);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 messages.clear();
-                snapshot.getChildren().forEach(e -> messages.add(toMessage((HashMap<String, Object>) e.getValue())));
+                snapshot.getChildren().forEach(e -> messages.add(e.getValue(Message.class)));
                 chat.setAdapter(new ChatAdapter(messages));
                 chat.scrollToPosition(messages.size() - 1);
                 t.setVisibility(View.GONE);
@@ -87,22 +85,24 @@ public class ChatFragment extends Fragment {
         });
         chat.setAdapter(new ChatAdapter(messages));
         chat.setLayoutManager(new LinearLayoutManager(getContext()));
-        enter_message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        enterMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Message m = new Message();
-                m.message = v.getText().toString();
-                m.user = new Gson().toJson(MainActivity.player.getUser());
-                m.date = new Date().getTime()-Calendar.getInstance().getTimeZone().getOffset(new Date().getTime())*60*1000;
-                ref.child(messages.size() + "").setValue(m);
-                v.setText("");
+                if (!v.getText().toString().isEmpty()){
+                    Message m = new Message();
+                    m.message = v.getText().toString();
+                    m.user = new Gson().toJson(MainActivity.player.getUser());
+                    m.date = new Date().getTime()-Calendar.getInstance().getTimeZone().getOffset(new Date().getTime())*60*1000;
+                    ref.child(messages.size() + "").setValue(m);
+                    v.setText("");
+                }
                 return false;
             }
         });
-        log_out.setOnClickListener(new View.OnClickListener() {
+        logOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.player.getUser().log_out();
+                MainActivity.player.getUser().logOut();
                 FragmentTransaction fr=getParentFragmentManager().beginTransaction();
                 fr.remove(getParentFragmentManager().findFragmentById(R.id.chat));
                 fr.add(R.id.log_in, new SignInFragment());
@@ -110,12 +110,6 @@ public class ChatFragment extends Fragment {
             }
         });
         chat.scrollToPosition(messages.size() - 1);
-    }
-
-    private Message toMessage(HashMap<String, Object> r) {
-        return new Message(r.get("message").toString(),
-                r.get("user").toString(),
-                Long.parseLong(r.get("date").toString()));
     }
 
     class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.ChatViewHolder> {

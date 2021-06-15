@@ -1,28 +1,28 @@
 package com.example.finalproject.items;
 
 public class Food extends Item {
-    private int mana_recovery, health_recovery, weight;
+    private int manaRecovery, healthRecovery, weight;
 
-    public Food(int mana_recovery, int health_recovery, int weight) {
-        this.mana_recovery = mana_recovery;
-        this.health_recovery = health_recovery;
+    public Food(int manaRecovery, int healthRecovery, int weight) {
+        this.manaRecovery = manaRecovery;
+        this.healthRecovery = healthRecovery;
         this.weight = weight;
     }
 
-    public int getMana_recovery() {
-        return mana_recovery;
+    public int getManaRecovery() {
+        return manaRecovery;
     }
 
-    public void setMana_recovery(int mana_recovery) {
-        this.mana_recovery = mana_recovery;
+    public void setManaRecovery(int manaRecovery) {
+        this.manaRecovery = manaRecovery;
     }
 
-    public int getHealth_recovery() {
-        return health_recovery;
+    public int getHealthRecovery() {
+        return healthRecovery;
     }
 
-    public void setHealth_recovery(int health_recovery) {
-        this.health_recovery = health_recovery;
+    public void setHealthRecovery(int healthRecovery) {
+        this.healthRecovery = healthRecovery;
     }
 
     public int getWeight() {

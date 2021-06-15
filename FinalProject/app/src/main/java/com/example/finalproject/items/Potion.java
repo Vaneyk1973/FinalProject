@@ -1,25 +1,25 @@
 package com.example.finalproject.items;
 
 public class Potion extends Item {
-    public int lasting_time, strength, effect;
+    public int lastingTime, strength, effect;
 
     public Potion(int effect, String name) {
         this.effect = effect;
         super.setName(name);
     }
 
-    public Potion(int lasting_time, int strength, int effect) {
-        this.lasting_time = lasting_time;
+    public Potion(int lastingTime, int strength, int effect) {
+        this.lastingTime = lastingTime;
         this.strength = strength;
         this.effect = effect;
     }
 
-    public int getLasting_time() {
-        return lasting_time;
+    public int getLastingTime() {
+        return lastingTime;
     }
 
-    public void setLasting_time(int lasting_time) {
-        this.lasting_time = lasting_time;
+    public void setLastingTime(int lastingTime) {
+        this.lastingTime = lastingTime;
     }
 
     public int getStrength() {

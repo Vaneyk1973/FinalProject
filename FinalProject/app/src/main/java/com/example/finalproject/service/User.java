@@ -1,34 +1,27 @@
 package com.example.finalproject.service;
 
-import android.util.Log;
-
 import androidx.annotation.NonNull;
 
-import com.example.finalproject.fragments.MainActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 public class User {
     private String login;
+    private String uID;
     private String email;
-    private String password;
-    private boolean logged_in;
+    private boolean loggedIn;
 
     public User(){}
 
-    public User(String login, String email, String password) {
+    public User(String login, String email) {
         this.login = login;
         this.email = email;
-        this.password = password;
-        logged_in=false;
+        loggedIn =false;
     }
 
     public String getLogin() {
@@ -47,32 +40,30 @@ public class User {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
+    public boolean isLoggedIn() {
+        return loggedIn;
     }
 
-    public boolean isLogged_in() {
-        return logged_in;
+    public void logIn(){
+        loggedIn=true;
     }
 
-    public void log_in(){
-        FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password.hashCode()+"").addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    logged_in = true;
-                    FirebaseDatabase.getInstance().getReference("Users").
-                            child(FirebaseAuth.getInstance().getUid()).child("logged_in").setValue(true);
-                    Log.d("JJJJJ", MainActivity.player.getUser().isLogged_in()+"");
-                }
-            }
-        });
-    }
-
-    public void log_out(){
-        logged_in = false;
+    public void logOut(){
+        loggedIn = false;
         FirebaseDatabase.getInstance().getReference("Users").
-                child(FirebaseAuth.getInstance().getUid()).child("logged_in").setValue(false);
+                child(uID).child("loggedIn").setValue(false);
         FirebaseAuth.getInstance().signOut();
+    }
+
+    public void setLoggedIn(boolean loggedIn){
+        this.loggedIn=loggedIn;
+    }
+
+    public void setuID(String uID) {
+        this.uID = uID;
+    }
+
+    public String getuID() {
+        return uID;
     }
 }

@@ -7,13 +7,13 @@ import java.util.ArrayList;
 import java.util.Objects;
 
 public class Research {
-    private final ArrayList<Research> required_researches;
+    private final ArrayList<Research> requiredResearches;
     private final String name;
     private final int cost, tier, effect;
     private boolean researched, available;
 
-    public Research(ArrayList<Research> required_researches, String name, int cost, int tier, int effect, boolean researched, boolean available) {
-        this.required_researches = required_researches;
+    public Research(ArrayList<Research> requiredResearches, String name, int cost, int tier, int effect, boolean researched, boolean available) {
+        this.requiredResearches = requiredResearches;
         this.name = name;
         this.cost = cost;
         this.tier = tier;
@@ -46,8 +46,8 @@ public class Research {
         return cost;
     }
 
-    public ArrayList<Research> getRequired_researches() {
-        return required_researches;
+    public ArrayList<Research> getRequiredResearches() {
+        return requiredResearches;
     }
 
     public int getTier() {
@@ -55,9 +55,9 @@ public class Research {
     }
 
     public void enable() {
-        if (required_researches != null)
-            for (int i = 0; i < required_researches.size(); i++) {
-                if (!MainActivity.researches.get(MainActivity.researches.indexOf(required_researches.get(i))).isResearched())
+        if (requiredResearches != null)
+            for (int i = 0; i < requiredResearches.size(); i++) {
+                if (!MainActivity.researches.get(MainActivity.researches.indexOf(requiredResearches.get(i))).isResearched())
                     return;
             }
         available = true;

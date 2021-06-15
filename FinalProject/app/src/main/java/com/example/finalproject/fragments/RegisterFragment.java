@@ -7,7 +7,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -41,11 +40,14 @@ public class RegisterFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         Button back = getView().findViewById(R.id.register_back_button),
                 register = getView().findViewById(R.id.register_button);
-        EditText login_view = getView().findViewById(R.id.login_reg),
-                email_view = getView().findViewById(R.id.email_reg),
-                password_view = getView().findViewById(R.id.password_reg),
-                confirm_password_view = getView().findViewById(R.id.confirm_password_reg);
-        String[] login = new String[1], email = new String[1], password = new String[1], confirm_password = new String[1];
+        EditText loginView = getView().findViewById(R.id.login_reg),
+                emailView = getView().findViewById(R.id.email_reg),
+                passwordView = getView().findViewById(R.id.password_reg),
+                confirmPasswordView = getView().findViewById(R.id.confirm_password_reg);
+        String[] login = new String[1],
+                email = new String[1],
+                password = new String[1],
+                confirmPassword = new String[1];
         ProgressBar t=getView().findViewById(R.id.register_loading);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,20 +62,20 @@ public class RegisterFragment extends Fragment {
         clickListener[0]=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                login[0] = login_view.getText().toString();
-                email[0] = email_view.getText().toString();
-                password[0] = password_view.getText().toString();
-                confirm_password[0] = confirm_password_view.getText().toString();
+                login[0] = loginView.getText().toString();
+                email[0] = emailView.getText().toString();
+                password[0] = passwordView.getText().toString();
+                confirmPassword[0] = confirmPasswordView.getText().toString();
                 if (login[0].isEmpty()) {
-                    login_view.setError("Login is required");
+                    loginView.setError("Login is required");
                 } else if (!Patterns.EMAIL_ADDRESS.matcher(email[0]).matches()) {
-                    email_view.setError("Enter a valid email");
+                    emailView.setError("Enter a valid email");
                 } else if (password[0].isEmpty()) {
-                    password_view.setError("Password is required");
+                    passwordView.setError("Password is required");
                 } else if (password[0].length() < 8) {
-                    password_view.setError("Password should be longer than 7 characters");
-                } else if (confirm_password[0] == password[0]) {
-                    confirm_password_view.setError("Passwords should match");
+                    passwordView.setError("Password should be longer than 7 characters");
+                } else if (confirmPassword[0] == password[0]) {
+                    confirmPasswordView.setError("Passwords should match");
                 } else {
                     t.setVisibility(View.VISIBLE);
                     t.animate();
@@ -84,10 +86,10 @@ public class RegisterFragment extends Fragment {
                                 public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
-                                        MainActivity.player.setUser(new User(login[0], email[0], password[0]));
+                                        MainActivity.player.setUser(new User(login[0], email[0]));
+                                        MainActivity.player.getUser().setuID(FirebaseAuth.getInstance().getUid());
                                         ref.child(FirebaseAuth.getInstance().getUid()).setValue(MainActivity.player.getUser());
-                                        ref.child(FirebaseAuth.getInstance().getUid()).child("password").setValue(password[0].hashCode());
-                                        MainActivity.player.getUser().log_in();
+                                        MainActivity.player.getUser().logIn();
                                         FragmentTransaction fr=getParentFragmentManager().beginTransaction();
                                         fr.add(R.id.chat, new ChatFragment());
                                         fr.remove(getParentFragmentManager().findFragmentById(R.id.register));

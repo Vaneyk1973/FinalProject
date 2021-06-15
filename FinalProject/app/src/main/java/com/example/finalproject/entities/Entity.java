@@ -9,8 +9,8 @@ import com.example.finalproject.service.spell.Spell;
 import java.util.HashMap;
 
 public class Entity implements Parcelable {
-    private int level, experience, power_level, experience_to_next_level_required,
-            damage, armor, given_exp, given_gold;
+    private int level, experience, powerLevel, experienceToNextLevelRequired,
+            damage, armor, givenExp, givenGold;
     private double health, max_health, mana, max_mana, health_regen, mana_regen;
     private String name;
     private HashMap<Spell, Double> resistances = new HashMap<>();
@@ -25,14 +25,14 @@ public class Entity implements Parcelable {
         max_health = in.readDouble();
         mana = in.readDouble();
         max_mana = in.readDouble();
-        power_level = in.readInt();
-        experience_to_next_level_required = in.readInt();
+        powerLevel = in.readInt();
+        experienceToNextLevelRequired = in.readInt();
         damage = in.readInt();
         armor = in.readInt();
         health_regen = in.readDouble();
         mana_regen = in.readDouble();
-        given_exp = in.readInt();
-        given_gold = in.readInt();
+        givenExp = in.readInt();
+        givenGold = in.readInt();
         name = in.readString();
         resistances = new HashMap<>((HashMap<Spell, Double>) in.readBundle().getSerializable("resistances"));
     }
@@ -152,20 +152,20 @@ public class Entity implements Parcelable {
         this.experience = experience;
     }
 
-    public int getPower_level() {
-        return power_level;
+    public int getPowerLevel() {
+        return powerLevel;
     }
 
-    public void setPower_level(int power_level) {
-        this.power_level = power_level;
+    public void setPowerLevel(int powerLevel) {
+        this.powerLevel = powerLevel;
     }
 
-    public int getExperience_to_next_level_required() {
-        return experience_to_next_level_required;
+    public int getExperienceToNextLevelRequired() {
+        return experienceToNextLevelRequired;
     }
 
-    public void setExperience_to_next_level_required(int experience_to_next_level_required) {
-        this.experience_to_next_level_required = experience_to_next_level_required;
+    public void setExperienceToNextLevelRequired(int experienceToNextLevelRequired) {
+        this.experienceToNextLevelRequired = experienceToNextLevelRequired;
     }
 
     public HashMap<Spell, Double> getResistances() {
@@ -176,20 +176,20 @@ public class Entity implements Parcelable {
         this.resistances = resistances;
     }
 
-    public int getGiven_exp() {
-        return given_exp;
+    public int getGivenExp() {
+        return givenExp;
     }
 
-    public void setGiven_exp(int given_exp) {
-        this.given_exp = given_exp;
+    public void setGivenExp(int givenExp) {
+        this.givenExp = givenExp;
     }
 
-    public int getGiven_gold() {
-        return given_gold;
+    public int getGivenGold() {
+        return givenGold;
     }
 
-    public void setGiven_gold(int given_gold) {
-        this.given_gold = given_gold;
+    public void setGivenGold(int givenGold) {
+        this.givenGold = givenGold;
     }
 
     @Override
@@ -205,14 +205,14 @@ public class Entity implements Parcelable {
         dest.writeDouble(max_health);
         dest.writeDouble(mana);
         dest.writeDouble(max_mana);
-        dest.writeInt(power_level);
-        dest.writeInt(experience_to_next_level_required);
+        dest.writeInt(powerLevel);
+        dest.writeInt(experienceToNextLevelRequired);
         dest.writeInt(damage);
         dest.writeInt(armor);
         dest.writeDouble(health_regen);
         dest.writeDouble(mana_regen);
-        dest.writeInt(given_exp);
-        dest.writeInt(given_gold);
+        dest.writeInt(givenExp);
+        dest.writeInt(givenGold);
         dest.writeString(name);
         Bundle b = new Bundle();
         b.putSerializable("resistances", resistances);

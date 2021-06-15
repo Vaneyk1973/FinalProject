@@ -1,13 +1,13 @@
 package com.example.finalproject.items;
 
 public class Weapon extends Item {
-    private int damage, type_of_damage, type_of_weapon;
+    private int damage, typeOfDamage, typeOfWeapon;
 
-    public Weapon(int damage, int type_of_damage, int type_of_weapon, String name) {
+    public Weapon(int damage, int typeOfDamage, int typeOfWeapon, String name) {
         super.setName(name);
         this.damage = damage;
-        this.type_of_damage = type_of_damage;
-        this.type_of_weapon = type_of_weapon;
+        this.typeOfDamage = typeOfDamage;
+        this.typeOfWeapon = typeOfWeapon;
     }
 
     public int getDamage() {
@@ -18,19 +18,19 @@ public class Weapon extends Item {
         this.damage = damage;
     }
 
-    public int getType_of_damage() {
-        return type_of_damage;
+    public int getTypeOfDamage() {
+        return typeOfDamage;
     }
 
-    public void setType_of_damage(int type_of_damage) {
-        this.type_of_damage = type_of_damage;
+    public void setTypeOfDamage(int typeOfDamage) {
+        this.typeOfDamage = typeOfDamage;
     }
 
-    public int getType_of_weapon() {
-        return type_of_weapon;
+    public int getTypeOfWeapon() {
+        return typeOfWeapon;
     }
 
-    public void setType_of_weapon(int type_of_weapon) {
-        this.type_of_weapon = type_of_weapon;
+    public void setTypeOfWeapon(int typeOfWeapon) {
+        this.typeOfWeapon = typeOfWeapon;
     }
 }

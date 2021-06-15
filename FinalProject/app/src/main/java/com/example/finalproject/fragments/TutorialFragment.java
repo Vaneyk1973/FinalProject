@@ -33,7 +33,7 @@ public class TutorialFragment extends Fragment {
         sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                MainActivity.show_tutorial=sw.isChecked();
+                MainActivity.showTutorial =sw.isChecked();
             }
         });
         sw.setChecked(true);
@@ -41,7 +41,7 @@ public class TutorialFragment extends Fragment {
         close_tutorial.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.show_tutorial=sw.isChecked();
+                MainActivity.showTutorial =sw.isChecked();
                 FragmentManager fm=getParentFragmentManager();
                 FragmentTransaction fr=fm.beginTransaction();
                 fr.add(R.id.status, new StatusBarFragment());

@@ -1,7 +1,6 @@
 package com.example.finalproject.fragments;
 
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -38,7 +37,7 @@ public class ItemCharacteristicsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ImageView img=getView().findViewById(R.id.category_image);
         img.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.b[item.getCategory()][6],
-                MainActivity.category_image_width, MainActivity.category_image_width, false));
+                MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false));
         TextView name = (TextView) getView().findViewById(R.id.name_field);
         TextView category = (TextView) getView().findViewById(R.id.category_field);
         TextView cost = (TextView) getView().findViewById(R.id.cost_field);

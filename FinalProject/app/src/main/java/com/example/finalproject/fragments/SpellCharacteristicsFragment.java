@@ -35,7 +35,7 @@ public class SpellCharacteristicsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         ImageView img=getView().findViewById(R.id.element_picture);
         img.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.b[Math.abs(spell.getElement().getElement())][2],
-                MainActivity.category_image_width/3*2, MainActivity.category_image_width/3*2, false));
+                MainActivity.categoryImageWidth /3*2, MainActivity.categoryImageWidth /3*2, false));
         TextView name=getView().findViewById(R.id.spell_name_char),
                 type=getView().findViewById(R.id.spell_type_char),
                 damage=getView().findViewById(R.id.spell_damage_char),
@@ -43,6 +43,6 @@ public class SpellCharacteristicsFragment extends Fragment {
         name.setText(spell.getName());
         type.setText(spell.getType().getName()+"");
         damage.setText(spell.getDamage()+"");
-        mana_consumption.setText(spell.getMana_consumption()+"");
+        mana_consumption.setText(spell.getManaConsumption()+"");
     }
 }

@@ -30,12 +30,12 @@ public class SettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        SwitchCompat chat_mode=getView().findViewById(R.id.chat_mode_switch);
-        chat_mode.setChecked(MainActivity.player.getChat_mode());
-        chat_mode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        SwitchCompat chatMode=getView().findViewById(R.id.chat_mode_switch);
+        chatMode.setChecked(MainActivity.player.getChatMode());
+        chatMode.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                MainActivity.player.setChat_mode(isChecked);
+                MainActivity.player.setChatMode(isChecked);
             }
         });
         Button back=getView().findViewById(R.id.settings_back_button);

@@ -53,20 +53,20 @@ public class InventoryFragment extends Fragment {
             }
         };
         Bitmap bm = Bitmap.createScaledBitmap
-                (MainActivity.b[0][6], MainActivity.category_image_width, MainActivity.category_image_width, false);
+                (MainActivity.b[0][6], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
         categories.add(getView().findViewById(R.id.armor_weapons));
         categories.add(getView().findViewById(R.id.potions_food));
         categories.add(getView().findViewById(R.id.recourses));
         categories.add(getView().findViewById(R.id.other));
         categories.get(0).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[1][6], MainActivity.category_image_width, MainActivity.category_image_width, false);
+                (MainActivity.b[1][6], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
         categories.get(1).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[2][6], MainActivity.category_image_width, MainActivity.category_image_width, false);
+                (MainActivity.b[2][6], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
         categories.get(2).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[3][6], MainActivity.category_image_width, MainActivity.category_image_width, false);
+                (MainActivity.b[3][6], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
         categories.get(3).setImageBitmap(Bitmap.createBitmap(bm));
         inventory.setAdapter(new InventoryAdapter(MainActivity.player.getInventory()));
         inventory.setLayoutManager(new LinearLayoutManager(getContext()));

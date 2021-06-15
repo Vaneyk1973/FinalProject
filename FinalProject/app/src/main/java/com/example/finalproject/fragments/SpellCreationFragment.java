@@ -39,8 +39,8 @@ public class SpellCreationFragment extends Fragment {
     private Element element=MainActivity.elements.get(0);
     private Type type=MainActivity.types.get(0);
     private Form form=MainActivity.forms.get(0);
-    private ManaChannel mana_channel=MainActivity.mana_channels.get(0);
-    private ManaReservoir mana_reservoir=MainActivity.mana_reservoirs.get(0);
+    private ManaChannel mana_channel=MainActivity.manaChannels.get(0);
+    private ManaReservoir mana_reservoir=MainActivity.manaReservoirs.get(0);
     private String name;
 
     @Override
@@ -105,13 +105,13 @@ public class SpellCreationFragment extends Fragment {
         mana_reservoir_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter(MainActivity.mana_reservoirs));
+                comps.setAdapter(new SpellAdapter(MainActivity.manaReservoirs));
             }
         });
         mana_channel_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                comps.setAdapter(new SpellAdapter(MainActivity.mana_channels));
+                comps.setAdapter(new SpellAdapter(MainActivity.manaChannels));
             }
         });
         type_view.setOnClickListener(new View.OnClickListener() {

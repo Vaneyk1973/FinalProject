@@ -35,10 +35,6 @@ public class MenuFragment extends Fragment {
         inv[1]=getView().findViewById(R.id.spellCreation_button);
         inv[2]=getView().findViewById(R.id.spells_button);
         inv[3]=getView().findViewById(R.id.research_tree_button);
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
         inv[0].setImageBitmap(MainActivity.menu[0]);
         inv[1].setImageBitmap(MainActivity.menu[1]);
         inv[2].setImageBitmap(MainActivity.menu[2]);

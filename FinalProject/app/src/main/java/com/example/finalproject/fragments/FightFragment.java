@@ -49,11 +49,11 @@ public class FightFragment extends Fragment {
         int width = size.x;
         Button run = (Button) getView().findViewById(R.id.run);
         Button attack = (Button) getView().findViewById(R.id.attack);
-        Button cast_spell = (Button) getView().findViewById(R.id.cast_spell);
+        Button castSpell = (Button) getView().findViewById(R.id.cast_spell);
         RecyclerView spells = (RecyclerView) getView().findViewById(R.id.avaliable_spells);
         spells.setLayoutManager(new LinearLayoutManager(getContext()));
-        ImageView player_image = (ImageView) getView().findViewById(R.id.player);
-        ImageView enemy_image = (ImageView) getView().findViewById(R.id.enemy);
+        ImageView playerImage = (ImageView) getView().findViewById(R.id.player);
+        ImageView enemyImage = (ImageView) getView().findViewById(R.id.enemy);
 
         TextView your_health = getView().findViewById(R.id.your_health),
                 your_mana = getView().findViewById(R.id.your_mana),
@@ -62,8 +62,8 @@ public class FightFragment extends Fragment {
 
         Bitmap bm = Bitmap.createBitmap(width / 4, width / 4, Bitmap.Config.ARGB_8888);
         bm.eraseColor(Color.GREEN);
-        player_image.setImageBitmap(MainActivity.b[5][5]);
-        enemy_image.setImageBitmap(MainActivity.player.getEnemy().getTexture());
+        playerImage.setImageBitmap(MainActivity.b[5][5]);
+        enemyImage.setImageBitmap(MainActivity.player.getEnemy().getTexture());
         your_health.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMax_health()));
         your_mana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMax_mana()));
         enemy_health.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMax_health());
@@ -129,7 +129,7 @@ public class FightFragment extends Fragment {
                 }
             }
         });
-        cast_spell.setOnClickListener(new View.OnClickListener() {
+        castSpell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Log.d("KK", MainActivity.player.getEnemy().getName());
@@ -164,7 +164,7 @@ public class FightFragment extends Fragment {
                 public void onClick(View v) {
                     MainActivity.player.choose_spell(data.get(position));
                     ((RecyclerView) getView().findViewById(R.id.avaliable_spells)).setAdapter(new SpellsAdapter(new ArrayList<>()));
-                    if (MainActivity.player.getMana()<data.get(position).getMana_consumption())
+                    if (MainActivity.player.getMana()<data.get(position).getManaConsumption())
                         Toast.makeText(getContext(), "Not enough mana", Toast.LENGTH_SHORT).show();
                     MainActivity.player.cast_spell();
                     MainActivity.player.regenerate();
@@ -183,7 +183,7 @@ public class FightFragment extends Fragment {
                         FragmentManager fm = getParentFragmentManager();
                         FragmentTransaction fragmentTransaction = fm.beginTransaction();
                         fragmentTransaction.remove(fm.findFragmentById(R.id.fight));
-                        fragmentTransaction.add(R.id.map, new MapFragment());
+                        fragmentTransaction.add(R.id.map, new MapFragment(MainActivity.player.getMapNum()));
                         fragmentTransaction.add(R.id.status, new StatusBarFragment());
                         fragmentTransaction.add(R.id.menu, new MenuFragment());
                         fragmentTransaction.commit();

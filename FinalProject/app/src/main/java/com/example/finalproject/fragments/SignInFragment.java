@@ -20,15 +20,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
+import com.example.finalproject.service.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.RuntimeExecutionException;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthInvalidUserException;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.FirebaseDatabase;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.HashMap;
 
 public class SignInFragment extends Fragment {
 
@@ -41,10 +46,10 @@ public class SignInFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Button back = getView().findViewById(R.id.log_in_back_button),
-                log_in = getView().findViewById(R.id.sign_in);
+                logIn = getView().findViewById(R.id.sign_in);
         EditText email = getView().findViewById(R.id.email),
                 password = getView().findViewById(R.id.password);
-        TextView restore_password = getView().findViewById(R.id.restore_password_link),
+        TextView restorePassword = getView().findViewById(R.id.restore_password_link),
                 register = getView().findViewById(R.id.register_link);
         ProgressBar t = getView().findViewById(R.id.sign_in_loading);
         View.OnClickListener[] clickListener = new View.OnClickListener[1];
@@ -58,37 +63,52 @@ public class SignInFragment extends Fragment {
                 else {
                     t.setVisibility(View.VISIBLE);
                     t.animate();
-                    log_in.setOnClickListener(null);
+                    logIn.setOnClickListener(null);
                     FirebaseAuth.getInstance()
                             .signInWithEmailAndPassword(email.getText().toString(), password.getText().toString().hashCode()+"").
                             addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                                 @Override
                                 public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
+                                        MainActivity.player.setUser(new User("", email.getText().toString()));
+                                        MainActivity.player.getUser().setuID(FirebaseAuth.getInstance().getUid());
+                                        FirebaseDatabase.getInstance().getReference("Users")
+                                                .child(MainActivity.player.getUser().getuID()).child("login")
+                                                .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
+                                                if (task.isSuccessful()){
+                                                    MainActivity.player.getUser().setLogin(task.getResult().getValue(String.class));
+                                                    Log.d("KKK", MainActivity.player.getUser().getLogin()+"l");
+                                                    FragmentTransaction fr=getParentFragmentManager().beginTransaction();
+                                                    fr.add(R.id.chat, new ChatFragment());
+                                                    fr.remove(getParentFragmentManager().findFragmentById(R.id.log_in));
+                                                    fr.commit();
+                                                }
+                                            }
+                                        });
                                         FirebaseDatabase.getInstance().getReference("Users").
-                                                child(FirebaseAuth.getInstance().getUid()).child("logged_in").setValue(true)
+                                                child(MainActivity.player.getUser().getuID()).child("loggedIn").setValue(true)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                         if (task.isSuccessful()){
-                                                            FragmentTransaction fr=getParentFragmentManager().beginTransaction();
-                                                            fr.add(R.id.chat, new ChatFragment());
-                                                            fr.remove(getParentFragmentManager().findFragmentById(R.id.log_in));
-                                                            fr.commit();
+                                                            MainActivity.player.getUser().setLoggedIn(true);
+                                                            Log.d("KKL", MainActivity.player.getUser().isLoggedIn()+"o");
                                                         }
                                                     }
                                                 });
                                     } else {
                                         Toast.makeText(getContext(), "Wrong email and/or password", Toast.LENGTH_SHORT).show();
+                                        logIn.setOnClickListener(clickListener[0]);
                                     }
                                     t.setVisibility(View.GONE);
-                                    log_in.setOnClickListener(clickListener[0]);
                                 }
                             });
                 }
             }
         };
-        log_in.setOnClickListener(clickListener[0]);
+        logIn.setOnClickListener(clickListener[0]);
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +118,7 @@ public class SignInFragment extends Fragment {
                 fr.commit();
             }
         });
-        restore_password.setOnClickListener(new View.OnClickListener() {
+        restorePassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FragmentTransaction fr = getParentFragmentManager().beginTransaction();

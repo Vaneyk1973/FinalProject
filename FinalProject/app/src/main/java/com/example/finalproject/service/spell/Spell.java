@@ -1,15 +1,12 @@
 package com.example.finalproject.service.spell;
 
-import android.util.Log;
-import android.widget.Toast;
-
 import com.example.finalproject.entities.Enemy;
 import com.example.finalproject.fragments.MainActivity;
 
 import java.io.Serializable;
 
 public class Spell implements Serializable {
-    private int mana_consumption, damage, lasting_time;
+    private int manaConsumption, damage, lastingTime;
     private Element element;
     private Type type;
     private Form form;
@@ -24,9 +21,9 @@ public class Spell implements Serializable {
         this.manaChannel = manaChannel;
         this.manaReservoir = manaReservoir;
         this.name = name;
-        damage=manaReservoir.getVolume()*element.getBase_damage();
-        lasting_time=manaReservoir.getVolume()/manaChannel.getMps();
-        mana_consumption=manaReservoir.getVolume();
+        damage=manaReservoir.getVolume()*element.getBaseDamage();
+        lastingTime =manaReservoir.getVolume()/manaChannel.getMps();
+        manaConsumption =manaReservoir.getVolume();
     }
 
     public Spell(Spell spell){
@@ -36,21 +33,21 @@ public class Spell implements Serializable {
         manaChannel=new ManaChannel(spell.manaChannel);
         manaReservoir=new ManaReservoir(spell.manaReservoir);
         name=spell.name;
-        mana_consumption=spell.mana_consumption;
+        manaConsumption =spell.manaConsumption;
         damage=spell.damage;
-        lasting_time=spell.lasting_time;
+        lastingTime =spell.lastingTime;
     }
 
 
     public void affect (Enemy enemy){
-        if (MainActivity.player.getMana()>=mana_consumption){
+        if (MainActivity.player.getMana()>= manaConsumption){
             consume_mana();
             enemy.take_damage(damage);
         }
     }
 
     public void consume_mana(){
-        MainActivity.player.setMana(MainActivity.player.getMana()-mana_consumption);
+        MainActivity.player.setMana(MainActivity.player.getMana()- manaConsumption);
     }
 
     public String getName() {
@@ -61,12 +58,12 @@ public class Spell implements Serializable {
         this.name = name;
     }
 
-    public int getMana_consumption() {
-        return mana_consumption;
+    public int getManaConsumption() {
+        return manaConsumption;
     }
 
-    public void setMana_consumption(int mana_consumption) {
-        this.mana_consumption = mana_consumption;
+    public void setManaConsumption(int manaConsumption) {
+        this.manaConsumption = manaConsumption;
     }
 
     public int getDamage() {
@@ -77,12 +74,12 @@ public class Spell implements Serializable {
         this.damage = damage;
     }
 
-    public int getLasting_time() {
-        return lasting_time;
+    public int getLastingTime() {
+        return lastingTime;
     }
 
-    public void setLasting_time(int lasting_time) {
-        this.lasting_time = lasting_time;
+    public void setLastingTime(int lastingTime) {
+        this.lastingTime = lastingTime;
     }
 
     public Element getElement() {

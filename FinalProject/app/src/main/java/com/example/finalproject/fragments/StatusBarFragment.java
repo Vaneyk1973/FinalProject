@@ -29,10 +29,10 @@ public class StatusBarFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        ImageView exp_img = getView().findViewById(R.id.exp_image),
-                gold_img = getView().findViewById(R.id.gold_image),
-                health_img = getView().findViewById(R.id.health_image),
-                mana_img = getView().findViewById(R.id.mana_image),
+        ImageView expImg = getView().findViewById(R.id.exp_image),
+                goldImg = getView().findViewById(R.id.gold_image),
+                healthImg = getView().findViewById(R.id.health_image),
+                manaImg = getView().findViewById(R.id.mana_image),
                 avatar = getView().findViewById(R.id.avatar);
         TextView lvl = getView().findViewById(R.id.level),
                 gold = getView().findViewById(R.id.gold),
@@ -48,23 +48,23 @@ public class StatusBarFragment extends Fragment {
         health.setText(txt);
         txt = Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMax_mana());
         mana.setText(txt);
-        txt = MainActivity.player.getExperience() + "/" + MainActivity.player.getExperience_to_next_level_required();
+        txt = MainActivity.player.getExperience() + "/" + MainActivity.player.getExperienceToNextLevelRequired();
         exp.setText(txt);
         Bitmap bm = Bitmap.createScaledBitmap
-                (MainActivity.b[5][5], MainActivity.avatar_width, MainActivity.avatar_width, false);
+                (MainActivity.b[5][5], MainActivity.avatarWidth, MainActivity.avatarWidth, false);
         avatar.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[3][5], MainActivity.status_images_width, MainActivity.status_images_width, false);
-        gold_img.setImageBitmap(Bitmap.createBitmap(bm));
+                (MainActivity.b[3][5], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
+        goldImg.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[2][5], MainActivity.status_images_width, MainActivity.status_images_width, false);
-        health_img.setImageBitmap(Bitmap.createBitmap(bm));
+                (MainActivity.b[2][5], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
+        healthImg.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[3][1], MainActivity.status_images_width, MainActivity.status_images_width, false);
-        mana_img.setImageBitmap(Bitmap.createBitmap(bm));
+                (MainActivity.b[3][1], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
+        manaImg.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[3][4], MainActivity.status_images_width, MainActivity.status_images_width, false);
-        exp_img.setImageBitmap(Bitmap.createBitmap(bm));
+                (MainActivity.b[3][4], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
+        expImg.setImageBitmap(Bitmap.createBitmap(bm));
         Button chat = getView().findViewById(R.id.chat_button);
         chat.setVisibility(View.VISIBLE);
         FragmentManager fm = getParentFragmentManager();
@@ -72,8 +72,9 @@ public class StatusBarFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                if (MainActivity.player.getUser().isLogged_in())
-                    if (MainActivity.player.getChat_mode()){
+                if (MainActivity.player.getUser().isLoggedIn())
+                {
+                    if (MainActivity.player.getChatMode()){
                         fragmentTransaction.add(R.id.chat_mini, new ChatMiniFragment());
                         chat.setVisibility(View.GONE);
                     }
@@ -83,6 +84,7 @@ public class StatusBarFragment extends Fragment {
                         fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
                         fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                     }
+                }
                 else {
                     fragmentTransaction.add(R.id.log_in, new SignInFragment());
                     fragmentTransaction.remove(fm.findFragmentById(R.id.map));

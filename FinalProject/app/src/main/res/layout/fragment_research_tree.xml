@@ -10,6 +10,8 @@
     <HorizontalScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         app:layout_constraintBottom_toTopOf="@+id/research_tree_back_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -102,10 +104,12 @@
         android:id="@+id/research_points_amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:fontFamily="cursive"
-        android:textSize="20dp"
+        android:text="TextView"
         android:textColor="@android:color/holo_red_dark"
+        android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 

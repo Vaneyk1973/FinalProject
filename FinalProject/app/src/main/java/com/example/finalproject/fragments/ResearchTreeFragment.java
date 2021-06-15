@@ -2,7 +2,6 @@ package com.example.finalproject.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,13 +48,13 @@ public class ResearchTreeFragment extends Fragment {
         research_hash_map1.put((TextView) getView().findViewById(R.id.air_mage), MainActivity.researches.get(4));
         TextView rpa=getView().findViewById(R.id.research_points_amount);
         rpa.setText("Your research points amount: "+
-                MainActivity.player.getResearch_points()+"");
+                MainActivity.player.getResearchPoints()+"");
         View.OnClickListener n = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainActivity.player.research(research_hash_map1.get(v));
                 rpa.setText("Your research points amount: "+
-                        MainActivity.player.getResearch_points()+"");
+                        MainActivity.player.getResearchPoints()+"");
                 MainActivity.researches1.clear();
                 for (int i=0;i<MainActivity.researches.size();i++)
                     MainActivity.researches1.add(new Gson().toJson(MainActivity.researches.get(i)));
@@ -68,12 +67,12 @@ public class ResearchTreeFragment extends Fragment {
                 MainActivity.types1.clear();
                 for (int i=0;i<MainActivity.types.size();i++)
                     MainActivity.types1.add(new Gson().toJson(MainActivity.types.get(i)));
-                MainActivity.mana_channels1.clear();
-                for (int i=0;i<MainActivity.mana_channels.size();i++)
-                    MainActivity.mana_channels1.add(new Gson().toJson(MainActivity.mana_channels.get(i)));
-                MainActivity.mana_reservoirs1.clear();
-                for (int i=0;i<MainActivity.mana_reservoirs.size();i++)
-                    MainActivity.mana_reservoirs1.add(new Gson().toJson(MainActivity.mana_reservoirs.get(i)));
+                MainActivity.manaChannels1.clear();
+                for (int i = 0; i<MainActivity.manaChannels.size(); i++)
+                    MainActivity.manaChannels1.add(new Gson().toJson(MainActivity.manaChannels.get(i)));
+                MainActivity.manaReservoirs1.clear();
+                for (int i = 0; i<MainActivity.manaReservoirs.size(); i++)
+                    MainActivity.manaReservoirs1.add(new Gson().toJson(MainActivity.manaReservoirs.get(i)));
             }
         };
         for (int i = 0; i < MainActivity.researches.size(); i++) {

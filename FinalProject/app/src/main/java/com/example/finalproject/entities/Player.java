@@ -23,16 +23,16 @@ import java.util.Random;
 
 public class Player extends Entity implements Parcelable {
 
-    private int gold, research_points;
-    private boolean chat_mode;
+    private int gold, researchPoints, mapNum;
+    private boolean chatMode;
     private User user;
-    private ArrayList<Integer> element_bonuses = new ArrayList<>();
+    private ArrayList<Integer> elementBonuses = new ArrayList<>();
     private ArrayList<Item> equipment = new ArrayList<>();
     private ArrayList<Pair<Item, Integer>> inventory = new ArrayList<>();
     private ArrayList<Spell> spells = new ArrayList<>();
-    private Pair<Integer, Integer> coordinates;
-    private Spell chosen_spell;
-    private Bitmap title_texture;
+    private ArrayList<Pair<Integer, Integer>> coordinates=new ArrayList<>();
+    private Spell chosenSpell;
+    private Bitmap titleTexture;
     private Bitmap avatar;
     private Enemy enemy;
 
@@ -40,16 +40,15 @@ public class Player extends Entity implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(gold);
-        dest.writeInt(research_points);
-        dest.writeString(chat_mode + "");
-        dest.writeSerializable(element_bonuses);
-        dest.writeInt(coordinates.first);
-        dest.writeInt(coordinates.second);
-        dest.writeSerializable(chosen_spell);
+        dest.writeInt(researchPoints);
+        dest.writeString(chatMode + "");
+        dest.writeSerializable(elementBonuses);
+        dest.writeSerializable(coordinates);
+        dest.writeSerializable(chosenSpell);
         dest.writeSerializable(equipment);
         dest.writeParcelable((Parcelable) inventory, flags);
         dest.writeSerializable(spells);
-        dest.writeParcelable(title_texture, flags);
+        dest.writeParcelable(titleTexture, flags);
         dest.writeParcelable(enemy, flags);
         dest.writeString(new Gson().toJson(user));
     }
@@ -69,15 +68,15 @@ public class Player extends Entity implements Parcelable {
     protected Player(Parcel in) {
         super(in);
         gold = in.readInt();
-        research_points = in.readInt();
-        chat_mode = new Boolean(in.readString());
-        element_bonuses = new ArrayList<>((ArrayList<Integer>) in.readSerializable());
-        coordinates = new Pair<>(in.readInt(), in.readInt());
-        chosen_spell = new Spell((Spell) in.readSerializable());
+        researchPoints = in.readInt();
+        chatMode = new Boolean(in.readString());
+        elementBonuses = new ArrayList<>((ArrayList<Integer>) in.readSerializable());
+        coordinates =new ArrayList<>((ArrayList<Pair<Integer, Integer>>)in.readSerializable());
+        chosenSpell = new Spell((Spell) in.readSerializable());
         equipment = new ArrayList<>((ArrayList) in.readSerializable());
         inventory = new ArrayList<>((ArrayList) in.readParcelable(ArrayList.class.getClassLoader()));
         spells = new ArrayList<>((ArrayList) in.readSerializable());
-        title_texture = in.readParcelable(Bitmap.class.getClassLoader());
+        titleTexture = in.readParcelable(Bitmap.class.getClassLoader());
         enemy = new Enemy(in.readParcelable(Enemy.class.getClassLoader()));
         user = new Gson().fromJson(in.readString(), User.class);
     }
@@ -96,25 +95,26 @@ public class Player extends Entity implements Parcelable {
         setMana(10);
         setMax_health(getHealth());
         setMax_mana(getMana());
-        setPower_level(0);
-        setExperience_to_next_level_required((int)Math.ceil(exp_formula(1.0)));
+        setPowerLevel(0);
+        setExperienceToNextLevelRequired((int) Math.ceil(expFormula(1.0)));
         setGold(0);
-        setResearch_points(1);
-        setCoordinates(new Pair<>(x, y));
+        setResearchPoints(1);
+        coordinates.add(new Pair<>(x, y));
+        coordinates.add(new Pair<>(6, 3));
         equipment.add(null);
         equipment.add(null);
         equipment.add(null);
         equipment.add(null);
         equipment.add(null);
         equipment.add(null);
-        user = new User("", "", "");
-        chat_mode = false;
+        user = new User("", "");
+        chatMode = false;
     }
 
     public void research(Research research) {
-        if (research.isAvailable() && !research.isResearched() && research.getCost() <= research_points) {
+        if (research.isAvailable() && !research.isResearched() && research.getCost() <= researchPoints) {
             research.setResearched(true);
-            research_points -= research.getCost();
+            researchPoints -= research.getCost();
             for (int i = 0; i < MainActivity.researches.size(); i++) {
                 MainActivity.researches.get(i).enable();
             }
@@ -135,17 +135,17 @@ public class Player extends Entity implements Parcelable {
                 }
             }
         }
-        setGold(getGold() + enemy.getGiven_gold());
-        addExperience(enemy.getGiven_exp());
+        setGold(getGold() + enemy.getGivenGold());
+        addExperience(enemy.getGivenExp());
     }
 
     public void cast_spell() {
-        chosen_spell.affect(enemy);
-        Log.d("KKKGGGG", chosen_spell.getMana_consumption()+" "+getMana()+" "+getMana_regen());
+        chosenSpell.affect(enemy);
+        Log.d("KKKGGGG", chosenSpell.getManaConsumption() + " " + getMana() + " " + getMana_regen());
     }
 
     public void choose_spell(Spell spell) {
-        chosen_spell = spell;
+        chosenSpell = spell;
     }
 
     public void equip(Item item) {
@@ -154,37 +154,37 @@ public class Player extends Entity implements Parcelable {
             setDamage(getDamage() + ((Weapon) item).getDamage());
         } else if (item.getClass() == Armor.class) {
             Armor item1 = (Armor) item;
-            switch (item1.getType_of_armor()) {
+            switch (item1.getTypeOfArmor()) {
                 case 1: {
-                    if (equipment.get(((Armor) item).getType_of_armor()) != null)
+                    if (equipment.get(((Armor) item).getTypeOfArmor()) != null)
                         setArmor(getArmor() - ((Armor) equipment.get(1)).getArmor());
                     equipment.set(1, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 2: {
-                    if (equipment.get(((Armor) item).getType_of_armor()) != null)
+                    if (equipment.get(((Armor) item).getTypeOfArmor()) != null)
                         setArmor(getArmor() - ((Armor) equipment.get(2)).getArmor());
                     equipment.set(2, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 3: {
-                    if (equipment.get(((Armor) item).getType_of_armor()) != null)
+                    if (equipment.get(((Armor) item).getTypeOfArmor()) != null)
                         setArmor(getArmor() - ((Armor) equipment.get(3)).getArmor());
                     equipment.set(3, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 4: {
-                    if (equipment.get(((Armor) item).getType_of_armor()) != null)
+                    if (equipment.get(((Armor) item).getTypeOfArmor()) != null)
                         setArmor(getArmor() - ((Armor) equipment.get(4)).getArmor());
                     equipment.set(4, item1);
                     setArmor(getArmor() + item1.getArmor());
                     break;
                 }
                 case 5: {
-                    if (equipment.get(((Armor) item).getType_of_armor()) != null)
+                    if (equipment.get(((Armor) item).getTypeOfArmor()) != null)
                         setArmor(getArmor() - ((Armor) equipment.get(5)).getArmor());
                     equipment.set(5, item1);
                     setArmor(getArmor() + item1.getArmor());
@@ -195,8 +195,8 @@ public class Player extends Entity implements Parcelable {
     }
 
     public void eat(Food food) {
-        setHealth(getHealth() + food.getHealth_recovery());
-        setMana(getMana() + food.getMana_recovery());
+        setHealth(getHealth() + food.getHealthRecovery());
+        setMana(getMana() + food.getManaRecovery());
         if (getHealth() > getMax_health())
             setHealth(getMax_health());
         if (getMana() > getMax_mana())
@@ -207,12 +207,12 @@ public class Player extends Entity implements Parcelable {
         getEnemy().take_damage(getDamage());
     }
 
-    public void level_up() {
-        while (getExperience() >= getExperience_to_next_level_required()) {
+    public void levelUp() {
+        while (getExperience() >= getExperienceToNextLevelRequired()) {
             super.setLevel(this.getLevel() + 1);
-            setExperience(getExperience() - getExperience_to_next_level_required());
-            setExperience_to_next_level_required((int)Math.ceil(exp_formula(getLevel())));
-            research_points += 1;
+            setExperience(getExperience() - getExperienceToNextLevelRequired());
+            setExperienceToNextLevelRequired((int) Math.ceil(expFormula(getLevel())));
+            researchPoints += 1;
             setMax_mana(getMana() * 1.3);
             setMana(getMax_mana());
             setMax_health(getMax_health() * 1.3);
@@ -222,15 +222,15 @@ public class Player extends Entity implements Parcelable {
         }
     }
 
-    private double exp_formula(double x){
-        return ((Math.pow(x,Math.PI)-Math.pow(Math.PI, Math.E))
-                *Math.cbrt(Math.pow(x, Math.E)-Math.PI))
-                /(Math.pow(x, Math.E/7));
+    private double expFormula(double x) {
+        return ((Math.pow(x, Math.PI) - Math.pow(Math.PI, Math.E))
+                * Math.cbrt(Math.pow(x, Math.E) - Math.PI))
+                / (Math.pow(x, Math.E / 7));
     }
 
     public void addExperience(int exp) {
         setExperience(exp + getExperience());
-        level_up();
+        levelUp();
     }
 
     public ArrayList<Pair<Item, Integer>> getInventory() {
@@ -241,12 +241,12 @@ public class Player extends Entity implements Parcelable {
         this.inventory = inventory;
     }
 
-    public Bitmap getTitle_texture() {
-        return title_texture;
+    public Bitmap getTitleTexture() {
+        return titleTexture;
     }
 
-    public void setTitle_texture(Bitmap title_texture) {
-        this.title_texture = title_texture;
+    public void setTitleTexture(Bitmap titleTexture) {
+        this.titleTexture = titleTexture;
     }
 
     public ArrayList<Spell> getSpells() {
@@ -265,12 +265,12 @@ public class Player extends Entity implements Parcelable {
         this.gold = gold;
     }
 
-    public int getResearch_points() {
-        return research_points;
+    public int getResearchPoints() {
+        return researchPoints;
     }
 
-    public void setResearch_points(int research_points) {
-        this.research_points = research_points;
+    public void setResearchPoints(int researchPoints) {
+        this.researchPoints = researchPoints;
     }
 
     public ArrayList<Item> getEquipment() {
@@ -285,14 +285,6 @@ public class Player extends Entity implements Parcelable {
         this.enemy = enemy;
     }
 
-    public Pair<Integer, Integer> getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(Pair<Integer, Integer> coordinates) {
-        this.coordinates = coordinates;
-    }
-
     @Override
     public int describeContents() {
         return 0;
@@ -303,20 +295,20 @@ public class Player extends Entity implements Parcelable {
         return "Player{" +
                 "gold=" + gold +
                 ", experience=" + getExperience() +
-                ", research_points=" + research_points +
-                ", element_bonuses=" + element_bonuses +
+                ", research_points=" + researchPoints +
+                ", element_bonuses=" + elementBonuses +
                 ", coordinates=" + coordinates +
-                ", chosen_spell=" + chosen_spell +
+                ", chosen_spell=" + chosenSpell +
                 ", equipment=" + equipment +
                 ", inventory=" + inventory +
                 ", spells=" + spells +
-                ", title_texture=" + title_texture +
+                ", title_texture=" + titleTexture +
                 ", enemy=" + enemy +
                 '}';
     }
 
-    public ArrayList<Integer> getElement_bonuses() {
-        return element_bonuses;
+    public ArrayList<Integer> getElementBonuses() {
+        return elementBonuses;
     }
 
 
@@ -328,12 +320,12 @@ public class Player extends Entity implements Parcelable {
         this.user = user;
     }
 
-    public boolean getChat_mode() {
-        return chat_mode;
+    public boolean getChatMode() {
+        return chatMode;
     }
 
-    public void setChat_mode(boolean chat_mode) {
-        this.chat_mode = chat_mode;
+    public void setChatMode(boolean chatMode) {
+        this.chatMode = chatMode;
     }
 
     public Bitmap getAvatar() {
@@ -360,5 +352,21 @@ public class Player extends Entity implements Parcelable {
                 return i;
         }
         return -1;
+    }
+
+    public int getMapNum() {
+        return mapNum;
+    }
+
+    public void setMapNum(int mapNum) {
+        this.mapNum = mapNum;
+    }
+
+    public Pair<Integer, Integer> getCoordinates(int mapNum) {
+        return coordinates.get(mapNum);
+    }
+
+    public void setCoordinates(int mapNum, Pair<Integer, Integer> coordinates) {
+        this.coordinates.set(mapNum, coordinates);
     }
 }

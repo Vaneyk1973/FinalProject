@@ -34,9 +34,9 @@ public class RestorePasswordFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Button back = getView().findViewById(R.id.reset_password_back_button),
-                reset_password = getView().findViewById(R.id.reset_password_button);
+                resetPassword = getView().findViewById(R.id.reset_password_button);
         EditText email = getView().findViewById(R.id.restore_password_email);
-        reset_password.setOnClickListener(new View.OnClickListener() {
+        resetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String email_txt = email.getText().toString();

@@ -48,13 +48,13 @@ public class ChatMiniFragment extends Fragment {
         ArrayList<Message> messages = new ArrayList<>();
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Message");
         RecyclerView chat = getView().findViewById(R.id.chat_list);
-        EditText enter_message = getView().findViewById(R.id.message);
+        EditText enterMessage = getView().findViewById(R.id.message);
         Button back = getView().findViewById(R.id.chat_mini_back_button), register = getView().findViewById(R.id.log_out);
         ref.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                 messages.clear();
-                snapshot.getChildren().forEach(e -> messages.add(toMessage((HashMap<String, Object>) e.getValue())));
+                snapshot.getChildren().forEach(e -> messages.add(e.getValue(Message.class)));
                 chat.setAdapter(new ChatMiniFragment.ChatAdapter(messages));
                 chat.scrollToPosition(messages.size() - 1);
             }
@@ -77,7 +77,7 @@ public class ChatMiniFragment extends Fragment {
             }
         });
         chat.setLayoutManager(new LinearLayoutManager(getContext()));
-        enter_message.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        enterMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 Message m = new Message();
@@ -90,12 +90,6 @@ public class ChatMiniFragment extends Fragment {
             }
         });
         chat.scrollToPosition(messages.size() - 1);
-    }
-
-    private Message toMessage(HashMap<String, Object> r) {
-        return new Message(r.get("message").toString(),
-                r.get("user").toString(),
-                Long.parseLong(r.get("date").toString()));
     }
 
     class ChatAdapter extends RecyclerView.Adapter<ChatMiniFragment.ChatAdapter.ChatViewHolder> {
