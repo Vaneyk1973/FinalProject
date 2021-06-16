@@ -44,9 +44,9 @@ public class StatusBarFragment extends Fragment {
         lvl.setText(txt);
         txt = MainActivity.player.getGold() + "";
         gold.setText(txt);
-        txt = Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMax_health());
+        txt = Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMaxHealth());
         health.setText(txt);
-        txt = Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMax_mana());
+        txt = Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMaxMana());
         mana.setText(txt);
         txt = MainActivity.player.getExperience() + "/" + MainActivity.player.getExperienceToNextLevelRequired();
         exp.setText(txt);
@@ -110,9 +110,9 @@ public class StatusBarFragment extends Fragment {
 
     public static void update() {
         String txt;
-        txt = Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMax_health());
+        txt = Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMaxHealth());
         health.setText(txt);
-        txt = Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMax_mana());
+        txt = Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMaxMana());
         mana.setText(txt);
     }
 }

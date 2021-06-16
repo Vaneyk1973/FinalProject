@@ -113,9 +113,9 @@ public class MainActivity extends AppCompatActivity {
         if (xy >= 0.4 && xy <= 0.6) {
             menuWidth = width / 4;
             avatarWidth = width / 3;
-            mapTitleWidth = width * 100 / 500;
+            mapTitleWidth = width * 1000 / 5000;
         } else {
-            mapTitleWidth = height * 100 / 900;
+            mapTitleWidth = height * 1000 / 9000;
             menuWidth = width / 4;
             avatarWidth = width / 4;
         }

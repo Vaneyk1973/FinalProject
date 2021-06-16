@@ -27,12 +27,14 @@ import java.util.Random;
 public class MapFragment extends Fragment {
     private final int mapNum;
 
-    MapFragment(int mapNum){
+    public MapFragment(int mapNum){
         this.mapNum = mapNum;
     }
 
     MapFragment(){
-        mapNum =0;}
+        mapNum =0;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_map, container, false);
@@ -110,7 +112,7 @@ public class MapFragment extends Fragment {
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                                fragmentTransaction.add(R.id.fight, new FightFragment());
+                                fragmentTransaction.add(R.id.fight, new FightFragment(true));
                                 fragmentTransaction.commit();
                                 break;
                             }

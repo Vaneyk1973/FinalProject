@@ -16,6 +16,8 @@ import com.example.finalproject.items.Weapon;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.User;
 import com.example.finalproject.service.spell.Spell;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import java.util.Random;
 
 public class Player extends Entity implements Parcelable {
 
-    private int gold, researchPoints, mapNum;
+    private int gold, researchPoints, mapNum, duelNum, duelPnum;
     private boolean chatMode;
     private User user;
     private ArrayList<Integer> elementBonuses = new ArrayList<>();
@@ -86,15 +88,15 @@ public class Player extends Entity implements Parcelable {
     }
 
     public Player(int x, int y) {
-        setHealth_regen(3);
-        setMana_regen(0.3);
+        setHealthRegen(3);
+        setManaRegen(0.3);
         setDamage(10);
         setLevel(1);
         setExperience(0);
         setHealth(50);
         setMana(10);
-        setMax_health(getHealth());
-        setMax_mana(getMana());
+        setMaxHealth(getHealth());
+        setMaxMana(getMana());
         setPowerLevel(0);
         setExperienceToNextLevelRequired((int) Math.ceil(expFormula(1.0)));
         setGold(0);
@@ -139,9 +141,9 @@ public class Player extends Entity implements Parcelable {
         addExperience(enemy.getGivenExp());
     }
 
-    public void cast_spell() {
+    public void castSpell() {
         chosenSpell.affect(enemy);
-        Log.d("KKKGGGG", chosenSpell.getManaConsumption() + " " + getMana() + " " + getMana_regen());
+        Log.d("KKKGGGG", chosenSpell.getManaConsumption() + " " + getMana() + " " + getManaRegen());
     }
 
     public void choose_spell(Spell spell) {
@@ -197,14 +199,16 @@ public class Player extends Entity implements Parcelable {
     public void eat(Food food) {
         setHealth(getHealth() + food.getHealthRecovery());
         setMana(getMana() + food.getManaRecovery());
-        if (getHealth() > getMax_health())
-            setHealth(getMax_health());
-        if (getMana() > getMax_mana())
-            setMana(getMax_mana());
+        if (getHealth() > getMaxHealth())
+            setHealth(getMaxHealth());
+        if (getMana() > getMaxMana())
+            setMana(getMaxMana());
     }
 
     public void attack() {
         getEnemy().take_damage(getDamage());
+        if (enemy.isDuel())
+            FirebaseDatabase.getInstance().getReference("Duel").child(getDuelNum()+"").child(1-getDuelPnum()+"").child("health").setValue(enemy.getHealth());
     }
 
     public void levelUp() {
@@ -213,13 +217,27 @@ public class Player extends Entity implements Parcelable {
             setExperience(getExperience() - getExperienceToNextLevelRequired());
             setExperienceToNextLevelRequired((int) Math.ceil(expFormula(getLevel())));
             researchPoints += 1;
-            setMax_mana(getMana() * 1.3);
-            setMana(getMax_mana());
-            setMax_health(getMax_health() * 1.3);
-            setHealth(getMax_health());
-            setMana_regen(getMana_regen() * 1.4);
-            setHealth_regen(getHealth_regen() * 1.4);
+            setMaxMana(getMana() * 1.3);
+            setMana(getMaxMana());
+            setMaxHealth(getMaxHealth() * 1.3);
+            setHealth(getMaxHealth());
+            setManaRegen(getManaRegen() * 1.4);
+            setHealthRegen(getHealthRegen() * 1.4);
         }
+    }
+
+    public void addPlayerToDuel(DatabaseReference ref){
+        ref.child("name").setValue(user.getLogin());
+        ref.child("health").setValue(getHealth());
+        ref.child("mana").setValue(getMana());
+        ref.child("armor").setValue(getArmor());
+        ref.child("damage").setValue(getDamage());
+        ref.child("givenExp").setValue(getExperience());
+        ref.child("givenGold").setValue(getGold());
+        ref.child("maxMana").setValue(getMaxMana());
+        ref.child("maxHealth").setValue(getMaxHealth());
+        ref.child("ran").setValue(false);
+        ref.child("dead").setValue(false);
     }
 
     private double expFormula(double x) {
@@ -231,6 +249,10 @@ public class Player extends Entity implements Parcelable {
     public void addExperience(int exp) {
         setExperience(exp + getExperience());
         levelUp();
+    }
+
+    public void addGold(int gld){
+        setGold(gld+getGold());
     }
 
     public ArrayList<Pair<Item, Integer>> getInventory() {
@@ -368,5 +390,21 @@ public class Player extends Entity implements Parcelable {
 
     public void setCoordinates(int mapNum, Pair<Integer, Integer> coordinates) {
         this.coordinates.set(mapNum, coordinates);
+    }
+
+    public int getDuelNum() {
+        return duelNum;
+    }
+
+    public void setDuelNum(int duelNum) {
+        this.duelNum = duelNum;
+    }
+
+    public int getDuelPnum() {
+        return duelPnum;
+    }
+
+    public void setDuelPnum(int duelPnum) {
+        this.duelPnum = duelPnum;
     }
 }

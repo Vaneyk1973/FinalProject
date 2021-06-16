@@ -56,12 +56,12 @@ public class Entity implements Parcelable {
 
 
     public void regenerate() {
-        setHealth(getHealth() + getHealth_regen());
-        setMana(getMana() + getMana_regen());
-        if (getMana() > getMax_mana())
-            setMana(getMax_mana());
-        if (getHealth() > getMax_health())
-            setHealth(getMax_health());
+        setHealth(getHealth() + getHealthRegen());
+        setMana(getMana() + getManaRegen());
+        if (getMana() > getMaxMana())
+            setMana(getMaxMana());
+        if (getHealth() > getMaxHealth())
+            setHealth(getMaxHealth());
     }
 
     public double getHealth() {
@@ -72,11 +72,11 @@ public class Entity implements Parcelable {
         this.health = health;
     }
 
-    public double getMax_health() {
+    public double getMaxHealth() {
         return max_health;
     }
 
-    public void setMax_health(double max_health) {
+    public void setMaxHealth(double max_health) {
         this.max_health = max_health;
     }
 
@@ -88,27 +88,27 @@ public class Entity implements Parcelable {
         this.mana = mana;
     }
 
-    public double getMax_mana() {
+    public double getMaxMana() {
         return max_mana;
     }
 
-    public void setMax_mana(double max_mana) {
+    public void setMaxMana(double max_mana) {
         this.max_mana = max_mana;
     }
 
-    public double getHealth_regen() {
+    public double getHealthRegen() {
         return health_regen;
     }
 
-    public void setHealth_regen(double health_regen) {
+    public void setHealthRegen(double health_regen) {
         this.health_regen = health_regen;
     }
 
-    public double getMana_regen() {
+    public double getManaRegen() {
         return mana_regen;
     }
 
-    public void setMana_regen(double mana_regen) {
+    public void setManaRegen(double mana_regen) {
         this.mana_regen = mana_regen;
     }
 
