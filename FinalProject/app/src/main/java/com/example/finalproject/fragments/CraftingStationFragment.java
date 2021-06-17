@@ -55,9 +55,11 @@ public class CraftingStationFragment extends Fragment {
         craft.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!MainActivity.player.craft(chosenRecipe))
-                    Toast.makeText(getContext(), "You don't have necessary ingredients", Toast.LENGTH_SHORT).show();
-                else Toast.makeText(getContext(), "Crafted successfully", Toast.LENGTH_SHORT).show();
+                if (chosenRecipe != null) {
+                    if (!MainActivity.player.craft(chosenRecipe))
+                        Toast.makeText(getContext(), "You don't have necessary ingredients", Toast.LENGTH_SHORT).show();
+                    else Toast.makeText(getContext(), "Crafted successfully", Toast.LENGTH_SHORT).show();
+                } else Toast.makeText(getContext(), "Choose recipe first", Toast.LENGTH_SHORT).show();
             }
         });
         RecyclerView crafts=getView().findViewById(R.id.crafts);

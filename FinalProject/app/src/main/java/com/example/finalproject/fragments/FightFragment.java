@@ -177,8 +177,8 @@ public class FightFragment extends Fragment {
                                     public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
                                         if (!task.getResult().getValue(boolean.class)){
                                             databaseReferences[0].child("ran").setValue(true);
-                                            FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                                            fragmentTransaction.remove(fm.findFragmentById(R.id.fight));
+                                            FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
+                                            fragmentTransaction.remove(getParentFragmentManager().findFragmentById(R.id.fight));
                                             fragmentTransaction.add(R.id.map, new MapFragment(MainActivity.player.getMapNum()));
                                             fragmentTransaction.add(R.id.status, new StatusBarFragment());
                                             fragmentTransaction.add(R.id.menu, new MenuFragment());

@@ -15,32 +15,35 @@
         tools:src="@tools:sample/avatars" />
 
     <TextView
-        android:fontFamily="cursive"
-        android:textSize="20dp"
         android:id="@+id/name"
         android:layout_width="64dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="cursive"
         android:text="Name"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/category_image"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:fontFamily="cursive"
-        android:textSize="20dp"
         android:id="@+id/category"
         android:layout_width="64dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="cursive"
         android:text="Category"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/category_image"
         app:layout_constraintTop_toBottomOf="@+id/name" />
 
     <TextView
-        android:fontFamily="cursive"
-        android:textSize="20dp"
         android:id="@+id/cost"
         android:layout_width="64dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:fontFamily="cursive"
         android:text="Cost"
+        android:textSize="20dp"
         app:layout_constraintStart_toEndOf="@+id/category_image"
         app:layout_constraintTop_toBottomOf="@+id/category" />
 

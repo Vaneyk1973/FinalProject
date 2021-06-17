@@ -56,7 +56,7 @@ public class TaskManagerFragment extends Fragment {
                 if (chosenTask==null)
                     Toast.makeText(getContext(), "Take task first", Toast.LENGTH_SHORT).show();
                 else {
-                    
+
                 }
             }
         });

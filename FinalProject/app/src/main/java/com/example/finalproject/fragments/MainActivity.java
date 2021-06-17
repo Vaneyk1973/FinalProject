@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     public static int menuWidth, avatarWidth, mapTitleWidth, statusImagesWidth, categoryImageWidth;
     public static boolean showTutorial = true;
     public static HashMap<Integer, Integer> chancesOfFight = new HashMap<>();
-    public static ArrayList<Map> map=new ArrayList<>();
+    public static ArrayList<Map> map = new ArrayList<>();
     public static Bitmap[] menu = new Bitmap[4];
     public static HashMap<Integer, HashMap<Integer, Enemy>> chancesOfEnemy = new HashMap<>();
     public static ArrayList<Enemy> enemies = new ArrayList<>();
@@ -55,21 +55,21 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Form> forms = new ArrayList<>();
     public static ArrayList<ManaReservoir> manaReservoirs = new ArrayList<>();
     public static ArrayList<Research> researches = new ArrayList<>();
-    public static ArrayList<Recipe> recipes=new ArrayList<>();
-    public static ArrayList<Item> items=new ArrayList<>(),
-            shopList=new ArrayList<>();
-    public static ArrayList<Task> tasks=new ArrayList<>();
+    public static ArrayList<Recipe> recipes = new ArrayList<>();
+    public static ArrayList<Item> items = new ArrayList<>(),
+            shopList = new ArrayList<>();
+    public static ArrayList<Task> tasks = new ArrayList<>();
     public static ArrayList<String> researches1 = new ArrayList<>(),
             elements1 = new ArrayList<>(),
             manaChannels1 = new ArrayList<>(),
             types1 = new ArrayList<>(),
             forms1 = new ArrayList<>(),
             manaReservoirs1 = new ArrayList<>(),
-            recipes1=new ArrayList<>(),
-            items1=new ArrayList<>(),
-            shopList1=new ArrayList<>(),
-            tasks1=new ArrayList<>();
-    public static ArrayList<Bitmap> mapTextures =new ArrayList<>();
+            recipes1 = new ArrayList<>(),
+            items1 = new ArrayList<>(),
+            shopList1 = new ArrayList<>(),
+            tasks1 = new ArrayList<>();
+    public static ArrayList<Bitmap> mapTextures = new ArrayList<>();
     public static HashMap<Integer, String> categories = new HashMap<>();
     private static Display display;
     private static Resources res;
@@ -85,9 +85,9 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        XmlPullParser parser=getResources().getXml(R.xml.start_map);
+        XmlPullParser parser = getResources().getXml(R.xml.start_map);
         map.add(new Map(parser));
-        parser=getResources().getXml(R.xml.first_village_map);
+        parser = getResources().getXml(R.xml.first_village_map);
         map.add(new Map(parser));
         sh = getPreferences(MODE_PRIVATE);
         display = getWindowManager().getDefaultDisplay();
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
         fragmentTransaction.commit();
     }
 
-    private static void setTasks(){
+    private static void setTasks() {
         tasks.add(new Task("You will get 100exp and 200 gold when you have 100 gold", "First money"));
     }
 
@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         }
         statusImagesWidth = width / 10;
         categoryImageWidth = width / 4;
-        int n =10, m = 20;
+        int n = 10, m = 20;
         a = Bitmap.createScaledBitmap(
                 BitmapFactory.decodeResource(res, R.drawable.textures),
                 mapTitleWidth * m, mapTitleWidth * n, false);
@@ -143,11 +143,11 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         mapTextures.addAll(Arrays.asList(b[1]));
-        for (int i=0;i<menu.length;i++)
+        for (int i = 0; i < menu.length; i++)
             menu[i] = Bitmap.createScaledBitmap(b[0][i], menuWidth, menuWidth, false);
-        for (int i=0;i<map.size();i++)
-            for (int j=0;j<map.get(i).length;j++)
-                for (int k=0;k<map.get(i).width;k++)
+        for (int i = 0; i < map.size(); i++)
+            for (int j = 0; j < map.get(i).length; j++)
+                for (int k = 0; k < map.get(i).width; k++)
                     map.get(i).map[j][k].setTexture(mapTextures.get(map.get(i).map[j][k].type));
         player.setAvatar(Bitmap.createBitmap(b[5][5]));
     }
@@ -177,14 +177,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private static void setItems(){
-        ArrayList<Pair<Item, Integer>> ingredients=new ArrayList<>();
+    private static void setItems() {
+        ArrayList<Pair<Item, Integer>> ingredients = new ArrayList<>();
         items.add(new Item(2, 5, 0, 2, "Rabbit's fur"));
         items.add(new Item(3, 5, 0, 3, "Rabbit's leg"));
         items.add(new Item(5, 8, 0, 2, "Dog's fur"));
         items.add(new Item(30, 40, 1, 3, "Dog's tooth"));
         items.add(new Item(15, 20, 0, 2, "Wolf's fur"));
-        items.add(new Item(20, 27,  0, 2, "Fox's fur"));
+        items.add(new Item(20, 27, 0, 2, "Fox's fur"));
         items.add(new Item(50, 75, 0, 2, "Bear's fur"));
         items.add(new Item(4, 9, 0, 2, "Iron ore"));
         items.add(new Armor(75, 150, 5, 10, 1, 0, 0, "Iron chestplate"));
@@ -351,16 +351,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         m.start(this, R.raw.main);
-        sh=getPreferences(MODE_PRIVATE);
-        player=new Gson().fromJson(sh.getString("Payer", ""), Player.class);
+        sh = getPreferences(MODE_PRIVATE);
+        player = new Gson().fromJson(sh.getString("Payer", ""), Player.class);
         player.setUser(new Gson().fromJson(sh.getString("User", ""), User.class));
-        showTutorial=sh.getBoolean("Tutorial", true);
-        researches1=new ArrayList<String>(new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class));
-        elements1=new ArrayList<>(new Gson().fromJson(sh.getString("Elements", ""), ArrayList.class));
-        types1=new ArrayList<>(new Gson().fromJson(sh.getString("Types", ""), ArrayList.class));
-        forms1=new ArrayList<>(new Gson().fromJson(sh.getString("Forms", ""), ArrayList.class));
-        manaChannels1=new ArrayList<>(new Gson().fromJson(sh.getString("Mana channels", ""), ArrayList.class));
-        manaReservoirs1=new ArrayList<>(new Gson().fromJson(sh.getString("Mana reservoirs", ""), ArrayList.class));
+        showTutorial = sh.getBoolean("Tutorial", true);
+        researches1 = new ArrayList<String>(new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class));
+        elements1 = new ArrayList<>(new Gson().fromJson(sh.getString("Elements", ""), ArrayList.class));
+        types1 = new ArrayList<>(new Gson().fromJson(sh.getString("Types", ""), ArrayList.class));
+        forms1 = new ArrayList<>(new Gson().fromJson(sh.getString("Forms", ""), ArrayList.class));
+        manaChannels1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana channels", ""), ArrayList.class));
+        manaReservoirs1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana reservoirs", ""), ArrayList.class));
     }
 
     @Override
@@ -414,36 +414,35 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public class Map{
+    public class Map {
         private int length, width;
         private MapTitle[][] map;
 
-        public Map(XmlPullParser map_xml){
-            ArrayList<ArrayList<MapTitle>> map=new ArrayList();
+        public Map(XmlPullParser map_xml) {
+            ArrayList<ArrayList<MapTitle>> map = new ArrayList();
             Pair<Integer, Integer> coordinates;
             Bitmap texture;
             int type;
             try {
-                while (map_xml.getEventType()!= XmlPullParser.END_DOCUMENT) {
+                while (map_xml.getEventType() != XmlPullParser.END_DOCUMENT) {
                     if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("row"))
                         map.add(new ArrayList<>());
-                    if (map_xml.getEventType()==XmlPullParser.START_TAG&& map_xml.getName().equals("map_title")){
-                        coordinates=new Pair<>(map.size()-1, map.get(0).size());
-                        type= Integer.parseInt(map_xml.getAttributeValue(0));
-                        map.get(map.size()-1).add(new MapTitle(coordinates, null, type));
+                    if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("map_title")) {
+                        coordinates = new Pair<>(map.size() - 1, map.get(0).size());
+                        type = Integer.parseInt(map_xml.getAttributeValue(0));
+                        map.get(map.size() - 1).add(new MapTitle(coordinates, null, type));
                     }
                     map_xml.next();
                 }
-            }
-            catch (XmlPullParserException | IOException e) {
+            } catch (XmlPullParserException | IOException e) {
                 e.printStackTrace();
             }
-            width=map.get(0).size();
-            length=map.size();
-            this.map=new MapTitle[length][width];
-            for (int i=0;i<length;i++)
-                for (int j=0;j<width;j++)
-                    this.map[i][j]=map.get(i).get(j);
+            width = map.get(0).size();
+            length = map.size();
+            this.map = new MapTitle[length][width];
+            for (int i = 0; i < length; i++)
+                for (int j = 0; j < width; j++)
+                    this.map[i][j] = map.get(i).get(j);
         }
 
         public MapTitle[][] getMap() {

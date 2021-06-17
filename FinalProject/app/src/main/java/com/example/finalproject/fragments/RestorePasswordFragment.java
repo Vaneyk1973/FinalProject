@@ -7,11 +7,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
@@ -36,16 +38,32 @@ public class RestorePasswordFragment extends Fragment {
         Button back = getView().findViewById(R.id.reset_password_back_button),
                 resetPassword = getView().findViewById(R.id.reset_password_button);
         EditText email = getView().findViewById(R.id.restore_password_email);
+        ProgressBar p = getView().findViewById(R.id.progressBar2);
+        p.setVisibility(View.GONE);
         resetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String email_txt = email.getText().toString();
-                if (email_txt.isEmpty())
-                    email_txt = MainActivity.player.getUser().getEmail();
-                FragmentTransaction fr = getParentFragmentManager().beginTransaction();
-                fr.add(R.id.log_in, new SignInFragment());
-                fr.remove(getParentFragmentManager().findFragmentById(R.id.restore_password));
-                fr.commit();
+                p.setVisibility(View.VISIBLE);
+                p.animate();
+                String email_txt = "";
+                if (!Patterns.EMAIL_ADDRESS.matcher(email.getText().toString()).matches())
+                    email.setError("Enter a valid email");
+                else {
+                    email_txt = email.getText().toString();
+                    FirebaseAuth.getInstance().sendPasswordResetEmail(email_txt).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull @NotNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+                                p.setVisibility(View.GONE);
+                                Toast.makeText(getContext(), "Check your email please", Toast.LENGTH_SHORT).show();
+                                FragmentTransaction fr = getParentFragmentManager().beginTransaction();
+                                fr.add(R.id.log_in, new SignInFragment());
+                                fr.remove(getParentFragmentManager().findFragmentById(R.id.restore_password));
+                                fr.commit();
+                            }
+                        }
+                    });
+                }
             }
         });
         back.setOnClickListener(new View.OnClickListener() {
