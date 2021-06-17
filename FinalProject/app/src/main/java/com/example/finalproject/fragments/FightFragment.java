@@ -275,7 +275,7 @@ public class FightFragment extends Fragment {
                     if (a >= 50) {
                         FragmentTransaction fragmentTransaction = fm.beginTransaction();
                         fragmentTransaction.remove(fm.findFragmentById(R.id.fight));
-                        fragmentTransaction.add(R.id.map, new MapFragment());
+                        fragmentTransaction.add(R.id.map, new MapFragment(MainActivity.player.getMapNum()));
                         fragmentTransaction.add(R.id.status, new StatusBarFragment());
                         fragmentTransaction.add(R.id.menu, new MenuFragment());
                         fragmentTransaction.commit();

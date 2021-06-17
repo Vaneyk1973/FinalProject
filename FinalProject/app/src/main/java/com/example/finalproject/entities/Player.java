@@ -12,6 +12,7 @@ import com.example.finalproject.fragments.ResearchTreeFragment;
 import com.example.finalproject.items.Armor;
 import com.example.finalproject.items.Food;
 import com.example.finalproject.items.Item;
+import com.example.finalproject.items.Recipe;
 import com.example.finalproject.items.Weapon;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.User;
@@ -129,8 +130,8 @@ public class Player extends Entity implements Parcelable {
         for (int i = 0; i < getEnemy().getDrop().size(); i++) {
             if (new Random().nextInt(100) <= getEnemy().getDrop().get(i).second) {
                 Item drop = getEnemy().getDrop().get(i).first;
-                if (contains(inventory, new Pair(drop, new Object()))) {
-                    int a = get(inventory, drop);
+                if (isInventoryContainsItem(inventory, new Pair(drop, new Object()))) {
+                    int a = getInventoryItemIndex(inventory, drop);
                     inventory.set(a, new Pair<>(drop, inventory.get(a).second + 1));
                 } else {
                     inventory.add(new Pair<>(drop, 1));
@@ -196,6 +197,21 @@ public class Player extends Entity implements Parcelable {
         }
     }
 
+    public boolean craft(Recipe recipe){
+        ArrayList<Pair<Item, Integer>> ingredients=new ArrayList<>(recipe.getIngredients());
+        for (int i=0;i<ingredients.size();i++){
+            if (!isInventoryContainsItem(inventory, ingredients.get(i))||
+                    inventory.get(getInventoryItemIndex(inventory, ingredients.get(i).first)).second<ingredients.get(i).second){
+                return false;
+            }
+        }
+        addItemToInventory(new Pair<>(recipe.getProduct(), 1));
+        for (int i=0;i<ingredients.size();i++){
+            removeItemFromInventory(ingredients.get(i));
+        }
+        return true;
+    }
+
     public void eat(Food food) {
         setHealth(getHealth() + food.getHealthRecovery());
         setMana(getMana() + food.getManaRecovery());
@@ -208,7 +224,8 @@ public class Player extends Entity implements Parcelable {
     public void attack() {
         getEnemy().take_damage(getDamage());
         if (enemy.isDuel())
-            FirebaseDatabase.getInstance().getReference("Duel").child(getDuelNum()+"").child(1-getDuelPnum()+"").child("health").setValue(enemy.getHealth());
+            FirebaseDatabase.getInstance().getReference("Duel")
+                    .child(getDuelNum()+"").child(1-getDuelPnum()+"").child("health").setValue(enemy.getHealth());
     }
 
     public void levelUp() {
@@ -257,10 +274,6 @@ public class Player extends Entity implements Parcelable {
 
     public ArrayList<Pair<Item, Integer>> getInventory() {
         return inventory;
-    }
-
-    public void setInventory(ArrayList<Pair<Item, Integer>> inventory) {
-        this.inventory = inventory;
     }
 
     public Bitmap getTitleTexture() {
@@ -358,7 +371,7 @@ public class Player extends Entity implements Parcelable {
         this.avatar = avatar;
     }
 
-    private boolean contains(ArrayList<Pair<Item, Integer>> data, Pair<Item, Integer> element) {
+    private boolean isInventoryContainsItem(ArrayList<Pair<Item, Integer>> data, Pair<Item, Integer> element) {
         for (int i = 0; i < data.size(); i++) {
             if (data.get(i).first != null) {
                 if (data.get(i).first.getName().equals(element.first.getName()))
@@ -368,12 +381,55 @@ public class Player extends Entity implements Parcelable {
         return false;
     }
 
-    private int get(ArrayList<Pair<Item, Integer>> data, Item element) {
+    private int getInventoryItemIndex(ArrayList<Pair<Item, Integer>> data, Item element) {
         for (int i = 0; i < data.size(); i++) {
             if (data.get(i).first.getName().equals(element.getName()))
                 return i;
         }
         return -1;
+    }
+
+    public void addItemToInventory(Pair<Item, Integer> item){
+        if (isInventoryContainsItem(inventory, item))
+            inventory.set(getInventoryItemIndex(inventory, item.first),
+                    new Pair<>(item.first, inventory.get(getInventoryItemIndex(inventory, item.first)).second+1));
+        else inventory.add(item);
+    }
+
+    private boolean removeItemFromInventory(Pair<Item, Integer> item){
+        if (getInventoryItemIndex(inventory, item.first)!=-1){
+            if (inventory.get(getInventoryItemIndex(inventory, item.first)).second-item.second<0){
+                return false;
+            }
+            else {
+                if (inventory.get(getInventoryItemIndex(inventory, item.first)).second-item.second==0){
+                    inventory.remove(inventory.get(getInventoryItemIndex(inventory, item.first)));
+                }else {
+                    inventory.set(getInventoryItemIndex(inventory, item.first),
+                            new Pair<>(item.first, inventory.get(getInventoryItemIndex(inventory, item.first)).second-item.second));
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean sellItem(Pair<Item, Integer> item){
+        if (removeItemFromInventory(item)){
+            addGold(item.first.getCostSell());
+            return true;
+        }
+        else return false;
+    }
+
+    public boolean buyItem(Pair<Item, Integer> item){
+        if (gold<item.first.getCostBuy())
+            return false;
+        else {
+            addItemToInventory(item);
+            addGold(-item.first.getCostBuy());
+            return true;
+        }
     }
 
     public int getMapNum() {

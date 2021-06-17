@@ -3,7 +3,7 @@ package com.example.finalproject.items;
 import java.io.Serializable;
 
 public class Item implements Serializable {
-    private int cost, rarity, category;
+    private int costSell, costBuy, rarity, category;
     private String name;
 
     public Item(){}
@@ -12,30 +12,31 @@ public class Item implements Serializable {
         this.name=name;
     }
 
-    public Item(int cost, String name) {
-        this.cost = cost;
+    public Item(int costSell, String name) {
+        this.costSell = costSell;
         this.name = name;
     }
 
-    public Item(int cost, int rarity, String name) {
-        this.cost = cost;
+    public Item(int costSell, int rarity, String name) {
+        this.costSell = costSell;
         this.rarity = rarity;
         this.name = name;
     }
 
-    public Item(int cost, int rarity, int category, String name) {
-        this.cost = cost;
+    public Item(int costSell, int costBuy, int rarity, int category, String name) {
+        this.costSell = costSell;
+        this.costBuy = costBuy;
         this.rarity = rarity;
         this.category = category;
         this.name = name;
     }
 
-    public int getCost() {
-        return cost;
+    public int getCostSell() {
+        return costSell;
     }
 
-    public void setCost(int cost) {
-        this.cost = cost;
+    public void setCostSell(int costSell) {
+        this.costSell = costSell;
     }
 
     public String getName() {
@@ -60,6 +61,14 @@ public class Item implements Serializable {
 
     public void setCategory(int category) {
         this.category = category;
+    }
+
+    public int getCostBuy() {
+        return costBuy;
+    }
+
+    public void setCostBuy(int costBuy) {
+        this.costBuy = costBuy;
     }
 }
 

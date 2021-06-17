@@ -6,12 +6,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
 import android.view.WindowManager;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -23,19 +21,15 @@ import com.example.finalproject.items.Item;
 import com.example.finalproject.items.Recipe;
 import com.example.finalproject.service.Music;
 import com.example.finalproject.service.Research;
+import com.example.finalproject.service.Task;
 import com.example.finalproject.service.User;
 import com.example.finalproject.service.spell.Element;
 import com.example.finalproject.service.spell.Form;
 import com.example.finalproject.service.spell.ManaChannel;
 import com.example.finalproject.service.spell.ManaReservoir;
 import com.example.finalproject.service.spell.Type;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
-import org.jetbrains.annotations.NotNull;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -62,7 +56,9 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<ManaReservoir> manaReservoirs = new ArrayList<>();
     public static ArrayList<Research> researches = new ArrayList<>();
     public static ArrayList<Recipe> recipes=new ArrayList<>();
-    public static ArrayList<Item> items=new ArrayList<Item>();
+    public static ArrayList<Item> items=new ArrayList<>(),
+            shopList=new ArrayList<>();
+    public static ArrayList<Task> tasks=new ArrayList<>();
     public static ArrayList<String> researches1 = new ArrayList<>(),
             elements1 = new ArrayList<>(),
             manaChannels1 = new ArrayList<>(),
@@ -70,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
             forms1 = new ArrayList<>(),
             manaReservoirs1 = new ArrayList<>(),
             recipes1=new ArrayList<>(),
-            items1=new ArrayList<>();
+            items1=new ArrayList<>(),
+            shopList1=new ArrayList<>(),
+            tasks1=new ArrayList<>();
     public static ArrayList<Bitmap> mapTextures =new ArrayList<>();
     public static HashMap<Integer, String> categories = new HashMap<>();
     private static Display display;
@@ -107,6 +105,10 @@ public class MainActivity extends AppCompatActivity {
             fragmentTransaction.add(R.id.menu, new MenuFragment());
         }
         fragmentTransaction.commit();
+    }
+
+    private static void setTasks(){
+        tasks.add(new Task("You will get 100exp and 200 gold when you have 100 gold", "First money"));
     }
 
     private static void setTextures() {
@@ -175,29 +177,50 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private static void setItems(){
+        ArrayList<Pair<Item, Integer>> ingredients=new ArrayList<>();
+        items.add(new Item(2, 5, 0, 2, "Rabbit's fur"));
+        items.add(new Item(3, 5, 0, 3, "Rabbit's leg"));
+        items.add(new Item(5, 8, 0, 2, "Dog's fur"));
+        items.add(new Item(30, 40, 1, 3, "Dog's tooth"));
+        items.add(new Item(15, 20, 0, 2, "Wolf's fur"));
+        items.add(new Item(20, 27,  0, 2, "Fox's fur"));
+        items.add(new Item(50, 75, 0, 2, "Bear's fur"));
+        items.add(new Item(4, 9, 0, 2, "Iron ore"));
+        items.add(new Armor(75, 150, 5, 10, 1, 0, 0, "Iron chestplate"));
+        items.add(new Item(15, 25, 0, 2, "Leather"));
+        ingredients.add(new Pair<>(items.get(0), 5));
+        recipes.add(new Recipe(items.get(9), ingredients));
+        ingredients.clear();
+        ingredients.add(new Pair<>(items.get(7), 10));
+        recipes.add(new Recipe(items.get(8), ingredients));
+        ingredients.clear();
+        shopList.addAll(items);
+    }
+
     private static void setDrop() {
         drop.put(0, new ArrayList<>());
-        drop.get(0).add(new Pair<>(new Item(2, 0, 2, "Rabbit's fur"), 70));
-        drop.get(0).add(new Pair<>(new Item(3, 0, 3, "Rabbit's leg"), 30));
+        drop.get(0).add(new Pair<>(items.get(0), 70));
+        drop.get(0).add(new Pair<>(items.get(1), 30));
         drop.put(1, new ArrayList<>());
-        drop.get(1).add(new Pair<>(new Item(5, 0, 2, "Dog's fur"), 90));
-        drop.get(1).add(new Pair<>(new Item(30, 0, 2, "Dog's tooth"), 10));
+        drop.get(1).add(new Pair<>(items.get(2), 90));
+        drop.get(1).add(new Pair<>(items.get(3), 10));
         drop.put(2, new ArrayList<>());
-        drop.get(2).add(new Pair<>(new Item(15, 0, 2, "Wolf's fur"), 100));
+        drop.get(2).add(new Pair<>(items.get(4), 100));
         drop.put(3, new ArrayList<>());
-        drop.get(3).add(new Pair<>(new Item(20, 0, 2, "Fox's fur"), 100));
+        drop.get(3).add(new Pair<>(items.get(5), 100));
         drop.put(4, new ArrayList<>());
-        drop.get(4).add(new Pair<>(new Item(50, 0, 2, "Bear's fur"), 100));
+        drop.get(4).add(new Pair<>(items.get(6), 100));
         drop.put(5, new ArrayList<>());
-        drop.get(5).add(new Pair<>(new Armor(75, 5, 10, 1, 1, "Iron chestplate"), 50));
+        drop.get(5).add(new Pair<>(items.get(8), 50));
     }
 
     private static void setEnemies() {
-        enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0), b[2][5]));
-        enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1), b[4][5]));
-        enemies.add(new Enemy("Wolf", 35, 0, 5, 0, 10, 10, drop.get(2), b[0][5]));
-        enemies.add(new Enemy("Fox", 20, 0, 3, 0, 7, 6, drop.get(3), b[1][5]));
-        enemies.add(new Enemy("Bear", 100, 10, 15, 0, 50, 200, drop.get(4), b[3][5]));
+        enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0), b[5][2]));
+        enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1), b[5][4]));
+        enemies.add(new Enemy("Wolf", 35, 0, 5, 0, 10, 10, drop.get(2), b[5][0]));
+        enemies.add(new Enemy("Fox", 20, 0, 3, 0, 7, 6, drop.get(3), b[5][1]));
+        enemies.add(new Enemy("Bear", 100, 10, 15, 0, 50, 200, drop.get(4), b[3][2]));
         enemies.add(new Enemy("Highwayman", 50, 10, 20, 0, 100, 50, drop.get(5), b[5][5]));
         chancesOfFight.put(0, 0);
         chancesOfFight.put(1, 20);
@@ -212,6 +235,7 @@ public class MainActivity extends AppCompatActivity {
         chancesOfFight.put(10, 0);
         chancesOfFight.put(11, 0);
         chancesOfFight.put(12, 0);
+        chancesOfFight.put(13, 0);
         chancesOfEnemy.put(1, new HashMap<>());
         chancesOfEnemy.get(1).put(30, enemies.get(0));
         chancesOfEnemy.get(1).put(70, enemies.get(1));
@@ -297,19 +321,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private static void setItems(){
-        ArrayList<Pair<Item, Integer>> ingredients=new ArrayList<>();
-        items.add(new Item(2, 0, 2, "Rabbit's fur"));
-        items.add(new Item(4, 0, 2, "Iron ore"));
-        items.add(new Armor(75, 5, 10, 1, 1, "Iron chestplate"));
-        items.add(new Item(15, 0, 2, "Leather"));
-        ingredients.add(new Pair<>(items.get(1), 5));
-        recipes.add(new Recipe(items.get(2), ingredients));
-        ingredients.clear();
-        ingredients.add(new Pair<>(items.get(0), 4));
-        recipes.add(new Recipe(items.get(3), ingredients));
-    }
-
     protected static void setInitialData() {
         researches1 = new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class);
         elements1 = new Gson().fromJson(sh.getString("Elements", ""), ArrayList.class);
@@ -327,6 +338,7 @@ public class MainActivity extends AppCompatActivity {
         setDrop();
         setEnemies();
         setMagic();
+        setTasks();
     }
 
     @Override

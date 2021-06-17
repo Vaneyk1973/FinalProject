@@ -29,7 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class InventoryFragment extends Fragment {
-
+    private TextView noItems;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -43,30 +43,31 @@ public class InventoryFragment extends Fragment {
         Point size = new Point();
         display.getSize(size);
         int width = size.x;
+        noItems = getView().findViewById(R.id.textView12);
         RecyclerView inventory = (RecyclerView) getView().findViewById(R.id.list);
         ArrayList<ImageView> categories = new ArrayList<>();
         Button back = (Button) getView().findViewById(R.id.inventory_back_button);
-        View.OnClickListener clickListener=new View.OnClickListener() {
+        View.OnClickListener clickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 inventory.setAdapter(new InventoryAdapter(MainActivity.player.getInventory(), categories.indexOf(v)));
             }
         };
         Bitmap bm = Bitmap.createScaledBitmap
-                (MainActivity.b[0][6], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
+                (MainActivity.b[6][0], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
         categories.add(getView().findViewById(R.id.armor_weapons));
         categories.add(getView().findViewById(R.id.potions_food));
         categories.add(getView().findViewById(R.id.recourses));
         categories.add(getView().findViewById(R.id.other));
         categories.get(0).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[1][6], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
+                (MainActivity.b[6][1], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
         categories.get(1).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[2][6], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
+                (MainActivity.b[6][2], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
         categories.get(2).setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[3][6], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
+                (MainActivity.b[6][3], MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false);
         categories.get(3).setImageBitmap(Bitmap.createBitmap(bm));
         inventory.setAdapter(new InventoryAdapter(MainActivity.player.getInventory()));
         inventory.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -77,10 +78,10 @@ public class InventoryFragment extends Fragment {
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentManager fm=getParentFragmentManager();
+                FragmentManager fm = getParentFragmentManager();
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 fragmentTransaction.remove(fm.findFragmentById(R.id.inventory));
-                fragmentTransaction.add(R.id.map, new MapFragment());
+                fragmentTransaction.add(R.id.map, new MapFragment(MainActivity.player.getMapNum()));
                 fragmentTransaction.add(R.id.status, new StatusBarFragment());
                 fragmentTransaction.add(R.id.menu, new MenuFragment());
                 fragmentTransaction.commit();
@@ -94,11 +95,11 @@ public class InventoryFragment extends Fragment {
 
         public InventoryAdapter(ArrayList<Pair<Item, Integer>> data) {
             this.data.addAll(data);
-            category=0;
+            category = 0;
         }
 
         public InventoryAdapter(ArrayList<Pair<Item, Integer>> data, int category) {
-            this.category=category;
+            this.category = category;
             this.data.addAll(data);
         }
 
@@ -121,15 +122,15 @@ public class InventoryFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull InventoryFragment.InventoryAdapter.ViewHolder holder, int position) {
-            holder.name.setText(">"+data.get(position).first.getName()+":"+data.get(position).second+"\n");
+            holder.name.setText(">" + data.get(position).first.getName() + ":" + data.get(position).second + "\n");
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (data.get(position).first.getCategory()==0){
+                    if (data.get(position).first.getCategory() == 0) {
                         MainActivity.player.equip(data.get(position).first);
                     }
-                    FragmentManager fm=getChildFragmentManager();
-                    FragmentTransaction fr=fm.beginTransaction();
+                    FragmentManager fm = getChildFragmentManager();
+                    FragmentTransaction fr = fm.beginTransaction();
                     if (fm.findFragmentById(R.id.characteristics) != null)
                         fr.remove(fm.findFragmentById(R.id.characteristics));
                     fr.add(R.id.characteristics, new ItemCharacteristicsFragment(data.get(position).first));
@@ -140,15 +141,22 @@ public class InventoryFragment extends Fragment {
 
         @Override
         public int getItemCount() {
-            if (category==-1)
+            if (category == -1){
+                if (data.size() == 0)
+                    noItems.setVisibility(View.VISIBLE);
+                else noItems.setVisibility(View.GONE);
                 return data.size();
+            }
             else {
-                ArrayList<Pair<Item, Integer>> data1=new ArrayList<>();
-                for (int i=0;i<data.size();i++){
-                    if (data.get(i).first.getCategory()==category)
+                ArrayList<Pair<Item, Integer>> data1 = new ArrayList<>();
+                for (int i = 0; i < data.size(); i++) {
+                    if (data.get(i).first.getCategory() == category)
                         data1.add(data.get(i));
                 }
-                data=new ArrayList<>(data1);
+                data = new ArrayList<>(data1);
+                if (data.size() == 0)
+                    noItems.setVisibility(View.VISIBLE);
+                else noItems.setVisibility(View.GONE);
                 return data1.size();
             }
         }

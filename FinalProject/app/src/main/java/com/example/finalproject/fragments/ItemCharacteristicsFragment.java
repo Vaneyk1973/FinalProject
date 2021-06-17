@@ -20,9 +20,16 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemCharacteristicsFragment extends Fragment {
     private Item item;
+    private boolean mode;
 
     public ItemCharacteristicsFragment(Item item){
         this.item=item;
+        mode=true;
+    }
+
+    public ItemCharacteristicsFragment(Item item, boolean mode){
+        this.item=item;
+        this.mode=mode;
     }
 
     @Nullable
@@ -36,14 +43,16 @@ public class ItemCharacteristicsFragment extends Fragment {
     public void onViewCreated(@NonNull @org.jetbrains.annotations.NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ImageView img=getView().findViewById(R.id.category_image);
-        img.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.b[item.getCategory()][6],
+        img.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.b[6][item.getCategory()],
                 MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false));
         TextView name = (TextView) getView().findViewById(R.id.name_field);
         TextView category = (TextView) getView().findViewById(R.id.category_field);
         TextView cost = (TextView) getView().findViewById(R.id.cost_field);
         name.setText(item.getName()+"");
         category.setText(MainActivity.categories.get(item.getCategory())+"");
-        cost.setText(item.getCost()+"");
+        if (mode)
+            cost.setText(item.getCostSell()+"");
+        else cost.setText(item.getCostBuy()+"");
     }
 
     public Item getItem() {

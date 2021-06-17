@@ -33,6 +33,7 @@ public class MapFragment extends Fragment {
 
     MapFragment(){
         mapNum =0;
+        MainActivity.player.setMapNum(0);
     }
 
     @Override
@@ -78,21 +79,11 @@ public class MapFragment extends Fragment {
                         switch (MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()){
                             case 3:{
                                 MainActivity.player.setMapNum(1);
-                                MainActivity.player.setCoordinates(1, new Pair<>(6, 3));
+                                MainActivity.player.setCoordinates(1, new Pair<>(7, 3));
                                 FragmentManager fm = getParentFragmentManager();
                                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                                 fragmentTransaction.add(R.id.map, new MapFragment(1));
-                                fragmentTransaction.commit();
-                                break;
-                            }
-                            case 8:{
-                                FragmentManager fm = getParentFragmentManager();
-                                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                                fragmentTransaction.add(R.id.auction, new AuctionFragment());
                                 fragmentTransaction.commit();
                                 break;
                             }
@@ -102,7 +93,7 @@ public class MapFragment extends Fragment {
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                                fragmentTransaction.add(R.id.tasks, new TaskManagerFragment());
+                                fragmentTransaction.add(R.id.tasks, new TaskManagerFragment(true));
                                 fragmentTransaction.commit();
                                 break;
                             }
@@ -123,6 +114,34 @@ public class MapFragment extends Fragment {
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
                                 fragmentTransaction.add(R.id.crafting_station, new CraftingStationFragment());
+                                fragmentTransaction.commit();
+                                break;
+                            }
+                            case 12:{
+                                FragmentManager fm = getParentFragmentManager();
+                                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                                fragmentTransaction.add(R.id.shop, new ShopFragment());
+                                fragmentTransaction.commit();
+                                break;
+                            }
+                            case 13:{
+                                FragmentManager fm = getParentFragmentManager();
+                                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                                fragmentTransaction.add(R.id.map, new MapFragment());
+                                fragmentTransaction.commit();
+                                break;
+                            }
+                            case 14:{
+                                FragmentManager fm = getParentFragmentManager();
+                                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                                fragmentTransaction.add(R.id.auction, new AuctionFragment());
                                 fragmentTransaction.commit();
                                 break;
                             }

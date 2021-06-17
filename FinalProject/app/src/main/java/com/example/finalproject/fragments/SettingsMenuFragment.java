@@ -28,7 +28,8 @@ public class SettingsMenuFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         TextView settings=getView().findViewById(R.id.settings_button),
-                help=getView().findViewById(R.id.help_button);
+                help=getView().findViewById(R.id.help_button),
+                tasks=getView().findViewById(R.id.tasks_button);
         Button back=getView().findViewById(R.id.settings_menu_back_button);
         settings.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -45,6 +46,15 @@ public class SettingsMenuFragment extends Fragment {
                 FragmentTransaction fr=getParentFragmentManager().beginTransaction();
                 fr.remove(getParentFragmentManager().findFragmentById(R.id.settings_menu));
                 fr.add(R.id.tutorial, new TutorialFragment());
+                fr.commit();
+            }
+        });
+        tasks.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction fr=getParentFragmentManager().beginTransaction();
+                fr.remove(getParentFragmentManager().findFragmentById(R.id.settings_menu));
+                fr.add(R.id.tasks, new TaskManagerFragment());
                 fr.commit();
             }
         });
