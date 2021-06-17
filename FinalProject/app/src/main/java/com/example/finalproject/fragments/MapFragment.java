@@ -116,6 +116,16 @@ public class MapFragment extends Fragment {
                                 fragmentTransaction.commit();
                                 break;
                             }
+                            case 11:{
+                                FragmentManager fm = getParentFragmentManager();
+                                FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                                fragmentTransaction.add(R.id.crafting_station, new CraftingStationFragment());
+                                fragmentTransaction.commit();
+                                break;
+                            }
                         }
                         MainActivity.player.setTitleTexture(
                                 MainActivity.mapTextures.get(

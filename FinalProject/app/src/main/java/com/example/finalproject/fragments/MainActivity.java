@@ -20,6 +20,7 @@ import com.example.finalproject.entities.Enemy;
 import com.example.finalproject.entities.Player;
 import com.example.finalproject.items.Armor;
 import com.example.finalproject.items.Item;
+import com.example.finalproject.items.Recipe;
 import com.example.finalproject.service.Music;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.User;
@@ -60,12 +61,16 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Form> forms = new ArrayList<>();
     public static ArrayList<ManaReservoir> manaReservoirs = new ArrayList<>();
     public static ArrayList<Research> researches = new ArrayList<>();
+    public static ArrayList<Recipe> recipes=new ArrayList<>();
+    public static ArrayList<Item> items=new ArrayList<Item>();
     public static ArrayList<String> researches1 = new ArrayList<>(),
             elements1 = new ArrayList<>(),
             manaChannels1 = new ArrayList<>(),
             types1 = new ArrayList<>(),
             forms1 = new ArrayList<>(),
-            manaReservoirs1 = new ArrayList<>();
+            manaReservoirs1 = new ArrayList<>(),
+            recipes1=new ArrayList<>(),
+            items1=new ArrayList<>();
     public static ArrayList<Bitmap> mapTextures =new ArrayList<>();
     public static HashMap<Integer, String> categories = new HashMap<>();
     private static Display display;
@@ -97,14 +102,14 @@ public class MainActivity extends AppCompatActivity {
         if (showTutorial) {
             fragmentTransaction.add(R.id.tutorial, new TutorialFragment());
         } else {
-            fragmentTransaction.add(R.id.map, new MapFragment());
+            fragmentTransaction.add(R.id.map, new MapFragment(MainActivity.player.getMapNum()));
             fragmentTransaction.add(R.id.status, new StatusBarFragment());
             fragmentTransaction.add(R.id.menu, new MenuFragment());
         }
         fragmentTransaction.commit();
     }
 
-    private static void set_textures() {
+    private static void setTextures() {
         Point size = new Point();
         display.getSize(size);
         Bitmap a;
@@ -145,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
         player.setAvatar(Bitmap.createBitmap(b[5][5]));
     }
 
-    private static void set_researches() {
+    private static void setResearches() {
         researches = new ArrayList<>();
         if (researches1 != null)
             for (int i = 0; i < researches1.size(); i++)
@@ -170,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private static void set_drop() {
+    private static void setDrop() {
         drop.put(0, new ArrayList<>());
         drop.get(0).add(new Pair<>(new Item(2, 0, 2, "Rabbit's fur"), 70));
         drop.get(0).add(new Pair<>(new Item(3, 0, 3, "Rabbit's leg"), 30));
@@ -185,23 +190,9 @@ public class MainActivity extends AppCompatActivity {
         drop.get(4).add(new Pair<>(new Item(50, 0, 2, "Bear's fur"), 100));
         drop.put(5, new ArrayList<>());
         drop.get(5).add(new Pair<>(new Armor(75, 5, 10, 1, 1, "Iron chestplate"), 50));
-        FirebaseDatabase.getInstance().getReference("Auction").child("Iron chestplate")
-                .setValue(new Armor(75, 5, 10, 1, 1, "Iron chestplate"))
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-            @Override
-            public void onComplete(@NonNull @NotNull Task<Void> task) {
-                if (task.isSuccessful())
-                    FirebaseDatabase.getInstance().getReference("Auction").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                            Log.d("KKK", task.getResult().getValue()+"");
-                        }
-                    });
-            }
-        });
     }
 
-    private static void set_enemies() {
+    private static void setEnemies() {
         enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0), b[2][5]));
         enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1), b[4][5]));
         enemies.add(new Enemy("Wolf", 35, 0, 5, 0, 10, 10, drop.get(2), b[0][5]));
@@ -219,6 +210,8 @@ public class MainActivity extends AppCompatActivity {
         chancesOfFight.put(8, 0);
         chancesOfFight.put(9, 0);
         chancesOfFight.put(10, 0);
+        chancesOfFight.put(11, 0);
+        chancesOfFight.put(12, 0);
         chancesOfEnemy.put(1, new HashMap<>());
         chancesOfEnemy.get(1).put(30, enemies.get(0));
         chancesOfEnemy.get(1).put(70, enemies.get(1));
@@ -238,7 +231,7 @@ public class MainActivity extends AppCompatActivity {
         chancesOfEnemy.get(8).put(100, enemies.get(5));
     }
 
-    private static void set_magic() {
+    private static void setMagic() {
         elements.clear();
         types.clear();
         forms.clear();
@@ -304,6 +297,19 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private static void setItems(){
+        ArrayList<Pair<Item, Integer>> ingredients=new ArrayList<>();
+        items.add(new Item(2, 0, 2, "Rabbit's fur"));
+        items.add(new Item(4, 0, 2, "Iron ore"));
+        items.add(new Armor(75, 5, 10, 1, 1, "Iron chestplate"));
+        items.add(new Item(15, 0, 2, "Leather"));
+        ingredients.add(new Pair<>(items.get(1), 5));
+        recipes.add(new Recipe(items.get(2), ingredients));
+        ingredients.clear();
+        ingredients.add(new Pair<>(items.get(0), 4));
+        recipes.add(new Recipe(items.get(3), ingredients));
+    }
+
     protected static void setInitialData() {
         researches1 = new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class);
         elements1 = new Gson().fromJson(sh.getString("Elements", ""), ArrayList.class);
@@ -315,11 +321,12 @@ public class MainActivity extends AppCompatActivity {
         categories.put(1, "Food/potions");
         categories.put(2, "Resources");
         categories.put(3, "Other");
-        set_textures();
-        set_researches();
-        set_drop();
-        set_enemies();
-        set_magic();
+        setItems();
+        setTextures();
+        setResearches();
+        setDrop();
+        setEnemies();
+        setMagic();
     }
 
     @Override

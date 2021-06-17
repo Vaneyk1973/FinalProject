@@ -88,7 +88,7 @@ public class InventoryFragment extends Fragment {
         });
     }
 
-    class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.InvenoryViewHolder> {
+    private class InventoryAdapter extends RecyclerView.Adapter<InventoryAdapter.ViewHolder> {
         private ArrayList<Pair<Item, Integer>> data = new ArrayList<>();
         private final int category;
 
@@ -102,10 +102,10 @@ public class InventoryFragment extends Fragment {
             this.data.addAll(data);
         }
 
-        public class InvenoryViewHolder extends RecyclerView.ViewHolder {
+        private class ViewHolder extends RecyclerView.ViewHolder {
             TextView name;
 
-            public InvenoryViewHolder(@NonNull @NotNull View itemView) {
+            public ViewHolder(@NonNull @NotNull View itemView) {
                 super(itemView);
                 name = (TextView) itemView.findViewById(R.id.textView);
             }
@@ -114,13 +114,13 @@ public class InventoryFragment extends Fragment {
         @NonNull
         @NotNull
         @Override
-        public InventoryFragment.InventoryAdapter.InvenoryViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
+        public InventoryFragment.InventoryAdapter.ViewHolder onCreateViewHolder(@NonNull @NotNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.inventory_item, parent, false);
-            return new InvenoryViewHolder(view);
+            return new ViewHolder(view);
         }
 
         @Override
-        public void onBindViewHolder(@NonNull @NotNull InventoryFragment.InventoryAdapter.InvenoryViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull @NotNull InventoryFragment.InventoryAdapter.ViewHolder holder, int position) {
             holder.name.setText(">"+data.get(position).first.getName()+":"+data.get(position).second+"\n");
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override

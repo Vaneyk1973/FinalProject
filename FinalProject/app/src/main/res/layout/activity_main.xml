@@ -24,6 +24,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteY="731dp" />
+    <FrameLayout
+        android:id="@+id/crafting_station"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteY="731dp" />
 
     <FrameLayout
         android:id="@+id/chat"
