@@ -25,7 +25,10 @@ import com.example.finalproject.entities.Player;
 import com.example.finalproject.service.User;
 import com.example.finalproject.service.spell.Spell;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.RuntimeExecutionException;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -56,7 +59,7 @@ public class FightFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        final FragmentManager fm=getParentFragmentManager();
+        final FragmentManager fm = getParentFragmentManager();
         ProgressBar p = getView().findViewById(R.id.fight_progress_bar);
         p.setVisibility(View.GONE);
         MainActivity.m.start(getContext(), R.raw.fight);
@@ -77,26 +80,27 @@ public class FightFragment extends Fragment {
             p.setVisibility(View.VISIBLE);
             DatabaseReference[] databaseReferences = new DatabaseReference[2];
             Enemy[] enemies = new Enemy[1];
-            ValueEventListener player=new ValueEventListener() {
+            ValueEventListener player = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                     MainActivity.player.setHealth(snapshot.child("health").getValue(Double.class));
                     MainActivity.player.setMana(snapshot.child("mana").getValue(Double.class));
                     yourHealth.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMaxHealth()));
                     yourMana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMaxMana()));
-                    if(MainActivity.player.getHealth()<=0) {
+                    if (MainActivity.player.getHealth() <= 0) {
                         snapshot.getRef().child("dead").setValue(true);
                         MainActivity.player.setGold(0);
                         MainActivity.player.setExperience(0);
                         run.callOnClick();
                     }
                 }
+
                 @Override
                 public void onCancelled(@NonNull @NotNull DatabaseError error) {
 
                 }
-            } ,
-                    enemy=new ValueEventListener() {
+            },
+                    enemy = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                             if (snapshot.getValue() != null)
@@ -108,7 +112,8 @@ public class FightFragment extends Fragment {
 
                         }
                     };
-            FirebaseDatabase.getInstance().getReference("Duel").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            FirebaseDatabase.getInstance().getReference("Duel")
+                    .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                 @Override
                 public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
                     if (task.getResult().child(task.getResult().getChildrenCount() - 1 + "").getChildrenCount() == 1) {
@@ -123,7 +128,7 @@ public class FightFragment extends Fragment {
                         databaseReferences[1].child("ran").addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                                if (snapshot.getValue(boolean.class)){
+                                if (snapshot.getValue(boolean.class)) {
                                     run.callOnClick();
                                 }
                             }
@@ -142,7 +147,7 @@ public class FightFragment extends Fragment {
                                 databaseReferences[0].child("ran").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                                        if (!task.getResult().getValue(boolean.class)){
+                                        if (!task.getResult().getValue(boolean.class)) {
                                             databaseReferences[0].child("ran").setValue(true);
                                             FragmentTransaction fragmentTransaction = fm.beginTransaction();
                                             fragmentTransaction.remove(fm.findFragmentById(R.id.fight));
@@ -153,8 +158,8 @@ public class FightFragment extends Fragment {
                                         }
                                     }
                                 });
-                                }
-                            });
+                            }
+                        });
                         attack.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -162,7 +167,7 @@ public class FightFragment extends Fragment {
                             }
                         });
                     } else {
-                        int a=Integer.parseInt(task.getResult().getChildrenCount()+"");
+                        int a = Integer.parseInt(task.getResult().getChildrenCount() + "");
                         databaseReferences[0] = task.getResult().child(a + "").getRef().child("0");
                         MainActivity.player.addPlayerToDuel(databaseReferences[0]);
                         MainActivity.player.setDuelNum(Integer.parseInt(a + ""));
@@ -175,7 +180,7 @@ public class FightFragment extends Fragment {
                                 databaseReferences[0].child("ran").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                                        if (!task.getResult().getValue(boolean.class)){
+                                        if (!task.getResult().getValue(boolean.class)) {
                                             databaseReferences[0].child("ran").setValue(true);
                                             FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
                                             fragmentTransaction.remove(getParentFragmentManager().findFragmentById(R.id.fight));
@@ -191,7 +196,14 @@ public class FightFragment extends Fragment {
                         attack.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                MainActivity.player.attack();
+                                task.getResult().child(task.getResult().getChildrenCount() + "")
+                                        .getRef().child("1").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
+                                        if (task.isSuccessful()&&task.getResult().getValue()!=null)
+                                            MainActivity.player.attack();
+                                    }
+                                });
                             }
                         });
                         databaseReferences[0].addValueEventListener(player);
@@ -201,7 +213,7 @@ public class FightFragment extends Fragment {
                                 .getRef().child("1").child("ran").addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                                if (snapshot.getValue()!=null&&snapshot.getValue(boolean.class)){
+                                if (snapshot.getValue() != null && snapshot.getValue(boolean.class)) {
                                     run.callOnClick();
                                 }
                             }
@@ -215,6 +227,7 @@ public class FightFragment extends Fragment {
                     }
                 }
             });
+
             playerImage.setImageBitmap(MainActivity.b[5][5]);
             enemyImage.setImageBitmap(MainActivity.b[5][6]);
         } else {

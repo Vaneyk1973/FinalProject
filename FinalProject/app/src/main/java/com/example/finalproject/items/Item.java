@@ -8,21 +8,6 @@ public class Item implements Serializable {
 
     public Item(){}
 
-    public Item(String name){
-        this.name=name;
-    }
-
-    public Item(int costSell, String name) {
-        this.costSell = costSell;
-        this.name = name;
-    }
-
-    public Item(int costSell, int rarity, String name) {
-        this.costSell = costSell;
-        this.rarity = rarity;
-        this.name = name;
-    }
-
     public Item(int costSell, int costBuy, int rarity, int category, String name) {
         this.costSell = costSell;
         this.costBuy = costBuy;

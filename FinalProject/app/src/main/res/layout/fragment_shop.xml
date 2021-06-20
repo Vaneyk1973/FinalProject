@@ -83,7 +83,7 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/textView13"
+        android:id="@+id/amount"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="1"
@@ -95,7 +95,7 @@
         app:layout_constraintTop_toBottomOf="@+id/characteristics3" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton"
+        android:id="@+id/add_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -104,11 +104,11 @@
         android:clickable="true"
         android:src="@drawable/outline_add_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/textView13"
+        app:layout_constraintStart_toEndOf="@+id/amount"
         app:layout_constraintTop_toBottomOf="@+id/characteristics3" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButton2"
+        android:id="@+id/remove_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
@@ -117,6 +117,6 @@
         android:clickable="true"
         android:src="@drawable/outline_remove_black_24dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/textView13"
+        app:layout_constraintEnd_toStartOf="@+id/amount"
         app:layout_constraintTop_toBottomOf="@+id/characteristics3" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -50,18 +51,21 @@ public class TaskManagerFragment extends Fragment {
                 takeTask=getView().findViewById(R.id.take_task_button);
         if (!inVillage)
             takeTask.setVisibility(View.GONE);
+        RecyclerView tasks=getView().findViewById(R.id.tasks_list);
+        tasks.setLayoutManager(new LinearLayoutManager(getContext()));
+        tasks.setAdapter(new TasksAdapter(MainActivity.tasks));
         takeTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (chosenTask==null)
                     Toast.makeText(getContext(), "Take task first", Toast.LENGTH_SHORT).show();
                 else {
-
+                    MainActivity.tasks.get(MainActivity.tasks.indexOf(chosenTask)).setTaken(true);
+                    MainActivity.player.checkTasks();
+                    tasks.setAdapter(new TasksAdapter(MainActivity.tasks));
                 }
             }
         });
-        RecyclerView tasks=getView().findViewById(R.id.tasks_list);
-        tasks.setLayoutManager(new LinearLayoutManager(getContext()));
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -79,13 +83,10 @@ public class TaskManagerFragment extends Fragment {
     }
 
     private class TasksAdapter extends RecyclerView.Adapter<TasksAdapter.ViewHolder>{
-        private ArrayList<Task> data;
+        private ArrayList<Task> data=new ArrayList<>();
 
         public TasksAdapter(ArrayList<Task> data) {
-            for (int i=0;i<data.size();i++){
-                if (!data.get(i).isCompleted()||!data.get(i).isTaken())
-                    this.data.add(data.get(i));
-            }
+            this.data.addAll(data);
         }
 
         @NonNull
@@ -103,9 +104,21 @@ public class TaskManagerFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     description.setText(data.get(position).getDescription());
-                    chosenTask=data.get(position);
                 }
             });
+            if(data.get(position).isCompleted())
+                holder.name.setBackgroundColor(Color.GREEN);
+            else if (data.get(position).isTaken())
+                holder.name.setBackgroundColor(Color.YELLOW);
+            else {
+                holder.name.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        description.setText(data.get(position).getDescription());
+                        chosenTask=data.get(position);
+                    }
+                });
+            }
         }
 
         @Override
@@ -118,7 +131,7 @@ public class TaskManagerFragment extends Fragment {
 
             public ViewHolder(@NonNull @NotNull View itemView) {
                 super(itemView);
-                name=getView().findViewById(R.id.textView15);
+                name=itemView.findViewById(R.id.textView15);
             }
         }
     }

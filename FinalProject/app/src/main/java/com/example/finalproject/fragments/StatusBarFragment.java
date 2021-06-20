@@ -1,6 +1,9 @@
 package com.example.finalproject.fragments;
 
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -9,14 +12,18 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.finalproject.R;
+
+import java.net.InetAddress;
 
 public class StatusBarFragment extends Fragment {
 
@@ -37,8 +44,8 @@ public class StatusBarFragment extends Fragment {
         TextView lvl = getView().findViewById(R.id.level),
                 gold = getView().findViewById(R.id.gold),
                 exp = getView().findViewById(R.id.exp);
-        health = (TextView) getView().findViewById(R.id.health);
-        mana = (TextView) getView().findViewById(R.id.mana);
+        health = getView().findViewById(R.id.health);
+        mana = getView().findViewById(R.id.mana);
         String txt;
         txt = MainActivity.player.getLevel() + "";
         lvl.setText(txt);
@@ -71,27 +78,29 @@ public class StatusBarFragment extends Fragment {
         chat.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                if (MainActivity.player.getUser().isLoggedIn())
-                {
-                    if (MainActivity.player.getChatMode()){
-                        fragmentTransaction.add(R.id.chat_mini, new ChatMiniFragment());
-                        chat.setVisibility(View.GONE);
+                if (isInternetAvailable()){
+                    FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                    if (MainActivity.player.getUser().isLoggedIn())
+                    {
+                        if (MainActivity.player.getChatMode()){
+                            fragmentTransaction.add(R.id.chat_mini, new ChatMiniFragment());
+                            chat.setVisibility(View.GONE);
+                        }
+                        else {
+                            fragmentTransaction.add(R.id.chat, new ChatFragment());
+                            fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                            fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                            fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                        }
                     }
                     else {
-                        fragmentTransaction.add(R.id.chat, new ChatFragment());
+                        fragmentTransaction.add(R.id.log_in, new SignInFragment());
                         fragmentTransaction.remove(fm.findFragmentById(R.id.map));
                         fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
                         fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                     }
-                }
-                else {
-                    fragmentTransaction.add(R.id.log_in, new SignInFragment());
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                }
-                fragmentTransaction.commit();
+                    fragmentTransaction.commit();
+                } else Toast.makeText(getContext(), "Check your Internet connection", Toast.LENGTH_SHORT).show();
             }
         });
         avatar.setOnClickListener(new View.OnClickListener() {
@@ -114,5 +123,13 @@ public class StatusBarFragment extends Fragment {
         health.setText(txt);
         txt = Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMaxMana());
         mana.setText(txt);
+    }
+
+    private boolean isInternetAvailable() {
+        ConnectivityManager cm =
+                (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
     }
 }

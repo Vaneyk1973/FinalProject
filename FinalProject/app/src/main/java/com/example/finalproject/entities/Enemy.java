@@ -50,23 +50,22 @@ public class Enemy extends Entity implements Parcelable {
     }
 
     public Enemy(DatabaseReference ref, Bitmap b, TextView enemyHealth, TextView enemyMana, ProgressBar p){
-        if (dead)
         ref.child("name").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                if (task.isSuccessful())
+                if (task.isSuccessful()&&task.getResult().getValue()!=null)
                     setName(task.getResult().getValue(String.class));
             }
         });
         ref.child("health").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                if (task.isSuccessful())
+                if (task.isSuccessful()&&task.getResult().getValue()!=null)
                     setHealth(task.getResult().getValue(Double.class));
                 ref.child("maxHealth").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                        if (task.isSuccessful())
+                        if (task.isSuccessful()&&task.getResult().getValue()!=null)
                             setMaxHealth(task.getResult().getValue(Double.class));
                         enemyHealth.setText(Math.round(getHealth())+"/"+Math.round(getMaxHealth()));
                     }
@@ -76,12 +75,12 @@ public class Enemy extends Entity implements Parcelable {
         ref.child("mana").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                if (task.isSuccessful())
+                if (task.isSuccessful()&&task.getResult().getValue()!=null)
                     setMana(task.getResult().getValue(Double.class));
                 ref.child("maxMana").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                     @Override
                     public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                        if (task.isSuccessful())
+                        if (task.isSuccessful()&&task.getResult().getValue()!=null)
                             setMaxMana(task.getResult().getValue(Double.class));
                         enemyMana.setText(Math.round(getMana())+"/"+Math.round(getMaxMana()));
                     }
@@ -91,28 +90,28 @@ public class Enemy extends Entity implements Parcelable {
         ref.child("damage").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                if (task.isSuccessful())
+                if (task.isSuccessful()&&task.getResult().getValue()!=null)
                     setDamage(task.getResult().getValue(Integer.class));
             }
         });
         ref.child("armor").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                if (task.isSuccessful())
+                if (task.isSuccessful()&&task.getResult().getValue()!=null)
                     setArmor(task.getResult().getValue(Integer.class));
             }
         });
         ref.child("givenGold").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                if (task.isSuccessful())
+                if (task.isSuccessful()&&task.getResult().getValue()!=null)
                     setGivenGold(task.getResult().getValue(Integer.class));
             }
         });
         ref.child("givenExp").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
-                if (task.isSuccessful())
+                if (task.isSuccessful()&&task.getResult().getValue()!=null)
                     setGivenExp(task.getResult().getValue(Integer.class));
                 p.setVisibility(View.GONE);
             }

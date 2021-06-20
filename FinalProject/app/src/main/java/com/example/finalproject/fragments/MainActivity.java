@@ -4,8 +4,10 @@ import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
 import android.view.WindowManager;
@@ -28,6 +30,8 @@ import com.example.finalproject.service.spell.Form;
 import com.example.finalproject.service.spell.ManaChannel;
 import com.example.finalproject.service.spell.ManaReservoir;
 import com.example.finalproject.service.spell.Type;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -108,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static void setTasks() {
-        tasks.add(new Task("You will get 100exp and 200 gold when you have 100 gold", "First money"));
+        tasks.add(new Task("Earn 100 gold to get 50 exp and 50 gold", "First money"));
+        tasks.add(new Task("Achieve level 5 to get 500 gold and 100 exp", "Getting power"));
     }
 
     private static void setTextures() {
@@ -148,7 +153,12 @@ public class MainActivity extends AppCompatActivity {
         for (int i = 0; i < map.size(); i++)
             for (int j = 0; j < map.get(i).length; j++)
                 for (int k = 0; k < map.get(i).width; k++)
-                    map.get(i).map[j][k].setTexture(mapTextures.get(map.get(i).map[j][k].type));
+                    if (map.get(i).map[j][k].type != 100)
+                        map.get(i).map[j][k].setTexture(mapTextures.get(map.get(i).map[j][k].type));
+                    else  {
+                        map.get(i).map[j][k].setTexture(Bitmap.createBitmap(mapTitleWidth, mapTitleWidth, Bitmap.Config.ARGB_8888));
+                        map.get(i).map[j][k].getTexture().eraseColor(Color.BLACK);
+                    }
         player.setAvatar(Bitmap.createBitmap(b[5][5]));
     }
 
@@ -345,6 +355,16 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         m.start(this, R.raw.main);
+        sh = getPreferences(MODE_PRIVATE);
+        player = new Gson().fromJson(sh.getString("Payer", new Gson().toJson(new Player(2, 2))), Player.class);
+        player.setUser(new Gson().fromJson(sh.getString("User", new Gson().toJson(new User("", ""))), User.class));
+        showTutorial = sh.getBoolean("Tutorial", true);
+        researches1 = new ArrayList<String>(new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class));
+        elements1 = new ArrayList<>(new Gson().fromJson(sh.getString("Elements", ""), ArrayList.class));
+        types1 = new ArrayList<>(new Gson().fromJson(sh.getString("Types", ""), ArrayList.class));
+        forms1 = new ArrayList<>(new Gson().fromJson(sh.getString("Forms", ""), ArrayList.class));
+        manaChannels1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana channels", ""), ArrayList.class));
+        manaReservoirs1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana reservoirs", ""), ArrayList.class));
     }
 
     @Override
@@ -352,8 +372,8 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
         m.start(this, R.raw.main);
         sh = getPreferences(MODE_PRIVATE);
-        player = new Gson().fromJson(sh.getString("Payer", ""), Player.class);
-        player.setUser(new Gson().fromJson(sh.getString("User", ""), User.class));
+        player = new Gson().fromJson(sh.getString("Payer", new Gson().toJson(new Player(2, 2))), Player.class);
+        player.setUser(new Gson().fromJson(sh.getString("User", new Gson().toJson(new User("", ""))), User.class));
         showTutorial = sh.getBoolean("Tutorial", true);
         researches1 = new ArrayList<String>(new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class));
         elements1 = new ArrayList<>(new Gson().fromJson(sh.getString("Elements", ""), ArrayList.class));
@@ -382,19 +402,51 @@ public class MainActivity extends AppCompatActivity {
         super.onPause();
     }
 
+    @Override
+    protected void onStop() {
+        m.stop();
+        sh = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sh.edit();
+        ed.clear();
+        ed.putString("Player", new Gson().toJson(player));
+        ed.putString("User", new Gson().toJson(player.getUser()));
+        ed.putBoolean("Tutorial", showTutorial);
+        ed.putString("Researches", new Gson().toJson(researches1));
+        ed.putString("Elements", new Gson().toJson(elements1));
+        ed.putString("Types", new Gson().toJson(types1));
+        ed.putString("Forms", new Gson().toJson(forms1));
+        ed.putString("Mana channels", new Gson().toJson(manaChannels1));
+        ed.putString("Mana reservoirs", new Gson().toJson(manaReservoirs1));
+        ed.apply();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        m.stop();
+        sh = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor ed = sh.edit();
+        ed.clear();
+        ed.putString("Player", new Gson().toJson(player));
+        ed.putString("User", new Gson().toJson(player.getUser()));
+        ed.putBoolean("Tutorial", showTutorial);
+        ed.putString("Researches", new Gson().toJson(researches1));
+        ed.putString("Elements", new Gson().toJson(elements1));
+        ed.putString("Types", new Gson().toJson(types1));
+        ed.putString("Forms", new Gson().toJson(forms1));
+        ed.putString("Mana channels", new Gson().toJson(manaChannels1));
+        ed.putString("Mana reservoirs", new Gson().toJson(manaReservoirs1));
+        ed.apply();
+        super.onDestroy();
+    }
+
     public static class MapTitle {
-        private final Pair<Integer, Integer> coordinates;
         private Bitmap texture;
         private int type;
 
-        public MapTitle(Pair<Integer, Integer> coordinates, Bitmap texture, int type) {
-            this.coordinates = coordinates;
+        public MapTitle(Bitmap texture, int type) {
             this.texture = texture;
             this.type = type;
-        }
-
-        public Pair<Integer, Integer> getCoordinates() {
-            return coordinates;
         }
 
         public void setTexture(Bitmap texture) {
@@ -420,17 +472,14 @@ public class MainActivity extends AppCompatActivity {
 
         public Map(XmlPullParser map_xml) {
             ArrayList<ArrayList<MapTitle>> map = new ArrayList();
-            Pair<Integer, Integer> coordinates;
-            Bitmap texture;
             int type;
             try {
                 while (map_xml.getEventType() != XmlPullParser.END_DOCUMENT) {
                     if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("row"))
                         map.add(new ArrayList<>());
                     if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("map_title")) {
-                        coordinates = new Pair<>(map.size() - 1, map.get(0).size());
                         type = Integer.parseInt(map_xml.getAttributeValue(0));
-                        map.get(map.size() - 1).add(new MapTitle(coordinates, null, type));
+                        map.get(map.size() - 1).add(new MapTitle( null, type));
                     }
                     map_xml.next();
                 }

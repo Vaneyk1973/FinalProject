@@ -1,7 +1,10 @@
 package com.example.finalproject.fragments;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -10,7 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,10 +20,13 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
+import android.widget.Toast;
 
 import com.example.finalproject.R;
 import com.example.finalproject.entities.Enemy;
+import com.google.firebase.auth.FirebaseAuth;
 
+import java.net.InetAddress;
 import java.util.Random;
 
 public class MapFragment extends Fragment {
@@ -52,22 +57,21 @@ public class MapFragment extends Fragment {
         ImageView[][] visible_map=new ImageView[5][5];
         View.OnClickListener onClickListener=new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                Pair<Integer, Integer> coords= find_title_coords((ImageView)v, visible_map),
-                        player_coords=MainActivity.player.getCoordinates(mapNum);
+            public void onClick(View v) {Pair<Integer, Integer> coords= find_title_coordinates((ImageView)v, visible_map),
+                    player_coords=MainActivity.player.getCoordinates(mapNum);
                 if (!MainActivity.player.getCoordinates(mapNum).equals(coords)
-                        &&(MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=0
-                        ||MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=8))
+                        &&MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=0
+                        &&MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=100)
                 {
                     int dx=coords.first-player_coords.first,
                             dy=coords.second-player_coords.second;
                     if (Math.abs(dx)<=1&&Math.abs(dy)<=1){
                         MainActivity.player.regenerate();
                         int a=new Random().nextInt(100);
-                        if (a<MainActivity.chancesOfFight.get(
-                                MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType())&&
-                                MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=3&&
-                                mapNum!=1) {
+                        if (MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=3&&
+                                mapNum!=1
+                                &&a<MainActivity.chancesOfFight.get(
+                                MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType())) {
                             FragmentManager fm=getParentFragmentManager();
                             FragmentTransaction fragmentTransaction= fm.beginTransaction();
                             fragmentTransaction.remove(fm.findFragmentById(R.id.map));
@@ -75,11 +79,48 @@ public class MapFragment extends Fragment {
                             fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                             fragmentTransaction.add(R.id.fight, new FightFragment());
                             fragmentTransaction.commit();
+                            a=new Random().nextInt(100);
+                            switch (MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()){
+                                case 1:{
+                                    if (a<30)
+                                        MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(1).get(30)));
+                                    else MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(1).get(70)));
+                                    break;
+                                }
+                                case 2:{
+                                    if (a<60)
+                                        MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(2).get(60)));
+                                    else if (a<=95&&a>=60)
+                                        MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(2).get(35)));
+                                    else MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(2).get(5)));
+                                    break;
+                                }
+                                case 4:{
+                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(4).get(100)));
+                                    break;
+                                }
+                                case 5:{
+                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(5).get(100)));
+                                    break;
+                                }
+                                case 6:{
+                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(6).get(100)));
+                                    break;
+                                }
+                                case 7:{
+                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(7).get(100)));
+                                    break;
+                                }
+                                case 8:{
+                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(8).get(100)));
+                                    break;
+                                }
+                            }
                         }
                         switch (MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()){
                             case 3:{
                                 MainActivity.player.setMapNum(1);
-                                MainActivity.player.setCoordinates(1, new Pair<>(7, 3));
+                                MainActivity.player.setCoordinates(1, new Pair<>(6, 3));
                                 FragmentManager fm = getParentFragmentManager();
                                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.map));
@@ -98,13 +139,20 @@ public class MapFragment extends Fragment {
                                 break;
                             }
                             case 10:{
-                                FragmentManager fm = getParentFragmentManager();
-                                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                                fragmentTransaction.add(R.id.fight, new FightFragment(true));
-                                fragmentTransaction.commit();
+                                if (isInternetAvailable()){
+                                    if (MainActivity.player.getUser().getLogin().isEmpty())
+                                        Toast.makeText(getContext(), "Sign in first", Toast.LENGTH_SHORT).show();
+                                    else {
+                                        FragmentManager fm = getParentFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                                        fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                                        fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                                        fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                                        fragmentTransaction.add(R.id.fight, new FightFragment(true));
+                                        fragmentTransaction.commit();
+                                    }
+                                }
+                                else Toast.makeText(getContext(), "Check your Internet connection", Toast.LENGTH_SHORT).show();
                                 break;
                             }
                             case 11:{
@@ -136,98 +184,78 @@ public class MapFragment extends Fragment {
                                 break;
                             }
                             case 14:{
-                                FragmentManager fm = getParentFragmentManager();
-                                FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                                fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                                fragmentTransaction.add(R.id.auction, new AuctionFragment());
-                                fragmentTransaction.commit();
+                                if (isInternetAvailable()){
+                                    if (MainActivity.player.getUser().getLogin().isEmpty()){
+                                        Toast.makeText(getContext(), "Sign in first", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else {
+                                        FragmentManager fm = getParentFragmentManager();
+                                        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+                                        fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                                        fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                                        fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                                        fragmentTransaction.add(R.id.shop, new ShopFragment(true));
+                                        fragmentTransaction.commit();
+                                    }
+                                }
+                                else Toast.makeText(getContext(), "Check your Internet connection", Toast.LENGTH_SHORT).show();
                                 break;
                             }
                         }
-                        MainActivity.player.setTitleTexture(
-                                MainActivity.mapTextures.get(
-                                        MainActivity.map.get(mapNum)
-                                                .getMap()[player_coords.first][player_coords.second].getType()));
-                        MainActivity.map.get(mapNum).getMap()[player_coords.first][player_coords.second].setTexture(
-                                Bitmap.createBitmap(MainActivity.player.getTitleTexture()));
-                        MainActivity.player.setCoordinates(mapNum,
-                                new Pair<>(player_coords.first+dx, player_coords.second+dy));
-                        player_coords=MainActivity.player.getCoordinates(mapNum);
-                        MainActivity.player.setTitleTexture(
-                                Bitmap.createBitmap(
-                                        MainActivity.map.get(mapNum)
-                                                .getMap()[player_coords.first][player_coords.second].getTexture()));
-                        MainActivity.map.get(mapNum).getMap()[player_coords.first][player_coords.second]
-                                .getTexture().eraseColor(Color.BLUE);
-                        if (player_coords.first+dx>=2&&player_coords.second+dy>=2){
-                            for (int i=0;i<5;i++) {
-                                for (int j = 0; j < 5; j++) {
-                                    visible_map[i][j].setImageBitmap(
-                                            MainActivity.map.get(mapNum).getMap()[player_coords.first-2+i]
-                                                    [player_coords.second-2+j].getTexture());
+                        if (MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=8
+                                &&MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=9
+                                &&MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=10
+                                &&MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=11
+                                &&MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=12
+                                &&MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=13
+                                &&MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()!=14)
+                        {
+                            MainActivity.player.setTitleTexture(
+                                    MainActivity.mapTextures.get(
+                                            MainActivity.map.get(mapNum)
+                                                    .getMap()[player_coords.first][player_coords.second].getType()));
+                            MainActivity.map.get(mapNum).getMap()[player_coords.first][player_coords.second].setTexture(
+                                    Bitmap.createBitmap(MainActivity.player.getTitleTexture()));
+                            MainActivity.player.setCoordinates(mapNum,
+                                    new Pair<>(player_coords.first+dx, player_coords.second+dy));
+                            player_coords=MainActivity.player.getCoordinates(mapNum);
+                            MainActivity.player.setTitleTexture(
+                                    Bitmap.createBitmap(
+                                            MainActivity.map.get(mapNum)
+                                                    .getMap()[player_coords.first][player_coords.second].getTexture()));
+                            MainActivity.map.get(mapNum).getMap()[player_coords.first][player_coords.second]
+                                    .getTexture().eraseColor(Color.BLUE);
+                            if (player_coords.first+dx>=2&&player_coords.second+dy>=2){
+                                for (int i=0;i<5;i++) {
+                                    for (int j = 0; j < 5; j++) {
+                                        visible_map[i][j].setImageBitmap(
+                                                MainActivity.map.get(mapNum).getMap()[player_coords.first-2+i]
+                                                        [player_coords.second-2+j].getTexture());
+                                    }
                                 }
                             }
-                        }
-                        else if (player_coords.first+dx>=2) {
-                            for (int i=0;i<5;i++) {
-                                for (int j = 0; j < 5; j++) {
-                                    visible_map[i][j].setImageBitmap(
-                                            MainActivity.map.get(mapNum).getMap()[player_coords.first-2+i][j].getTexture());
+                            else if (player_coords.first+dx>=2) {
+                                for (int i=0;i<5;i++) {
+                                    for (int j = 0; j < 5; j++) {
+                                        visible_map[i][j].setImageBitmap(
+                                                MainActivity.map.get(mapNum).getMap()[player_coords.first-2+i][j].getTexture());
+                                    }
                                 }
                             }
-                        }
-                        else if (player_coords.second+dy>=2){
-                            for (int i=0;i<5;i++) {
-                                for (int j = 0; j < 5; j++) {
-                                    visible_map[i][j].setImageBitmap(
-                                            MainActivity.map.get(mapNum).getMap()[i][player_coords.second-2+j].getTexture());
+                            else if (player_coords.second+dy>=2){
+                                for (int i=0;i<5;i++) {
+                                    for (int j = 0; j < 5; j++) {
+                                        visible_map[i][j].setImageBitmap(
+                                                MainActivity.map.get(mapNum).getMap()[i][player_coords.second-2+j].getTexture());
+                                    }
                                 }
                             }
-                        }
-                        else {
-                            for (int i=0;i<5;i++) {
-                                for (int j = 0; j < 5; j++) {
-                                    visible_map[i][j].setImageBitmap(MainActivity.map.get(mapNum).getMap()[i][j].getTexture());
+                            else {
+                                for (int i=0;i<5;i++) {
+                                    for (int j = 0; j < 5; j++) {
+                                        visible_map[i][j].setImageBitmap(MainActivity.map.get(mapNum).getMap()[i][j].getTexture());
+                                    }
                                 }
-                            }
-                        }
-                        a=new Random().nextInt(100);
-                        switch (MainActivity.map.get(mapNum).getMap()[coords.first][coords.second].getType()){
-                            case 1:{
-                                if (a<30)
-                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(1).get(30)));
-                                else MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(1).get(70)));
-                                break;
-                            }
-                            case 2:{
-                                if (a<60)
-                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(2).get(60)));
-                                else if (a<=95&&a>=60)
-                                    MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(2).get(35)));
-                                else MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(2).get(5)));
-                                break;
-                            }
-                            case 4:{
-                                MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(4).get(100)));
-                                break;
-                            }
-                            case 5:{
-                                MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(5).get(100)));
-                                break;
-                            }
-                            case 6:{
-                                MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(6).get(100)));
-                                break;
-                            }
-                            case 7:{
-                                MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(7).get(100)));
-                                break;
-                            }
-                            case 8:{
-                                MainActivity.player.setEnemy(new Enemy(MainActivity.chancesOfEnemy.get(8).get(100)));
-                                break;
                             }
                         }
                     }
@@ -237,7 +265,6 @@ public class MapFragment extends Fragment {
         };
         for (int i=0;i<5;i++) {
             for (int j = 0; j < 5; j++) {
-                Log.d("LLLL", MainActivity.map.get(mapNum).toString());
                 visible_map[i][j] = (ImageView) rows[i].getChildAt(j);
                 visible_map[i][j].setImageBitmap(MainActivity.map.get(mapNum)
                         .getMap()[player_coords.first-2+i]
@@ -254,7 +281,7 @@ public class MapFragment extends Fragment {
                 .getTexture().eraseColor(Color.BLUE);
     }
 
-    private Pair<Integer, Integer> find_title_coords(ImageView v, ImageView[][] p){
+    private Pair<Integer, Integer> find_title_coordinates(ImageView v, ImageView[][] p){
         for (int i=0;i<5;i++){
             for (int j=0;j<5;j++){
                 if (v==p[i][j])
@@ -265,4 +292,11 @@ public class MapFragment extends Fragment {
         return null;
     }
 
+    private boolean isInternetAvailable() {
+        ConnectivityManager cm =
+                (ConnectivityManager)getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+    }
 }
