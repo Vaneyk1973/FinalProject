@@ -81,7 +81,7 @@ public class SpellCreationFragment extends Fragment {
                 FragmentManager fm=getParentFragmentManager();
                 FragmentTransaction fragmentTransaction= fm.beginTransaction();
                 fragmentTransaction.remove(fm.findFragmentById(R.id.spell_creation));
-                fragmentTransaction.add(R.id.map, new MapFragment());
+                fragmentTransaction.add(R.id.map, new MapFragment(MainActivity.player.getMapNum()));
                 fragmentTransaction.add(R.id.status, new StatusBarFragment());
                 fragmentTransaction.add(R.id.menu, new MenuFragment());
                 fragmentTransaction.commit();

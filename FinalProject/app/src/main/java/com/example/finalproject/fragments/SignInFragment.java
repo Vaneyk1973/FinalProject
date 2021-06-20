@@ -132,7 +132,7 @@ public class SignInFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction fr = getParentFragmentManager().beginTransaction();
                 fr.remove(getParentFragmentManager().findFragmentById(R.id.log_in));
-                fr.add(R.id.map, new MapFragment());
+                fr.add(R.id.map, new MapFragment(MainActivity.player.getMapNum()));
                 fr.add(R.id.status, new StatusBarFragment());
                 fr.add(R.id.menu, new MenuFragment());
                 fr.commit();

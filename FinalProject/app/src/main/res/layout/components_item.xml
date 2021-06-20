@@ -7,7 +7,6 @@
 
     <TextView
         android:textSize="20dp"
-        android:fontFamily="cursive"
         android:id="@+id/comp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

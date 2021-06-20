@@ -90,7 +90,7 @@ public class ResearchTreeFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction = fm.beginTransaction();
                 fragmentTransaction.remove(fm.findFragmentById(R.id.research_tree));
-                fragmentTransaction.add(R.id.map, new MapFragment());
+                fragmentTransaction.add(R.id.map, new MapFragment(MainActivity.player.getMapNum()));
                 fragmentTransaction.add(R.id.status, new StatusBarFragment());
                 fragmentTransaction.add(R.id.menu, new MenuFragment());
                 fragmentTransaction.commit();

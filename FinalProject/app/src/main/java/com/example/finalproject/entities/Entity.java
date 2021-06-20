@@ -5,6 +5,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.example.finalproject.service.spell.Spell;
+import com.google.firebase.database.GenericTypeIndicator;
 
 import java.util.HashMap;
 
@@ -15,26 +16,45 @@ public class Entity implements Parcelable {
     private String name;
     private HashMap<Spell, Double> resistances = new HashMap<>();
 
-    public Entity() {
-    }
+    public Entity() {}
 
     protected Entity(Parcel in) {
         level = in.readInt();
         experience = in.readInt();
-        health = in.readDouble();
-        max_health = in.readDouble();
-        mana = in.readDouble();
-        max_mana = in.readDouble();
         powerLevel = in.readInt();
         experienceToNextLevelRequired = in.readInt();
         damage = in.readInt();
         armor = in.readInt();
-        health_regen = in.readDouble();
-        mana_regen = in.readDouble();
         givenExp = in.readInt();
         givenGold = in.readInt();
+        health = in.readDouble();
+        max_health = in.readDouble();
+        mana = in.readDouble();
+        max_mana = in.readDouble();
+        health_regen = in.readDouble();
+        mana_regen = in.readDouble();
         name = in.readString();
-        resistances = new HashMap<>((HashMap<Spell, Double>) in.readBundle().getSerializable("resistances"));
+        resistances = in.readHashMap(new GenericTypeIndicator<HashMap<Spell, Double>>(){}.getClass().getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(level);
+        dest.writeInt(experience);
+        dest.writeInt(powerLevel);
+        dest.writeInt(experienceToNextLevelRequired);
+        dest.writeInt(damage);
+        dest.writeInt(armor);
+        dest.writeInt(givenExp);
+        dest.writeInt(givenGold);
+        dest.writeDouble(health);
+        dest.writeDouble(max_health);
+        dest.writeDouble(mana);
+        dest.writeDouble(max_mana);
+        dest.writeDouble(health_regen);
+        dest.writeDouble(mana_regen);
+        dest.writeString(name);
+        dest.writeSerializable(resistances);
     }
 
     public static final Creator<Entity> CREATOR = new Creator<Entity>() {
@@ -197,25 +217,4 @@ public class Entity implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(level);
-        dest.writeInt(experience);
-        dest.writeDouble(health);
-        dest.writeDouble(max_health);
-        dest.writeDouble(mana);
-        dest.writeDouble(max_mana);
-        dest.writeInt(powerLevel);
-        dest.writeInt(experienceToNextLevelRequired);
-        dest.writeInt(damage);
-        dest.writeInt(armor);
-        dest.writeDouble(health_regen);
-        dest.writeDouble(mana_regen);
-        dest.writeInt(givenExp);
-        dest.writeInt(givenGold);
-        dest.writeString(name);
-        Bundle b = new Bundle();
-        b.putSerializable("resistances", resistances);
-        dest.writeBundle(new Bundle(b));
-    }
 }

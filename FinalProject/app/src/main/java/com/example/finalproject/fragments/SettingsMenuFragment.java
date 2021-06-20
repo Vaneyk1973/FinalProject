@@ -63,7 +63,7 @@ public class SettingsMenuFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction fr=getParentFragmentManager().beginTransaction();
                 fr.remove(getParentFragmentManager().findFragmentById(R.id.settings_menu));
-                fr.add(R.id.map, new MapFragment());
+                fr.add(R.id.map, new MapFragment(MainActivity.player.getMapNum()));
                 fr.add(R.id.menu, new MenuFragment());
                 fr.add(R.id.status, new StatusBarFragment());
                 fr.commit();

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.finalproject.R;
 
@@ -66,20 +67,27 @@ public class MenuFragment extends Fragment {
                     fragmentTransaction.remove(fm.findFragmentById(R.id.status));
                     fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
                     fragmentTransaction.commit();
-                }
+                } else Toast.makeText(getContext(), "You don't know how to make spells yet", Toast.LENGTH_SHORT).show();
             }
         });
         inv[2].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                fragmentTransaction.add(R.id.spells, new SpellsFragment());
-                if (fm.findFragmentById(R.id.map)!=null)
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.map));
-                else if (fm.findFragmentById(R.id.chat)!=null)
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.chat));
-                fragmentTransaction.remove(fm.findFragmentById(R.id.status));
-                fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
-                fragmentTransaction.commit();
+                if (MainActivity.researches.get(0).isResearched()) {
+                    if (MainActivity.player.getSpells().isEmpty())
+                        Toast.makeText(getContext(), "You don't have any spells yet", Toast.LENGTH_SHORT).show();
+                    else {
+                        fragmentTransaction.add(R.id.spells, new SpellsFragment());
+                        if (fm.findFragmentById(R.id.map) != null)
+                            fragmentTransaction.remove(fm.findFragmentById(R.id.map));
+                        else if (fm.findFragmentById(R.id.chat) != null)
+                            fragmentTransaction.remove(fm.findFragmentById(R.id.chat));
+                        fragmentTransaction.remove(fm.findFragmentById(R.id.status));
+                        fragmentTransaction.remove(fm.findFragmentById(R.id.menu));
+                        fragmentTransaction.commit();
+                    }
+                }
+                else Toast.makeText(getContext(), "You don't know how to make spells yet", Toast.LENGTH_SHORT).show();
             }
         });
         inv[3].setOnClickListener(new View.OnClickListener() {

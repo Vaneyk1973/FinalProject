@@ -43,7 +43,7 @@ public class SpellsFragment extends Fragment {
             public void onClick(View v) {
                 FragmentTransaction fragmentTransaction= f.beginTransaction();
                 fragmentTransaction.remove(f.findFragmentById(R.id.spells));
-                fragmentTransaction.add(R.id.map, new MapFragment());
+                fragmentTransaction.add(R.id.map, new MapFragment(MainActivity.player.getMapNum()));
                 fragmentTransaction.add(R.id.status, new StatusBarFragment());
                 fragmentTransaction.add(R.id.menu, new MenuFragment());
                 fragmentTransaction.commit();

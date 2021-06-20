@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
@@ -68,11 +69,7 @@ public class MainActivity extends AppCompatActivity {
             manaChannels1 = new ArrayList<>(),
             types1 = new ArrayList<>(),
             forms1 = new ArrayList<>(),
-            manaReservoirs1 = new ArrayList<>(),
-            recipes1 = new ArrayList<>(),
-            items1 = new ArrayList<>(),
-            shopList1 = new ArrayList<>(),
-            tasks1 = new ArrayList<>();
+            manaReservoirs1 = new ArrayList<>();
     public static ArrayList<Bitmap> mapTextures = new ArrayList<>();
     public static HashMap<Integer, String> categories = new HashMap<>();
     private static Display display;
@@ -98,8 +95,8 @@ public class MainActivity extends AppCompatActivity {
         res = getResources();
         m = new Music();
         m.start(this, R.raw.main);
-        player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         showTutorial = sh.getBoolean("Tutorial", true);
+        player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2,  2))), Player.class);
         setInitialData();
         if (showTutorial) {
             fragmentTransaction.add(R.id.tutorial, new TutorialFragment());
@@ -164,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static void setResearches() {
         researches = new ArrayList<>();
-        if (researches1 != null)
+        if (researches1 != null&&!researches1.isEmpty())
             for (int i = 0; i < researches1.size(); i++)
                 researches.add(new Gson().fromJson(researches1.get(i), Research.class));
         else {
@@ -352,54 +349,19 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStart() {
+        super.onStart();
         m.start(this, R.raw.main);
         sh = getPreferences(MODE_PRIVATE);
-        player = new Gson().fromJson(sh.getString("Payer", new Gson().toJson(new Player(2, 2))), Player.class);
+        player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         player.setUser(new Gson().fromJson(sh.getString("User", new Gson().toJson(new User("", ""))), User.class));
         showTutorial = sh.getBoolean("Tutorial", true);
-        researches1 = new ArrayList<String>(new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class));
-        elements1 = new ArrayList<>(new Gson().fromJson(sh.getString("Elements", ""), ArrayList.class));
-        types1 = new ArrayList<>(new Gson().fromJson(sh.getString("Types", ""), ArrayList.class));
-        forms1 = new ArrayList<>(new Gson().fromJson(sh.getString("Forms", ""), ArrayList.class));
-        manaChannels1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana channels", ""), ArrayList.class));
-        manaReservoirs1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana reservoirs", ""), ArrayList.class));
-    }
-
-    @Override
-    protected void onRestart() {
-        super.onRestart();
-        m.start(this, R.raw.main);
-        sh = getPreferences(MODE_PRIVATE);
-        player = new Gson().fromJson(sh.getString("Payer", new Gson().toJson(new Player(2, 2))), Player.class);
-        player.setUser(new Gson().fromJson(sh.getString("User", new Gson().toJson(new User("", ""))), User.class));
-        showTutorial = sh.getBoolean("Tutorial", true);
-        researches1 = new ArrayList<String>(new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class));
-        elements1 = new ArrayList<>(new Gson().fromJson(sh.getString("Elements", ""), ArrayList.class));
-        types1 = new ArrayList<>(new Gson().fromJson(sh.getString("Types", ""), ArrayList.class));
-        forms1 = new ArrayList<>(new Gson().fromJson(sh.getString("Forms", ""), ArrayList.class));
-        manaChannels1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana channels", ""), ArrayList.class));
-        manaReservoirs1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana reservoirs", ""), ArrayList.class));
-    }
-
-    @Override
-    protected void onPause() {
-        m.stop();
-        sh = getPreferences(MODE_PRIVATE);
-        SharedPreferences.Editor ed = sh.edit();
-        ed.clear();
-        ed.putString("Player", new Gson().toJson(player));
-        ed.putString("User", new Gson().toJson(player.getUser()));
-        ed.putBoolean("Tutorial", showTutorial);
-        ed.putString("Researches", new Gson().toJson(researches1));
-        ed.putString("Elements", new Gson().toJson(elements1));
-        ed.putString("Types", new Gson().toJson(types1));
-        ed.putString("Forms", new Gson().toJson(forms1));
-        ed.putString("Mana channels", new Gson().toJson(manaChannels1));
-        ed.putString("Mana reservoirs", new Gson().toJson(manaReservoirs1));
-        ed.apply();
-        super.onPause();
+        researches1 = new ArrayList<String>(new Gson().fromJson(sh.getString("Researches", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        elements1 = new ArrayList<>(new Gson().fromJson(sh.getString("Elements", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        types1 = new ArrayList<>(new Gson().fromJson(sh.getString("Types", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        forms1 = new ArrayList<>(new Gson().fromJson(sh.getString("Forms", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        manaChannels1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana channels", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        manaReservoirs1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana reservoirs", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
     }
 
     @Override

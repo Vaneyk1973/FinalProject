@@ -42,6 +42,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import dalvik.system.InMemoryDexClassLoader;
+
 public class Player extends Entity implements Parcelable {
 
     private int gold, researchPoints, mapNum, duelNum, duelPnum;
@@ -52,28 +54,53 @@ public class Player extends Entity implements Parcelable {
     private ArrayList<Pair<Item, Integer>> inventory = new ArrayList<>();
     private ArrayList<Spell> spells = new ArrayList<>();
     private ArrayList<Pair<Integer, Integer>> coordinates = new ArrayList<>();
-    private ArrayList<Task> tasks=new ArrayList<>();
     private HashMap<Integer, Integer> itemsOnAuction=new HashMap<>();
     private Spell chosenSpell;
     private Bitmap titleTexture;
     private Bitmap avatar;
     private Enemy enemy;
 
+    protected Player(Parcel in) {
+        super(in);
+        gold = in.readInt();
+        researchPoints = in.readInt();
+        mapNum=in.readInt();
+        duelNum=in.readInt();
+        duelPnum=in.readInt();
+        chatMode = new Boolean(in.readString());
+        user=new Gson().fromJson(in.readString(), User.class);
+        elementBonuses=in.readArrayList(new GenericTypeIndicator<ArrayList<Integer>>(){}.getClass().getClassLoader());
+        equipment=in.readArrayList(new GenericTypeIndicator<ArrayList<Item>>(){}.getClass().getClassLoader());
+        inventory=in.readArrayList(new GenericTypeIndicator<ArrayList<Pair<Item, Integer>>>(){}.getClass().getClassLoader());
+        spells=in.readArrayList(new GenericTypeIndicator<ArrayList<Spell>>(){}.getClass().getClassLoader());
+        coordinates=in.readArrayList(new GenericTypeIndicator<ArrayList<Pair<Integer, Integer>>>(){}.getClass().getClassLoader());
+        itemsOnAuction=in.readHashMap(new GenericTypeIndicator<HashMap<Integer, Integer>>(){}.getClass().getClassLoader());
+        chosenSpell= (Spell) in.readSerializable();
+        titleTexture=in.readParcelable(Bitmap.class.getClassLoader());
+        avatar=in.readParcelable(Bitmap.class.getClassLoader());
+        enemy=in.readParcelable(Enemy.class.getClassLoader());
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(gold);
         dest.writeInt(researchPoints);
+        dest.writeInt(mapNum);
+        dest.writeInt(duelNum);
+        dest.writeInt(duelPnum);
         dest.writeString(chatMode + "");
+        dest.writeString(new Gson().toJson(user));
         dest.writeSerializable(elementBonuses);
-        dest.writeSerializable(coordinates);
-        dest.writeSerializable(chosenSpell);
         dest.writeSerializable(equipment);
         dest.writeParcelable((Parcelable) inventory, flags);
         dest.writeSerializable(spells);
+        dest.writeParcelable((Parcelable) coordinates, flags);
+        dest.writeSerializable(itemsOnAuction);
+        dest.writeSerializable(chosenSpell);
         dest.writeParcelable(titleTexture, flags);
+        dest.writeParcelable(avatar, flags);
         dest.writeParcelable(enemy, flags);
-        dest.writeString(new Gson().toJson(user));
     }
 
     public static final Creator<Player> CREATOR = new Creator<Player>() {
@@ -87,22 +114,6 @@ public class Player extends Entity implements Parcelable {
             return new Player[size];
         }
     };
-
-    protected Player(Parcel in) {
-        super(in);
-        gold = in.readInt();
-        researchPoints = in.readInt();
-        chatMode = new Boolean(in.readString());
-        elementBonuses = new ArrayList<>((ArrayList<Integer>) in.readSerializable());
-        coordinates = new ArrayList<>((ArrayList<Pair<Integer, Integer>>) in.readSerializable());
-        chosenSpell = new Spell((Spell) in.readSerializable());
-        equipment = new ArrayList<>((ArrayList) in.readSerializable());
-        inventory = new ArrayList<>((ArrayList) in.readParcelable(ArrayList.class.getClassLoader()));
-        spells = new ArrayList<>((ArrayList) in.readSerializable());
-        titleTexture = in.readParcelable(Bitmap.class.getClassLoader());
-        enemy = new Enemy(in.readParcelable(Enemy.class.getClassLoader()));
-        user = new Gson().fromJson(in.readString(), User.class);
-    }
 
     public Enemy getEnemy() {
         return enemy;
@@ -446,6 +457,7 @@ public class Player extends Entity implements Parcelable {
         if (gold < item.first.getCostBuy())
             return false;
         else {
+            Log.d("KKK", item.second+"");
             addItemToInventory(item);
             addGold(-item.first.getCostBuy());
             return true;
