@@ -244,7 +244,6 @@ public class FightFragment extends Fragment {
                     MainActivity.player.getEnemy().regenerate();
                     MainActivity.player.attack();
                     MainActivity.player.getEnemy().fight();
-                    Log.d("KK", MainActivity.player.getEnemy().getName());
                     yourHealth.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMaxHealth()));
                     yourMana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMaxMana()));
                     enemyHealth.setText(MainActivity.player.getEnemy().getHealth() + "/" + MainActivity.player.getEnemy().getMaxHealth());

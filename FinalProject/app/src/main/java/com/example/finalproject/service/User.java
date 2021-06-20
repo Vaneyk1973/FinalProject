@@ -53,6 +53,9 @@ public class User {
         FirebaseDatabase.getInstance().getReference("Users").
                 child(uID).child("loggedIn").setValue(false);
         FirebaseAuth.getInstance().signOut();
+        login="";
+        email="";
+        uID="";
     }
 
     public void setLoggedIn(boolean loggedIn){
@@ -65,5 +68,15 @@ public class User {
 
     public String getuID() {
         return uID;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "login='" + login + '\'' +
+                ", uID='" + uID + '\'' +
+                ", email='" + email + '\'' +
+                ", loggedIn=" + loggedIn +
+                '}';
     }
 }

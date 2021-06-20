@@ -268,7 +268,7 @@ public class MainActivity extends AppCompatActivity {
         forms.clear();
         manaReservoirs.clear();
         manaChannels.clear();
-        if (elements1 != null)
+        if (elements1 != null&&!elements1.isEmpty())
             for (int i = 0; i < elements1.size(); i++)
                 elements.add(new Gson().fromJson(elements1.get(i), Element.class));
         else {
@@ -286,7 +286,7 @@ public class MainActivity extends AppCompatActivity {
                 elements1.add(new Gson().toJson(elements.get(i)));
         }
 
-        if (types1 != null)
+        if (types1 != null&&!types1.isEmpty())
             for (int i = 0; i < types1.size(); i++)
                 types.add(new Gson().fromJson(types1.get(i), Type.class));
         else {
@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                 types1.add(new Gson().toJson(types.get(i)));
         }
 
-        if (forms1 != null)
+        if (forms1 != null&&!forms1.isEmpty())
             for (int i = 0; i < forms1.size(); i++)
                 forms.add(new Gson().fromJson(forms1.get(i), Form.class));
         else {
@@ -306,7 +306,7 @@ public class MainActivity extends AppCompatActivity {
                 forms1.add(new Gson().toJson(forms.get(i)));
         }
 
-        if (manaReservoirs1 != null)
+        if (manaReservoirs1 != null&&!manaReservoirs1.isEmpty())
             for (int i = 0; i < manaReservoirs1.size(); i++)
                 manaReservoirs.add(new Gson().fromJson(manaReservoirs1.get(i), ManaReservoir.class));
         else {
@@ -317,7 +317,7 @@ public class MainActivity extends AppCompatActivity {
                 manaReservoirs1.add(new Gson().toJson(manaReservoirs.get(i)));
         }
 
-        if (manaChannels1 != null)
+        if (manaChannels1 != null&&!manaChannels1.isEmpty())
             for (int i = 0; i < manaChannels1.size(); i++)
                 manaChannels.add(new Gson().fromJson(manaChannels1.get(i), ManaChannel.class));
         else {
@@ -329,12 +329,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected static void setInitialData() {
-        researches1 = new Gson().fromJson(sh.getString("Researches", ""), ArrayList.class);
-        elements1 = new Gson().fromJson(sh.getString("Elements", ""), ArrayList.class);
-        types1 = new Gson().fromJson(sh.getString("Types", ""), ArrayList.class);
-        forms1 = new Gson().fromJson(sh.getString("Forms", ""), ArrayList.class);
-        manaChannels1 = new Gson().fromJson(sh.getString("Mana channels", ""), ArrayList.class);
-        manaReservoirs1 = new Gson().fromJson(sh.getString("Mana reservoirs", ""), ArrayList.class);
+        researches1 = new Gson().fromJson(sh.getString("Researches", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+        elements1 = new Gson().fromJson(sh.getString("Elements", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+        types1 = new Gson().fromJson(sh.getString("Types", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+        forms1 = new Gson().fromJson(sh.getString("Forms", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+        manaChannels1 = new Gson().fromJson(sh.getString("Mana channels", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+        manaReservoirs1 = new Gson().fromJson(sh.getString("Mana reservoirs", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
         categories.put(0, "Armor/weapon");
         categories.put(1, "Food/potions");
         categories.put(2, "Resources");

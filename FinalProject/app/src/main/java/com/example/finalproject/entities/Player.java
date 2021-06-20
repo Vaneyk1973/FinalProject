@@ -425,7 +425,7 @@ public class Player extends Entity implements Parcelable {
     public void addItemToInventory(Pair<Item, Integer> item) {
         if (isInventoryContainsItem(item.first))
             inventory.set(getInventoryItemIndex(item.first),
-                    new Pair<>(item.first, inventory.get(getInventoryItemIndex(item.first)).second + 1));
+                    new Pair<>(item.first, inventory.get(getInventoryItemIndex(item.first)).second + item.second));
         else inventory.add(item);
     }
 
@@ -457,9 +457,8 @@ public class Player extends Entity implements Parcelable {
         if (gold < item.first.getCostBuy())
             return false;
         else {
-            Log.d("KKK", item.second+"");
             addItemToInventory(item);
-            addGold(-item.first.getCostBuy());
+            addGold(-item.first.getCostBuy()*item.second);
             return true;
         }
     }

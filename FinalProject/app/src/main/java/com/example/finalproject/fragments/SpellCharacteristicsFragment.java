@@ -34,7 +34,7 @@ public class SpellCharacteristicsFragment extends Fragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ImageView img=getView().findViewById(R.id.element_picture);
-        img.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.b[Math.abs(spell.getElement().getElement())][2],
+        img.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.b[2][Math.abs(spell.getElement().getElement())],
                 MainActivity.categoryImageWidth /3*2, MainActivity.categoryImageWidth /3*2, false));
         TextView name=getView().findViewById(R.id.spell_name_char),
                 type=getView().findViewById(R.id.spell_type_char),

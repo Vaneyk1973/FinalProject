@@ -51,11 +51,6 @@ public class SpellCreationFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int width = size.x;
-        final String[] spell_name = new String[1];
         EditText name_view=(EditText)getView().findViewById(R.id.spell_name);
         name_view.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -87,8 +82,6 @@ public class SpellCreationFragment extends Fragment {
                 fragmentTransaction.commit();
             }
         });
-        Bitmap bm=Bitmap.createBitmap(width/5, width/5, Bitmap.Config.ARGB_8888);
-        bm.eraseColor(Color.YELLOW);
         Button element_view=(Button)getView().findViewById(R.id.element);
         Button mana_reservoir_view=(Button)getView().findViewById(R.id.mana_reservoir);
         Button type_view=(Button)getView().findViewById(R.id.type);

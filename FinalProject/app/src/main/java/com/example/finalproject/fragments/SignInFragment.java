@@ -79,7 +79,6 @@ public class SignInFragment extends Fragment {
                                             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
                                                 if (task.isSuccessful()){
                                                     MainActivity.player.getUser().setLogin(task.getResult().getValue(String.class));
-                                                    Log.d("KKK", MainActivity.player.getUser().getLogin()+"l");
                                                     FragmentTransaction fr=getParentFragmentManager().beginTransaction();
                                                     fr.add(R.id.chat, new ChatFragment());
                                                     fr.remove(getParentFragmentManager().findFragmentById(R.id.log_in));
@@ -94,7 +93,6 @@ public class SignInFragment extends Fragment {
                                                     public void onComplete(@NonNull @NotNull Task<Void> task) {
                                                         if (task.isSuccessful()){
                                                             MainActivity.player.getUser().setLoggedIn(true);
-                                                            Log.d("KKL", MainActivity.player.getUser().isLoggedIn()+"o");
                                                         }
                                                     }
                                                 });
