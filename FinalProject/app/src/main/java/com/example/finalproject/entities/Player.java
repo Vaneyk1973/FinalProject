@@ -161,6 +161,7 @@ public class Player extends Entity implements Parcelable {
         for (int i = 0; i < getEnemy().getDrop().size(); i++) {
             if (new Random().nextInt(100) <= getEnemy().getDrop().get(i).second) {
                 Item drop = getEnemy().getDrop().get(i).first;
+                Log.d("WWD", new Gson().toJson(drop)+"F");
                 if (isInventoryContainsItem(drop)) {
                     int a = getInventoryItemIndex(drop);
                     inventory.set(a, new Pair<>(drop, inventory.get(a).second + 1));
@@ -407,6 +408,8 @@ public class Player extends Entity implements Parcelable {
     private boolean isInventoryContainsItem(Item item) {
         for (int i = 0; i < inventory.size(); i++) {
             if (inventory.get(i).first != null) {
+                Log.d("WW", new Gson().toJson(inventory.get(i)));
+                Log.d("WWF", new Gson().toJson(item.getName()));
                 if (inventory.get(i).first.getName().equals(item.getName()))
                     return true;
             }

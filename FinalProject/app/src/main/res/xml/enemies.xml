@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<enemies>
+    <enemy armor="0" damage="1" givenExp="1" givenGold="1" health="5" id="10" mana="0" texture="2">
+        <drop>
+            <item chance="100" id="0" number="10"/>
+        </drop>
+    </enemy>
+    <enemy armor="0" damage="2" givenExp="5" givenGold="5" health="15" id="11" mana="0" texture="4">
+        <drop>
+            <item chance="100" id="1" number="10"/>
+        </drop>
+    </enemy>
+    <!--<enemy armor="0" damage="5" givenExp="10" givenGold="10" health="35" id="12" mana="0" name="Wolf" texture="0">
+        <drop>
+            <item chance="100" id="" number="10"/>
+        </drop>
+    </enemy>
+    <enemy armor="0" damage="3" givenExp="6" givenGold="7" health="20" id="13" mana="0" name="Fox" texture="1">
+        <drop>
+            <item chance="100" id="" number="10"/>
+        </drop>
+    </enemy>
+    <enemy armor="0" damage="15" givenExp="200" givenGold="50" health="100" id="14" mana="10" name="Bear" texture="2">
+        <drop>
+            <item chance="100" id="" number="10"/>
+        </drop>
+    </enemy>
+    <enemy armor="0" damage="20" givenExp="50" givenGold="100" health="50" id="15" mana="20" name="Highwayman" texture="2">
+        <drop>
+            <item chance="100" id="" number="10"/>
+        </drop>
+    </enemy>-->
+</enemies>

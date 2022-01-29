@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -82,7 +83,7 @@ public class CraftingStationFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull @NotNull CraftingStationFragment.CraftingAdapter.ViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull @NotNull CraftingStationFragment.CraftingAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
             holder.name.setText(">"+data.get(position).getProduct().getName());
             String a="";
             for (int i=0;i<data.get(position).getIngredients().size()-1;i++)

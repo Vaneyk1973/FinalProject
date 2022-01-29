@@ -7,7 +7,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.util.Log;
 import android.util.Pair;
 import android.view.Display;
@@ -25,14 +24,13 @@ import com.example.finalproject.items.Recipe;
 import com.example.finalproject.service.Music;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.Task;
+import com.example.finalproject.service.Triplex;
 import com.example.finalproject.service.User;
 import com.example.finalproject.service.spell.Element;
 import com.example.finalproject.service.spell.Form;
 import com.example.finalproject.service.spell.ManaChannel;
 import com.example.finalproject.service.spell.ManaReservoir;
 import com.example.finalproject.service.spell.Type;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -52,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Map> map = new ArrayList<>();
     public static Bitmap[] menu = new Bitmap[4];
     public static HashMap<Integer, HashMap<Integer, Enemy>> chancesOfEnemy = new HashMap<>();
-    public static ArrayList<Enemy> enemies = new ArrayList<>();
+    public static HashMap<Integer, Enemy> enemies = new HashMap<>();
     public static HashMap<Integer, ArrayList<Pair<Item, Integer>>> drop = new HashMap<>();
     public static ArrayList<Element> elements = new ArrayList<>();
     public static ArrayList<ManaChannel> manaChannels = new ArrayList<>();
@@ -64,17 +62,19 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Item> items = new ArrayList<>(),
             shopList = new ArrayList<>();
     public static ArrayList<Task> tasks = new ArrayList<>();
-    public static ArrayList<String> researches1 = new ArrayList<>(),
-            elements1 = new ArrayList<>(),
-            manaChannels1 = new ArrayList<>(),
-            types1 = new ArrayList<>(),
-            forms1 = new ArrayList<>(),
-            manaReservoirs1 = new ArrayList<>();
+    public static ArrayList<String> researchesJson = new ArrayList<>(),
+            elementsJson = new ArrayList<>(),
+            manaChannelsJson = new ArrayList<>(),
+            typesJson = new ArrayList<>(),
+            formsJson = new ArrayList<>(),
+            manaReservoirsJson = new ArrayList<>();
     public static ArrayList<Bitmap> mapTextures = new ArrayList<>();
     public static HashMap<Integer, String> categories = new HashMap<>();
+    public static HashMap<Integer, Integer> ids =new HashMap<>();
+    public static HashMap<Integer, String> names=new HashMap<>();
     private static Display display;
     private static Resources res;
-    public static Bitmap[][] b;
+    public static Bitmap[][] textures;
     public static Music m;
     private static SharedPreferences sh;
 
@@ -86,10 +86,15 @@ public class MainActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getSupportActionBar().hide();
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        XmlPullParser parser = getResources().getXml(R.xml.start_map);
-        map.add(new Map(parser));
-        parser = getResources().getXml(R.xml.first_village_map);
-        map.add(new Map(parser));
+        XmlPullParser mapParser = getResources().getXml(R.xml.start_map),
+                itemsParser=getResources().getXml(R.xml.items),
+                namesParser=getResources().getXml(R.xml.names),
+                recipesParser=getResources().getXml(R.xml.recipes),
+                enemiesParser=getResources().getXml(R.xml.enemies),
+                locationsParser=getResources().getXml(R.xml.locations);
+        map.add(new Map(mapParser));
+        mapParser = getResources().getXml(R.xml.first_village_map);
+        map.add(new Map(mapParser));
         sh = getPreferences(MODE_PRIVATE);
         display = getWindowManager().getDefaultDisplay();
         res = getResources();
@@ -97,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
         m.start(this, R.raw.main);
         showTutorial = sh.getBoolean("Tutorial", true);
         player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2,  2))), Player.class);
-        setInitialData();
+        setInitialData(itemsParser, namesParser, recipesParser, enemiesParser, locationsParser);
         if (showTutorial) {
             fragmentTransaction.add(R.id.tutorial, new TutorialFragment());
         } else {
@@ -111,6 +116,19 @@ public class MainActivity extends AppCompatActivity {
     private static void setTasks() {
         tasks.add(new Task("Earn 100 gold to get 50 exp and 50 gold", "First money"));
         tasks.add(new Task("Achieve level 5 to get 500 gold and 100 exp", "Getting power"));
+    }
+
+    private static void setNames(XmlPullParser namesXml){
+        try {
+            while (namesXml.getEventType() != XmlPullParser.END_DOCUMENT) {
+                if (namesXml.getEventType() == XmlPullParser.START_TAG && namesXml.getName().equals("name")) {
+                    names.put(Integer.parseInt(namesXml.getAttributeValue(0)), namesXml.getAttributeValue(1));
+                }
+                namesXml.next();
+            }
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static void setTextures() {
@@ -134,38 +152,38 @@ public class MainActivity extends AppCompatActivity {
         a = Bitmap.createScaledBitmap(
                 BitmapFactory.decodeResource(res, R.drawable.textures),
                 mapTitleWidth * m, mapTitleWidth * n, false);
-        b = new Bitmap[n][m];
+        textures = new Bitmap[n][m];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                b[i][j] = Bitmap.createBitmap(a,
+                textures[i][j] = Bitmap.createBitmap(a,
                         j * mapTitleWidth,
                         i * mapTitleWidth,
                         mapTitleWidth,
                         mapTitleWidth);
             }
         }
-        mapTextures.addAll(Arrays.asList(b[1]));
+        mapTextures.addAll(Arrays.asList(textures[1]));
         for (int i = 0; i < menu.length; i++)
-            menu[i] = Bitmap.createScaledBitmap(b[0][i], menuWidth, menuWidth, false);
+            menu[i] = Bitmap.createScaledBitmap(textures[0][i], menuWidth, menuWidth, false);
         for (int i = 0; i < map.size(); i++)
             for (int j = 0; j < map.get(i).length; j++)
                 for (int k = 0; k < map.get(i).width; k++)
-                    if (map.get(i).map[j][k].type != 100)
-                        map.get(i).map[j][k].setTexture(mapTextures.get(map.get(i).map[j][k].type));
+                    if (map.get(i).map[j][k].type != 356)
+                        map.get(i).map[j][k].setTexture(mapTextures.get(map.get(i).map[j][k].type-256));
                     else  {
                         map.get(i).map[j][k].setTexture(Bitmap.createBitmap(mapTitleWidth, mapTitleWidth, Bitmap.Config.ARGB_8888));
                         map.get(i).map[j][k].getTexture().eraseColor(Color.BLACK);
                     }
-        player.setAvatar(Bitmap.createBitmap(b[5][5]));
+        player.setAvatar(Bitmap.createBitmap(textures[5][5]));
     }
 
     private static void setResearches() {
         researches = new ArrayList<>();
-        if (researches1 != null&&!researches1.isEmpty())
-            for (int i = 0; i < researches1.size(); i++)
-                researches.add(new Gson().fromJson(researches1.get(i), Research.class));
+        if (researchesJson != null&&!researchesJson.isEmpty())
+            for (int i = 0; i < researchesJson.size(); i++)
+                researches.add(new Gson().fromJson(researchesJson.get(i), Research.class));
         else {
-            researches1 = new ArrayList<>();
+            researchesJson = new ArrayList<>();
             ArrayList<Research> rqr = new ArrayList<>();
             researches.add(new Research(new ArrayList<>(),
                     "Basic spell creation", 1, 0, 0, false, true));
@@ -179,43 +197,74 @@ public class MainActivity extends AppCompatActivity {
             researches.add(new Research((ArrayList<Research>) rqr.clone(),
                     "Air mage", 3, 1, 4, false, false));
             for (int i = 0; i < researches.size(); i++)
-                researches1.add(new Gson().toJson(researches.get(i)));
+                researchesJson.add(new Gson().toJson(researches.get(i)));
         }
 
     }
 
-    private static void setItems() {
-        ArrayList<Pair<Item, Integer>> ingredients = new ArrayList<>();
-        items.add(new Item(2, 5, 0, 2, "Rabbit's fur"));
-        items.add(new Item(3, 5, 0, 3, "Rabbit's leg"));
-        items.add(new Item(5, 8, 0, 2, "Dog's fur"));
-        items.add(new Item(30, 40, 1, 3, "Dog's tooth"));
-        items.add(new Item(15, 20, 0, 2, "Wolf's fur"));
-        items.add(new Item(20, 27, 0, 2, "Fox's fur"));
-        items.add(new Item(50, 75, 0, 2, "Bear's fur"));
-        items.add(new Item(4, 9, 0, 2, "Iron ore"));
-        items.add(new Armor(75, 150, 5, 10, 1, 0, 0, "Iron chestplate"));
-        items.add(new Item(15, 25, 0, 2, "Leather"));
-        ingredients.add(new Pair<>(items.get(0), 10));
-        recipes.add(new Recipe(items.get(9), ingredients));
-        ingredients.clear();
-        ingredients.add(new Pair<>(items.get(2), 7));
-        recipes.add(new Recipe(items.get(9), ingredients));
-        ingredients.clear();
-        ingredients.add(new Pair<>(items.get(5), 7));
-        recipes.add(new Recipe(items.get(9), ingredients));
-        ingredients.clear();
-        ingredients.add(new Pair<>(items.get(4), 5));
-        recipes.add(new Recipe(items.get(9), ingredients));
-        ingredients.clear();
-        ingredients.add(new Pair<>(items.get(6), 1));
-        recipes.add(new Recipe(items.get(8), ingredients));
-        ingredients.clear();
+    private static void setItems(XmlPullParser itemsXml, XmlPullParser recipesXml) {
+        try {
+            while (itemsXml.getEventType() != XmlPullParser.END_DOCUMENT) {
+                if (itemsXml.getEventType() == XmlPullParser.START_TAG){
+                    switch (itemsXml.getName()){
+                        case "item":{
+                            int id=Integer.parseInt(itemsXml.getAttributeValue(3));
+                            String name=names.get(id);
+                            int costSell= Integer.parseInt(itemsXml.getAttributeValue(2)),
+                                    costBuy= Integer.parseInt(itemsXml.getAttributeValue(1)),
+                                    rarity= Integer.parseInt(itemsXml.getAttributeValue(4)),
+                                    category= Integer.parseInt(itemsXml.getAttributeValue(0));
+                            ids.put(id, items.size());
+                            items.add(new Item(name, costSell, costBuy, rarity, category));
+                            break;
+                        }
+                        case "armor":{
+                            int id=Integer.parseInt(itemsXml.getAttributeValue(4));
+                            String name=names.get(id);
+                            int costSell= Integer.parseInt(itemsXml.getAttributeValue(3)),
+                                    costBuy= Integer.parseInt(itemsXml.getAttributeValue(2)),
+                                    rarity= Integer.parseInt(itemsXml.getAttributeValue(5)),
+                                    category= Integer.parseInt(itemsXml.getAttributeValue(1)),
+                                    armor= Integer.parseInt(itemsXml.getAttributeValue(0)),
+                                    weight= Integer.parseInt(itemsXml.getAttributeValue(7)),
+                                    typeOfArmor= Integer.parseInt(itemsXml.getAttributeValue(6));
+                            ids.put(id, items.size());
+                            items.add(new Armor(name, costSell, costBuy, armor, weight, typeOfArmor, category, rarity));
+                            Log.d("HHH", ids.get(id)+"");
+                        }
+                    }
+                }
+                itemsXml.next();
+            }
+            while (recipesXml.getEventType()!=XmlPullParser.END_DOCUMENT){
+                if(recipesXml.getEventType()==XmlPullParser.START_TAG
+                        &&recipesXml.getName().equals("recipe")){
+                    int productId=Integer.parseInt(recipesXml.getAttributeValue(0)),
+                            productsNumber=Integer.parseInt(recipesXml.getAttributeValue(1));
+                    ArrayList<Pair<Item, Integer>> ingredients=new ArrayList<>();
+                    recipesXml.next();
+                    while (!recipesXml.getName().equals("recipe")) {
+                        if (recipesXml.getEventType() == XmlPullParser.START_TAG
+                                && recipesXml.getName().equals("ingredient")) {
+                            int ingredientId = Integer.parseInt(recipesXml.getAttributeValue(0)),
+                                    ingredientsNumber = Integer.parseInt(recipesXml.getAttributeValue(1));
+                            ingredients.add(new Pair<>(items.get(ids.get(ingredientId)), ingredientsNumber));
+                        }
+                        recipesXml.next();
+                    }
+                    recipes.add(new Recipe(items.get(ids.get(productId)), ingredients));
+                    continue;
+                }
+                recipesXml.next();
+            }
+        } catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
         shopList.addAll(items);
     }
 
     private static void setDrop() {
-        drop.put(0, new ArrayList<>());
+        /*drop.put(0, new ArrayList<>());
         drop.get(0).add(new Pair<>(items.get(0), 70));
         drop.get(0).add(new Pair<>(items.get(1), 30));
         drop.put(1, new ArrayList<>());
@@ -228,17 +277,71 @@ public class MainActivity extends AppCompatActivity {
         drop.put(4, new ArrayList<>());
         drop.get(4).add(new Pair<>(items.get(6), 100));
         drop.put(5, new ArrayList<>());
-        drop.get(5).add(new Pair<>(items.get(8), 50));
+        drop.get(5).add(new Pair<>(items.get(8), 50));*/
     }
 
-    private static void setEnemies() {
-        enemies.add(new Enemy("Rabbit", 5, 0, 1, 0, 1, 1, drop.get(0), b[5][2]));
-        enemies.add(new Enemy("Dog", 15, 0, 2, 0, 5, 5, drop.get(1), b[5][4]));
-        enemies.add(new Enemy("Wolf", 35, 0, 5, 0, 10, 10, drop.get(2), b[5][0]));
-        enemies.add(new Enemy("Fox", 20, 0, 3, 0, 7, 6, drop.get(3), b[5][1]));
-        enemies.add(new Enemy("Bear", 100, 10, 15, 0, 50, 200, drop.get(4), b[3][2]));
-        enemies.add(new Enemy("Highwayman", 50, 10, 20, 0, 100, 50, drop.get(5), b[5][5]));
-        chancesOfFight.put(0, 0);
+    private static void setEnemies(XmlPullParser enemiesXml, XmlPullParser locationXml) {
+        try{
+            while (enemiesXml.getEventType()!=XmlPullParser.END_DOCUMENT){
+                if (enemiesXml.getEventType()==XmlPullParser.START_TAG
+                        && enemiesXml.getName().equals("enemy")){
+                    int armor=Integer.parseInt(enemiesXml.getAttributeValue(0)),
+                            health=Integer.parseInt(enemiesXml.getAttributeValue(4)),
+                            damage=Integer.parseInt(enemiesXml.getAttributeValue(1)),
+                            mana=Integer.parseInt(enemiesXml.getAttributeValue(6)),
+                            givenGold=Integer.parseInt(enemiesXml.getAttributeValue(3)),
+                            givenExp=Integer.parseInt(enemiesXml.getAttributeValue(2)),
+                            texture=Integer.parseInt(enemiesXml.getAttributeValue(7)),
+                            id=Integer.parseInt(enemiesXml.getAttributeValue(5));
+                    String name=names.get(id);
+                    ArrayList<Triplex<Item, Integer, Integer>> drop=new ArrayList<>();
+                    enemies.put(id, new Enemy(name, health, mana, damage, armor, givenGold, givenExp, drop, textures[5][texture]));
+                    enemiesXml.next();
+                    while (!enemiesXml.getName().equals("enemy")){
+                        if (enemiesXml.getEventType()==XmlPullParser.START_TAG
+                                && enemiesXml.getName().equals("drop")){
+                            enemiesXml.next();
+                            while (!enemiesXml.getName().equals("drop")){
+                                if (enemiesXml.getEventType()==XmlPullParser.START_TAG
+                                        && enemiesXml.getName().equals("item")){
+                                    int number=Integer.parseInt(enemiesXml.getAttributeValue(2)),
+                                            chance=Integer.parseInt(enemiesXml.getAttributeValue(0)),
+                                            itemId=Integer.parseInt(enemiesXml.getAttributeValue(1));
+                                    drop.add(new Triplex<>(items.get(ids.get(itemId)), chance, number));
+                                }
+                                enemiesXml.next();
+                            }
+                        }
+                        enemiesXml.next();
+                    }
+                }
+                enemiesXml.next();
+            }
+            while(locationXml.getEventType()!=XmlPullParser.END_DOCUMENT){
+                if (locationXml.getEventType()==XmlPullParser.START_TAG
+                        && locationXml.getName().equals("location")){
+                    int chanceOfFight=Integer.parseInt(locationXml.getAttributeValue(0)),
+                            id=Integer.parseInt(locationXml.getAttributeValue(1));
+                    chancesOfFight.put(id, chanceOfFight);
+                    chancesOfEnemy.put(id, new HashMap<>());
+                    locationXml.next();
+                    while (!locationXml.getName().equals("location")){
+                        if (locationXml.getEventType()==XmlPullParser.START_TAG
+                                && locationXml.getName().equals("enemy")){
+                            int chance=Integer.parseInt(locationXml.getAttributeValue(0)),
+                                    enemyId=Integer.parseInt(locationXml.getAttributeValue(1));
+                            chancesOfEnemy.get(id).put(chance, enemies.get(enemyId));
+                        }
+                        locationXml.next();
+                    }
+                }
+                locationXml.next();
+            }
+        }catch (XmlPullParserException | IOException e) {
+            e.printStackTrace();
+        }
+        Log.d("WW", new Gson().toJson(chancesOfEnemy)+"");
+        /*chancesOfFight.put(0, 0);
         chancesOfFight.put(1, 20);
         chancesOfFight.put(2, 60);
         chancesOfFight.put(3, 0);
@@ -268,7 +371,7 @@ public class MainActivity extends AppCompatActivity {
         chancesOfEnemy.put(7, new HashMap<>());
         chancesOfEnemy.get(7).put(100, enemies.get(5));
         chancesOfEnemy.put(8, new HashMap<>());
-        chancesOfEnemy.get(8).put(100, enemies.get(5));
+        chancesOfEnemy.get(8).put(100, enemies.get(5));*/
     }
 
     private static void setMagic() {
@@ -277,9 +380,9 @@ public class MainActivity extends AppCompatActivity {
         forms.clear();
         manaReservoirs.clear();
         manaChannels.clear();
-        if (elements1 != null&&!elements1.isEmpty())
-            for (int i = 0; i < elements1.size(); i++)
-                elements.add(new Gson().fromJson(elements1.get(i), Element.class));
+        if (elementsJson != null&&!elementsJson.isEmpty())
+            for (int i = 0; i < elementsJson.size(); i++)
+                elements.add(new Gson().fromJson(elementsJson.get(i), Element.class));
         else {
             elements.add(new Element("Pure mana", 6, 2, false));
             elements.add(new Element("Fire", 1, 10, false));
@@ -290,69 +393,72 @@ public class MainActivity extends AppCompatActivity {
             elements.add(new Element("Death", 4, 5, false));
 /*        elements.add(new Element("Light", 6, 2, false));
         elements.add(new Element("Darkness", 7, 7, false));*/
-            elements1 = new ArrayList<>();
+            elementsJson = new ArrayList<>();
             for (int i = 0; i < elements.size(); i++)
-                elements1.add(new Gson().toJson(elements.get(i)));
+                elementsJson.add(new Gson().toJson(elements.get(i)));
         }
 
-        if (types1 != null&&!types1.isEmpty())
-            for (int i = 0; i < types1.size(); i++)
-                types.add(new Gson().fromJson(types1.get(i), Type.class));
+        if (typesJson != null&&!typesJson.isEmpty())
+            for (int i = 0; i < typesJson.size(); i++)
+                types.add(new Gson().fromJson(typesJson.get(i), Type.class));
         else {
             types.add(new Type("On enemy", 0, true));
-            types1 = new ArrayList<>();
+            typesJson = new ArrayList<>();
             for (int i = 0; i < types.size(); i++)
-                types1.add(new Gson().toJson(types.get(i)));
+                typesJson.add(new Gson().toJson(types.get(i)));
         }
 
-        if (forms1 != null&&!forms1.isEmpty())
-            for (int i = 0; i < forms1.size(); i++)
-                forms.add(new Gson().fromJson(forms1.get(i), Form.class));
+        if (formsJson != null&&!formsJson.isEmpty())
+            for (int i = 0; i < formsJson.size(); i++)
+                forms.add(new Gson().fromJson(formsJson.get(i), Form.class));
         else {
             forms.add(new Form("Sphere", 0, true));
-            forms1 = new ArrayList<>();
+            formsJson = new ArrayList<>();
             for (int i = 0; i < forms.size(); i++)
-                forms1.add(new Gson().toJson(forms.get(i)));
+                formsJson.add(new Gson().toJson(forms.get(i)));
         }
 
-        if (manaReservoirs1 != null&&!manaReservoirs1.isEmpty())
-            for (int i = 0; i < manaReservoirs1.size(); i++)
-                manaReservoirs.add(new Gson().fromJson(manaReservoirs1.get(i), ManaReservoir.class));
+        if (manaReservoirsJson != null&&!manaReservoirsJson.isEmpty())
+            for (int i = 0; i < manaReservoirsJson.size(); i++)
+                manaReservoirs.add(new Gson().fromJson(manaReservoirsJson.get(i), ManaReservoir.class));
         else {
             manaReservoirs.add(new ManaReservoir("Basic", 1, true));
             manaReservoirs.add(new ManaReservoir("Big", 10, true));
-            manaReservoirs1 = new ArrayList<>();
+            manaReservoirsJson = new ArrayList<>();
             for (int i = 0; i < manaReservoirs.size(); i++)
-                manaReservoirs1.add(new Gson().toJson(manaReservoirs.get(i)));
+                manaReservoirsJson.add(new Gson().toJson(manaReservoirs.get(i)));
         }
 
-        if (manaChannels1 != null&&!manaChannels1.isEmpty())
-            for (int i = 0; i < manaChannels1.size(); i++)
-                manaChannels.add(new Gson().fromJson(manaChannels1.get(i), ManaChannel.class));
+        if (manaChannelsJson != null&&!manaChannelsJson.isEmpty())
+            for (int i = 0; i < manaChannelsJson.size(); i++)
+                manaChannels.add(new Gson().fromJson(manaChannelsJson.get(i), ManaChannel.class));
         else {
             manaChannels.add(new ManaChannel("Basic", 2, true));
-            manaChannels1 = new ArrayList<>();
+            manaChannelsJson = new ArrayList<>();
             for (int i = 0; i < manaChannels.size(); i++)
-                manaChannels1.add(new Gson().toJson(manaChannels.get(i)));
+                manaChannelsJson.add(new Gson().toJson(manaChannels.get(i)));
         }
     }
 
-    protected static void setInitialData() {
-        researches1 = new Gson().fromJson(sh.getString("Researches", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
-        elements1 = new Gson().fromJson(sh.getString("Elements", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
-        types1 = new Gson().fromJson(sh.getString("Types", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
-        forms1 = new Gson().fromJson(sh.getString("Forms", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
-        manaChannels1 = new Gson().fromJson(sh.getString("Mana channels", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
-        manaReservoirs1 = new Gson().fromJson(sh.getString("Mana reservoirs", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+    protected static void setInitialData(XmlPullParser items, XmlPullParser names,
+                                         XmlPullParser recipes, XmlPullParser enemies,
+                                         XmlPullParser locations) {
+        researchesJson = new Gson().fromJson(sh.getString("Researches", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+        elementsJson = new Gson().fromJson(sh.getString("Elements", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+        typesJson = new Gson().fromJson(sh.getString("Types", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+        formsJson = new Gson().fromJson(sh.getString("Forms", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+        manaChannelsJson = new Gson().fromJson(sh.getString("Mana channels", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
+        manaReservoirsJson = new Gson().fromJson(sh.getString("Mana reservoirs", new Gson().toJson(new ArrayList<String>())), ArrayList.class);
         categories.put(0, "Armor/weapon");
         categories.put(1, "Food/potions");
         categories.put(2, "Resources");
         categories.put(3, "Other");
-        setItems();
+        setNames(names);
+        setItems(items, recipes);
         setTextures();
         setResearches();
         setDrop();
-        setEnemies();
+        setEnemies(enemies, locations);
         setMagic();
         setTasks();
     }
@@ -365,12 +471,12 @@ public class MainActivity extends AppCompatActivity {
         player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         player.setUser(new Gson().fromJson(sh.getString("User", new Gson().toJson(new User("", ""))), User.class));
         showTutorial = sh.getBoolean("Tutorial", true);
-        researches1 = new ArrayList<String>(new Gson().fromJson(sh.getString("Researches", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
-        elements1 = new ArrayList<>(new Gson().fromJson(sh.getString("Elements", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
-        types1 = new ArrayList<>(new Gson().fromJson(sh.getString("Types", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
-        forms1 = new ArrayList<>(new Gson().fromJson(sh.getString("Forms", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
-        manaChannels1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana channels", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
-        manaReservoirs1 = new ArrayList<>(new Gson().fromJson(sh.getString("Mana reservoirs", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        researchesJson = new ArrayList<String>(new Gson().fromJson(sh.getString("Researches", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        elementsJson = new ArrayList<>(new Gson().fromJson(sh.getString("Elements", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        typesJson = new ArrayList<>(new Gson().fromJson(sh.getString("Types", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        formsJson = new ArrayList<>(new Gson().fromJson(sh.getString("Forms", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        manaChannelsJson = new ArrayList<>(new Gson().fromJson(sh.getString("Mana channels", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
+        manaReservoirsJson = new ArrayList<>(new Gson().fromJson(sh.getString("Mana reservoirs", new Gson().toJson(new ArrayList<String>())), ArrayList.class));
     }
 
     @Override
@@ -382,12 +488,12 @@ public class MainActivity extends AppCompatActivity {
         ed.putString("Player", new Gson().toJson(player));
         ed.putString("User", new Gson().toJson(player.getUser()));
         ed.putBoolean("Tutorial", showTutorial);
-        ed.putString("Researches", new Gson().toJson(researches1));
-        ed.putString("Elements", new Gson().toJson(elements1));
-        ed.putString("Types", new Gson().toJson(types1));
-        ed.putString("Forms", new Gson().toJson(forms1));
-        ed.putString("Mana channels", new Gson().toJson(manaChannels1));
-        ed.putString("Mana reservoirs", new Gson().toJson(manaReservoirs1));
+        ed.putString("Researches", new Gson().toJson(researchesJson));
+        ed.putString("Elements", new Gson().toJson(elementsJson));
+        ed.putString("Types", new Gson().toJson(typesJson));
+        ed.putString("Forms", new Gson().toJson(formsJson));
+        ed.putString("Mana channels", new Gson().toJson(manaChannelsJson));
+        ed.putString("Mana reservoirs", new Gson().toJson(manaReservoirsJson));
         ed.apply();
         super.onStop();
     }
@@ -401,21 +507,21 @@ public class MainActivity extends AppCompatActivity {
         ed.putString("Player", new Gson().toJson(player));
         ed.putString("User", new Gson().toJson(player.getUser()));
         ed.putBoolean("Tutorial", showTutorial);
-        ed.putString("Researches", new Gson().toJson(researches1));
-        ed.putString("Elements", new Gson().toJson(elements1));
-        ed.putString("Types", new Gson().toJson(types1));
-        ed.putString("Forms", new Gson().toJson(forms1));
-        ed.putString("Mana channels", new Gson().toJson(manaChannels1));
-        ed.putString("Mana reservoirs", new Gson().toJson(manaReservoirs1));
+        ed.putString("Researches", new Gson().toJson(researchesJson));
+        ed.putString("Elements", new Gson().toJson(elementsJson));
+        ed.putString("Types", new Gson().toJson(typesJson));
+        ed.putString("Forms", new Gson().toJson(formsJson));
+        ed.putString("Mana channels", new Gson().toJson(manaChannelsJson));
+        ed.putString("Mana reservoirs", new Gson().toJson(manaReservoirsJson));
         ed.apply();
         super.onDestroy();
     }
 
-    public static class MapTitle {
+    public static class MapTile {
         private Bitmap texture;
         private int type;
 
-        public MapTitle(Bitmap texture, int type) {
+        public MapTile(Bitmap texture, int type) {
             this.texture = texture;
             this.type = type;
         }
@@ -439,18 +545,18 @@ public class MainActivity extends AppCompatActivity {
 
     public class Map {
         private int length, width;
-        private MapTitle[][] map;
+        private MapTile[][] map;
 
         public Map(XmlPullParser map_xml) {
-            ArrayList<ArrayList<MapTitle>> map = new ArrayList();
+            ArrayList<ArrayList<MapTile>> map = new ArrayList();
             int type;
             try {
                 while (map_xml.getEventType() != XmlPullParser.END_DOCUMENT) {
                     if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("row"))
                         map.add(new ArrayList<>());
                     if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("map_title")) {
-                        type = Integer.parseInt(map_xml.getAttributeValue(0));
-                        map.get(map.size() - 1).add(new MapTitle( null, type));
+                        type = 256+Integer.parseInt(map_xml.getAttributeValue(0));
+                        map.get(map.size() - 1).add(new MapTile( null, type));
                     }
                     map_xml.next();
                 }
@@ -459,13 +565,13 @@ public class MainActivity extends AppCompatActivity {
             }
             width = map.get(0).size();
             length = map.size();
-            this.map = new MapTitle[length][width];
+            this.map = new MapTile[length][width];
             for (int i = 0; i < length; i++)
                 for (int j = 0; j < width; j++)
                     this.map[i][j] = map.get(i).get(j);
         }
 
-        public MapTitle[][] getMap() {
+        public MapTile[][] getMap() {
             return map;
         }
 

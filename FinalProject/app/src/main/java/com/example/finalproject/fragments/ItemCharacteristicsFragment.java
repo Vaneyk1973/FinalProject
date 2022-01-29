@@ -43,7 +43,7 @@ public class ItemCharacteristicsFragment extends Fragment {
     public void onViewCreated(@NonNull @org.jetbrains.annotations.NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ImageView img=getView().findViewById(R.id.category_image);
-        img.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.b[6][item.getCategory()],
+        img.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.textures[6][item.getCategory()],
                 MainActivity.categoryImageWidth, MainActivity.categoryImageWidth, false));
         TextView name = (TextView) getView().findViewById(R.id.name_field);
         TextView category = (TextView) getView().findViewById(R.id.category_field);

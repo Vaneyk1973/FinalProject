@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<names>
+    <name id="0" name="Rabbit's fur"/>
+    <name id="1" name="Rabbit's leg"/>
+    <name id="2" name="Dog's fur"/>
+    <name id="3" name="Dog's tooth"/>
+    <name id="4" name="Wolf's fur"/>
+    <name id="5" name="Fox's fur"/>
+    <name id="6" name="Bear's fur"/>
+    <name id="7" name="Iron ore"/>
+    <name id="8" name="Iron chestplate"/>
+    <name id="9" name="Leather"/>
+    <name id="128" name="Rabbit"/>
+    <name id="129" name="Dog"/>
+    <name id="130" name="Wolf"/>
+    <name id="131" name="Fox"/>
+    <name id="132" name="Bear"/>
+    <name id="133" name="Highwayman"/>
+    <name id="256" name="Mountains"/>
+</names>

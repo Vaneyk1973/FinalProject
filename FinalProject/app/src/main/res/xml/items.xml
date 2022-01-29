@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items>
+    <item category="3" costBy="5" costsell="2" id="0" rarity="0" />
+    <item category="2" costBy="8" costsell="5" id="1" rarity="0" />
+    <item category="3" costBy="40" costsell="30" id="2" rarity="0" />
+    <item category="2" costBy="20" costsell="15" id="3" rarity="1" />
+    <item category="2" costBy="27" costsell="20" id="4" rarity="0" />
+    <item category="2" costBy="27" costsell="20" id="5" rarity="0" />
+    <item category="2" costBy="75" costsell="50" id="6" rarity="0" />
+    <item category="2" costBy="9" costsell="4" id="7" rarity="0" />
+    <armor armor="5" category="0" costBy="150" costsell="75" id="8" rarity="0" type="1" weight="10" />
+    <item category="2" costBy="25" costsell="15" id="9" rarity="0" />
+</items>

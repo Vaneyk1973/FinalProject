@@ -1,5 +1,7 @@
 package com.example.finalproject.items;
 
+import org.xmlpull.v1.XmlPullParser;
+
 import java.io.Serializable;
 
 public class Item implements Serializable {
@@ -8,7 +10,7 @@ public class Item implements Serializable {
 
     public Item(){}
 
-    public Item(int costSell, int costBuy, int rarity, int category, String name) {
+    public Item(String name, int costSell, int costBuy, int rarity, int category) {
         this.costSell = costSell;
         this.costBuy = costBuy;
         this.rarity = rarity;

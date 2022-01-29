@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<locations>
+    <location chanceOfFight="100" id="257" texture="1">
+        <enemy chance="30" id="10"/>
+        <enemy chance="70" id="11"/>
+    </location>
+</locations>

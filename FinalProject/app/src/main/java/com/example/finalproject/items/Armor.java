@@ -4,8 +4,8 @@ package com.example.finalproject.items;
 public class Armor extends Item {
     private final int armor, weight, typeOfArmor;
 
-    public Armor(int costSell, int costBuy, int armor, int weight, int typeOfArmor, int category, int rarity, String name) {
-        super(costSell, costBuy, rarity, category, name);
+    public Armor(String name, int costSell, int costBuy, int armor, int weight, int typeOfArmor, int category, int rarity) {
+        super(name, costSell, costBuy, rarity, category);
         this.armor = armor;
         this.weight = weight;
         this.typeOfArmor = typeOfArmor;

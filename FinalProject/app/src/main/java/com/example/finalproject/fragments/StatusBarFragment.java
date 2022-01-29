@@ -12,7 +12,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,8 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.finalproject.R;
-
-import java.net.InetAddress;
 
 public class StatusBarFragment extends Fragment {
 
@@ -58,19 +55,19 @@ public class StatusBarFragment extends Fragment {
         txt = MainActivity.player.getExperience() + "/" + MainActivity.player.getExperienceToNextLevelRequired();
         exp.setText(txt);
         Bitmap bm = Bitmap.createScaledBitmap
-                (MainActivity.b[5][5], MainActivity.avatarWidth, MainActivity.avatarWidth, false);
+                (MainActivity.textures[5][5], MainActivity.avatarWidth, MainActivity.avatarWidth, false);
         avatar.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[3][5], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
+                (MainActivity.textures[3][5], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
         goldImg.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[2][5], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
+                (MainActivity.textures[2][5], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
         healthImg.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[3][1], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
+                (MainActivity.textures[3][1], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
         manaImg.setImageBitmap(Bitmap.createBitmap(bm));
         bm = Bitmap.createScaledBitmap
-                (MainActivity.b[3][4], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
+                (MainActivity.textures[3][4], MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false);
         expImg.setImageBitmap(Bitmap.createBitmap(bm));
         Button chat = getView().findViewById(R.id.chat_button);
         chat.setVisibility(View.VISIBLE);

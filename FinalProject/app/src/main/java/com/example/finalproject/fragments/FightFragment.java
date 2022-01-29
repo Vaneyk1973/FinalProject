@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,13 +23,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.finalproject.R;
 import com.example.finalproject.entities.Enemy;
 import com.example.finalproject.entities.Player;
-import com.example.finalproject.service.User;
 import com.example.finalproject.service.spell.Spell;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.RuntimeExecutionException;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -104,7 +101,7 @@ public class FightFragment extends Fragment {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
                             if (snapshot.getValue() != null)
-                                enemies[0] = new Enemy(snapshot.getRef(), MainActivity.b[5][6], enemyHealth, enemyMana, p);
+                                enemies[0] = new Enemy(snapshot.getRef(), MainActivity.textures[5][6], enemyHealth, enemyMana, p);
                         }
 
                         @Override
@@ -138,7 +135,7 @@ public class FightFragment extends Fragment {
 
                             }
                         });
-                        enemies[0] = new Enemy(databaseReferences[1], MainActivity.b[5][6], enemyHealth, enemyMana, p);
+                        enemies[0] = new Enemy(databaseReferences[1], MainActivity.textures[5][6], enemyHealth, enemyMana, p);
                         yourHealth.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMaxHealth()));
                         yourMana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMaxMana()));
                         run.setOnClickListener(new View.OnClickListener() {
@@ -228,10 +225,10 @@ public class FightFragment extends Fragment {
                 }
             });
 
-            playerImage.setImageBitmap(MainActivity.b[5][5]);
-            enemyImage.setImageBitmap(MainActivity.b[5][6]);
+            playerImage.setImageBitmap(MainActivity.textures[5][5]);
+            enemyImage.setImageBitmap(MainActivity.textures[5][6]);
         } else {
-            playerImage.setImageBitmap(MainActivity.b[5][5]);
+            playerImage.setImageBitmap(MainActivity.textures[5][5]);
             enemyImage.setImageBitmap(MainActivity.player.getEnemy().getTexture());
             yourHealth.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMaxHealth()));
             yourMana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMaxMana()));
@@ -260,7 +257,11 @@ public class FightFragment extends Fragment {
                     }
                     if (MainActivity.player.getHealth() <= 0) {
                         MainActivity.player = new Player(2, 2);
-                        MainActivity.setInitialData();
+                        MainActivity.setInitialData(getResources().getXml(R.xml.items),
+                                getResources().getXml(R.xml.names),
+                                getResources().getXml(R.xml.recipes),
+                                getResources().getXml(R.xml.enemies),
+                                getResources().getXml(R.xml.locations));
                         Toast.makeText(getContext(), "You died \n All of your progress will be deleted \n Better luck this time", Toast.LENGTH_LONG).show();
                         FragmentTransaction fragmentTransaction = fm.beginTransaction();
                         fragmentTransaction.remove(fm.findFragmentById(R.id.fight));
@@ -323,7 +324,7 @@ public class FightFragment extends Fragment {
         }
 
         @Override
-        public void onBindViewHolder(@NonNull @NotNull FightFragment.SpellsAdapter.SpellViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull @NotNull FightFragment.SpellsAdapter.SpellViewHolder holder, @SuppressLint("RecyclerView") int position) {
             holder.name.setText(data.get(position).getName());
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override

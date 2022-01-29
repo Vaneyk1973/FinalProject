@@ -17,6 +17,7 @@ import com.example.finalproject.fragments.MapFragment;
 import com.example.finalproject.fragments.MenuFragment;
 import com.example.finalproject.fragments.StatusBarFragment;
 import com.example.finalproject.items.Item;
+import com.example.finalproject.service.Triplex;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
@@ -29,13 +30,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 
 public class Enemy extends Entity implements Parcelable {
-    private ArrayList<Pair<Item, Integer>> drop;
+    private ArrayList<Triplex<Item, Integer, Integer>> drop;
     private int defence = 0;
     private boolean t = true;
     private Bitmap texture;
     private boolean duel, dead;
 
-    public Enemy(String name, int health, int mana, int damage, int armor, int givenGold, int givenExp, ArrayList<Pair<Item, Integer>> drop, Bitmap b) {
+    public Enemy(String name, int health, int mana, int damage, int armor, int givenGold, int givenExp, ArrayList<Triplex<Item, Integer, Integer>> drop, Bitmap b) {
         setHealthRegen(2);
         setArmor(armor);
         setDamage(damage);
@@ -172,11 +173,11 @@ public class Enemy extends Entity implements Parcelable {
 
     }
 
-    public ArrayList<Pair<Item, Integer>> getDrop() {
+    public ArrayList<Triplex<Item, Integer, Integer>> getDrop() {
         return drop;
     }
 
-    public void setDrop(ArrayList<Pair<Item, Integer>> drop) {
+    public void setDrop(ArrayList<Triplex<Item, Integer, Integer>> drop) {
         this.drop = drop;
     }
 
