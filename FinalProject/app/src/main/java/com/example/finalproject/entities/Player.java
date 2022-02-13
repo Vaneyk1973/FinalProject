@@ -2,10 +2,8 @@ package com.example.finalproject.entities;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.telephony.ims.ImsMmTelManager;
 import android.util.Log;
 import android.util.Pair;
 import android.widget.Toast;
@@ -14,7 +12,6 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.finalproject.fragments.MainActivity;
-import com.example.finalproject.fragments.ResearchTreeFragment;
 import com.example.finalproject.fragments.ShopFragment;
 import com.example.finalproject.fragments.StatusBarFragment;
 import com.example.finalproject.items.Armor;
@@ -22,6 +19,7 @@ import com.example.finalproject.items.Food;
 import com.example.finalproject.items.Item;
 import com.example.finalproject.items.Recipe;
 import com.example.finalproject.items.Weapon;
+import com.example.finalproject.service.MapTile;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.Triplex;
 import com.example.finalproject.service.User;
@@ -42,8 +40,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-import dalvik.system.InMemoryDexClassLoader;
-
 public class Player extends Entity implements Parcelable {
 
     private int gold, researchPoints, mapNum, duelNum, duelPnum;
@@ -56,7 +52,7 @@ public class Player extends Entity implements Parcelable {
     private ArrayList<Pair<Integer, Integer>> coordinates = new ArrayList<>();
     private HashMap<Integer, Integer> itemsOnAuction=new HashMap<>();
     private Spell chosenSpell;
-    private Bitmap titleTexture;
+    private Bitmap tileTexture;
     private Bitmap avatar;
     private Enemy enemy;
 
@@ -76,7 +72,7 @@ public class Player extends Entity implements Parcelable {
         coordinates=in.readArrayList(new GenericTypeIndicator<ArrayList<Pair<Integer, Integer>>>(){}.getClass().getClassLoader());
         itemsOnAuction=in.readHashMap(new GenericTypeIndicator<HashMap<Integer, Integer>>(){}.getClass().getClassLoader());
         chosenSpell= (Spell) in.readSerializable();
-        titleTexture=in.readParcelable(Bitmap.class.getClassLoader());
+        tileTexture =in.readParcelable(Bitmap.class.getClassLoader());
         avatar=in.readParcelable(Bitmap.class.getClassLoader());
         enemy=in.readParcelable(Enemy.class.getClassLoader());
     }
@@ -98,7 +94,7 @@ public class Player extends Entity implements Parcelable {
         dest.writeParcelable((Parcelable) coordinates, flags);
         dest.writeSerializable(itemsOnAuction);
         dest.writeSerializable(chosenSpell);
-        dest.writeParcelable(titleTexture, flags);
+        dest.writeParcelable(tileTexture, flags);
         dest.writeParcelable(avatar, flags);
         dest.writeParcelable(enemy, flags);
     }
@@ -145,16 +141,17 @@ public class Player extends Entity implements Parcelable {
         chatMode = false;
     }
 
-    public void research(Research research) {
-        if (research.isAvailable() && !research.isResearched() && research.getCost() <= researchPoints) {
+    public boolean research(Research research) {
+        if (research.getAvailable() && !research.getResearched() && research.getCost() <= researchPoints) {
             research.setResearched(true);
             researchPoints -= research.getCost();
             for (int i = 0; i < MainActivity.researches.size(); i++) {
                 MainActivity.researches.get(i).enable();
             }
-            ResearchTreeFragment.research_hash_map.get(research).setBackgroundColor(Color.GREEN);
-            research.affect(this);
+            research.affect();
+            return true;
         }
+        return false;
     }
 
     public void take_drop() {
@@ -310,12 +307,12 @@ public class Player extends Entity implements Parcelable {
         return inventory;
     }
 
-    public Bitmap getTitleTexture() {
-        return titleTexture;
+    public Bitmap getTileTexture() {
+        return tileTexture;
     }
 
-    public void setTitleTexture(Bitmap titleTexture) {
-        this.titleTexture = titleTexture;
+    public void setTileTexture(Bitmap tileTexture) {
+        this.tileTexture = tileTexture.copy(tileTexture.getConfig(), false);
     }
 
     public ArrayList<Spell> getSpells() {
@@ -371,7 +368,7 @@ public class Player extends Entity implements Parcelable {
                 ", equipment=" + equipment +
                 ", inventory=" + inventory +
                 ", spells=" + spells +
-                ", title_texture=" + titleTexture +
+                ", title_texture=" + tileTexture +
                 ", enemy=" + enemy +
                 '}';
     }

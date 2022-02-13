@@ -2,6 +2,7 @@ package com.example.finalproject.fragments;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +53,8 @@ public class ResearchTreeFragment extends Fragment {
         View.OnClickListener n = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.player.research(research_hash_map1.get(v));
+                if (MainActivity.player.research(research_hash_map1.get(v)))
+                    v.setBackgroundColor(Color.GREEN);
                 rpa.setText("Your research points amount: "+
                         MainActivity.player.getResearchPoints()+"");
                 MainActivity.researchesJson.clear();
@@ -79,7 +81,7 @@ public class ResearchTreeFragment extends Fragment {
             research_hash_map.get(MainActivity.researches.get(i)).setText("\n"+MainActivity.researches.get(i).getName()+
                     " : " +MainActivity.researches.get(i).getCost()+"\n");
             research_hash_map.get(MainActivity.researches.get(i)).setOnClickListener(n);
-            if (MainActivity.researches.get(i).isResearched())
+            if (MainActivity.researches.get(i).getResearched())
                 research_hash_map.get(MainActivity.researches.get(i)).setBackgroundColor(Color.GREEN);
         }
         Button back = getView().findViewById(R.id.research_tree_back_button);

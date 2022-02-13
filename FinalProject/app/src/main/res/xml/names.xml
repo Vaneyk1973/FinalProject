@@ -10,11 +10,25 @@
     <name id="7" name="Iron ore"/>
     <name id="8" name="Iron chestplate"/>
     <name id="9" name="Leather"/>
-    <name id="128" name="Rabbit"/>
-    <name id="129" name="Dog"/>
-    <name id="130" name="Wolf"/>
-    <name id="131" name="Fox"/>
-    <name id="132" name="Bear"/>
-    <name id="133" name="Highwayman"/>
-    <name id="256" name="Mountains"/>
+    <name id="256" name="Rabbit"/>
+    <name id="257" name="Dog"/>
+    <name id="258" name="Wolf"/>
+    <name id="259" name="Fox"/>
+    <name id="260" name="Bear"/>
+    <name id="261" name="Highwayman"/>
+    <name id="512" name="Mountains"/>
+    <name id="513" name="Fields"/>
+    <name id="514" name="Forest"/>
+    <name id="515" name="Village"/>
+    <name id="516" name="Muddy road vertical"/>
+    <name id="517" name="Muddy road horizontal"/>
+    <name id="518" name="Stone road vertical"/>
+    <name id="519" name="Stone road horizontal"/>
+    <name id="520" name="Village fence"/>
+    <name id="521" name="Village hall"/>
+    <name id="522" name="Duel arena"/>
+    <name id="523" name="Crafting house"/>
+    <name id="524" name="Shop"/>
+    <name id="525" name="Village gates"/>
+    <name id="526" name="Auction"/>
 </names>

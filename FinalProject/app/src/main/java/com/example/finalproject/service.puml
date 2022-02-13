@@ -43,13 +43,13 @@ class Music {
     public void start(Context c, int track) {}
 }
 
-class Research {
-    private final ArrayList<Research> required_researches;
+class com.example.finalproject.service.Research {
+    private final ArrayList<com.example.finalproject.service.Research> required_researches;
     private final String name;
     private final int cost, tier, effect;
     private boolean researched, available;
 
-    public Research(ArrayList<Research> required_researches, String name, int cost, int tier, int effect, boolean researched, boolean available) {}
+    public com.example.finalproject.service.Research(ArrayList<com.example.finalproject.service.Research> required_researches, String name, int cost, int tier, int effect, boolean researched, boolean available) {}
 
     public void enable() {}
 

@@ -58,7 +58,7 @@ public class MenuFragment extends Fragment {
         inv[1].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MainActivity.researches.get(0).isResearched()){
+                if (MainActivity.researches.get(0).getResearched()){
                     fragmentTransaction.add(R.id.spell_creation, new SpellCreationFragment());
                     if (fm.findFragmentById(R.id.map)!=null)
                         fragmentTransaction.remove(fm.findFragmentById(R.id.map));
@@ -73,7 +73,7 @@ public class MenuFragment extends Fragment {
         inv[2].setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (MainActivity.researches.get(0).isResearched()) {
+                if (MainActivity.researches.get(0).getResearched()) {
                     if (MainActivity.player.getSpells().isEmpty())
                         Toast.makeText(getContext(), "You don't have any spells yet", Toast.LENGTH_SHORT).show();
                     else {

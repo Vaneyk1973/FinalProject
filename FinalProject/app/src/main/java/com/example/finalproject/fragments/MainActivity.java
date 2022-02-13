@@ -15,14 +15,15 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.example.finalproject.service.MapTile;
 import com.example.finalproject.R;
+import com.example.finalproject.service.Research;
 import com.example.finalproject.entities.Enemy;
 import com.example.finalproject.entities.Player;
 import com.example.finalproject.items.Armor;
 import com.example.finalproject.items.Item;
 import com.example.finalproject.items.Recipe;
 import com.example.finalproject.service.Music;
-import com.example.finalproject.service.Research;
 import com.example.finalproject.service.Task;
 import com.example.finalproject.service.Triplex;
 import com.example.finalproject.service.User;
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
     public static ArrayList<Type> types = new ArrayList<>();
     public static ArrayList<Form> forms = new ArrayList<>();
     public static ArrayList<ManaReservoir> manaReservoirs = new ArrayList<>();
-    public static ArrayList<Research> researches = new ArrayList<>();
+    public static ArrayList<Research> researches=new ArrayList<>();
     public static ArrayList<Recipe> recipes = new ArrayList<>();
     public static ArrayList<Item> items = new ArrayList<>(),
             shopList = new ArrayList<>();
@@ -163,13 +164,14 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         mapTextures.addAll(Arrays.asList(textures[1]));
+        int id=512;
         for (int i = 0; i < menu.length; i++)
             menu[i] = Bitmap.createScaledBitmap(textures[0][i], menuWidth, menuWidth, false);
         for (int i = 0; i < map.size(); i++)
             for (int j = 0; j < map.get(i).length; j++)
                 for (int k = 0; k < map.get(i).width; k++)
-                    if (map.get(i).map[j][k].type != 356)
-                        map.get(i).map[j][k].setTexture(mapTextures.get(map.get(i).map[j][k].type-256));
+                    if (map.get(i).map[j][k].getId() != id+255)
+                        map.get(i).map[j][k].setTexture(mapTextures.get(map.get(i).map[j][k].getId()-512));
                     else  {
                         map.get(i).map[j][k].setTexture(Bitmap.createBitmap(mapTitleWidth, mapTitleWidth, Bitmap.Config.ARGB_8888));
                         map.get(i).map[j][k].getTexture().eraseColor(Color.BLACK);
@@ -188,13 +190,13 @@ public class MainActivity extends AppCompatActivity {
             researches.add(new Research(new ArrayList<>(),
                     "Basic spell creation", 1, 0, 0, false, true));
             rqr.add(researches.get(0));
-            researches.add(new Research((ArrayList<Research>) rqr.clone(),
+            researches.add(new Research(rqr,
                     "Fire mage", 6, 1, 1, false, false));
-            researches.add(new Research((ArrayList<Research>) rqr.clone(),
+            researches.add(new Research(rqr,
                     "Water mage", 2, 1, 2, false, false));
-            researches.add(new Research((ArrayList<Research>) rqr.clone(),
+            researches.add(new Research(rqr,
                     "Earth mage", 4, 1, 3, false, false));
-            researches.add(new Research((ArrayList<Research>) rqr.clone(),
+            researches.add(new Research(rqr,
                     "Air mage", 3, 1, 4, false, false));
             for (int i = 0; i < researches.size(); i++)
                 researchesJson.add(new Gson().toJson(researches.get(i)));
@@ -331,6 +333,7 @@ public class MainActivity extends AppCompatActivity {
                             int chance=Integer.parseInt(locationXml.getAttributeValue(0)),
                                     enemyId=Integer.parseInt(locationXml.getAttributeValue(1));
                             chancesOfEnemy.get(id).put(chance, enemies.get(enemyId));
+                            Log.d("EN", chancesOfEnemy.toString());
                         }
                         locationXml.next();
                     }
@@ -340,38 +343,6 @@ public class MainActivity extends AppCompatActivity {
         }catch (XmlPullParserException | IOException e) {
             e.printStackTrace();
         }
-        Log.d("WW", new Gson().toJson(chancesOfEnemy)+"");
-        /*chancesOfFight.put(0, 0);
-        chancesOfFight.put(1, 20);
-        chancesOfFight.put(2, 60);
-        chancesOfFight.put(3, 0);
-        chancesOfFight.put(4, 10);
-        chancesOfFight.put(5, 10);
-        chancesOfFight.put(6, 5);
-        chancesOfFight.put(7, 5);
-        chancesOfFight.put(8, 0);
-        chancesOfFight.put(9, 0);
-        chancesOfFight.put(10, 0);
-        chancesOfFight.put(11, 0);
-        chancesOfFight.put(12, 0);
-        chancesOfFight.put(13, 0);
-        chancesOfEnemy.put(1, new HashMap<>());
-        chancesOfEnemy.get(1).put(30, enemies.get(0));
-        chancesOfEnemy.get(1).put(70, enemies.get(1));
-        chancesOfEnemy.put(2, new HashMap<>());
-        chancesOfEnemy.get(2).put(60, enemies.get(2));
-        chancesOfEnemy.get(2).put(35, enemies.get(3));
-        chancesOfEnemy.get(2).put(5, enemies.get(4));
-        chancesOfEnemy.put(4, new HashMap<>());
-        chancesOfEnemy.get(4).put(100, enemies.get(5));
-        chancesOfEnemy.put(5, new HashMap<>());
-        chancesOfEnemy.get(5).put(100, enemies.get(5));
-        chancesOfEnemy.put(6, new HashMap<>());
-        chancesOfEnemy.get(6).put(100, enemies.get(5));
-        chancesOfEnemy.put(7, new HashMap<>());
-        chancesOfEnemy.get(7).put(100, enemies.get(5));
-        chancesOfEnemy.put(8, new HashMap<>());
-        chancesOfEnemy.get(8).put(100, enemies.get(5));*/
     }
 
     private static void setMagic() {
@@ -517,35 +488,10 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
     }
 
-    public static class MapTile {
-        private Bitmap texture;
-        private int type;
-
-        public MapTile(Bitmap texture, int type) {
-            this.texture = texture;
-            this.type = type;
-        }
-
-        public void setTexture(Bitmap texture) {
-            this.texture = Bitmap.createBitmap(texture);
-        }
-
-        public Bitmap getTexture() {
-            return texture;
-        }
-
-        public int getType() {
-            return type;
-        }
-
-        public void setType(int type) {
-            this.type = type;
-        }
-    }
-
-    public class Map {
-        private int length, width;
-        private MapTile[][] map;
+    public static class Map {
+        private final int length;
+        private final int width;
+        private final MapTile[][] map;
 
         public Map(XmlPullParser map_xml) {
             ArrayList<ArrayList<MapTile>> map = new ArrayList();
@@ -555,8 +501,9 @@ public class MainActivity extends AppCompatActivity {
                     if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("row"))
                         map.add(new ArrayList<>());
                     if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("map_title")) {
-                        type = 256+Integer.parseInt(map_xml.getAttributeValue(0));
-                        map.get(map.size() - 1).add(new MapTile( null, type));
+                        type = Integer.parseInt(map_xml.getAttributeValue(0));
+                        MapTile tile =new MapTile(null, type);
+                        map.get(map.size() - 1).add(tile);
                     }
                     map_xml.next();
                 }

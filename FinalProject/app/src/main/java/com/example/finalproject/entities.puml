@@ -62,7 +62,7 @@ class Player extends Entity implements Parcelable {
 
     public Player(int x, int y) {}
 
-    public void research(Research research) {}
+    public void research(com.example.finalproject.service.Research research) {}
 
     public void take_drop() {}
 

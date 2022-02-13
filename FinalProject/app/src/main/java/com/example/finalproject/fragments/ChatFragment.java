@@ -34,7 +34,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
 public class ChatFragment extends Fragment {
     ArrayList<Message> messages = new ArrayList<>();
@@ -89,10 +88,9 @@ public class ChatFragment extends Fragment {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (!v.getText().toString().isEmpty()){
-                    Message m = new Message();
-                    m.message = v.getText().toString();
-                    m.user = new Gson().toJson(MainActivity.player.getUser());
-                    m.date = new Date().getTime()-Calendar.getInstance().getTimeZone().getOffset(new Date().getTime())*60*1000;
+                    Message m = new Message(v.getText().toString(),
+                            new Gson().toJson(MainActivity.player.getUser()),
+                            new Date().getTime()- (long) Calendar.getInstance().getTimeZone().getOffset(new Date().getTime()) *60*1000);
                     ref.child(messages.size() + "").setValue(m);
                     v.setText("");
                 }
@@ -140,15 +138,15 @@ public class ChatFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull ChatFragment.ChatAdapter.ChatViewHolder holder, int position) {
-            holder.message.setText(data.get(position).message);
-            long time = data.get(position).date / 1000 / 60 + Calendar.getInstance().getTimeZone().getOffset(new Date().getTime());
+            holder.message.setText(data.get(position).getMessage());
+            long time = data.get(position).getDate() / 1000 / 60 + Calendar.getInstance().getTimeZone().getOffset(new Date().getTime());
             String mins, hrs;
             mins = time % 60 >= 10 ? time % 60 + "" : "0" + time % 60;
             time /= 60;
             hrs = (time % 24 + 3) % 24 + "";
             String date = hrs + ":" + mins;
             holder.time.setText(date);
-            holder.user.setText(new Gson().fromJson(data.get(position).user, User.class).getLogin());
+            holder.user.setText(new Gson().fromJson(data.get(position).getUser(), User.class).getLogin());
         }
 
         @Override

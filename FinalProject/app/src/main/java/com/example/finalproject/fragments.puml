@@ -69,8 +69,8 @@ class RegistrationFragment extends Fragment {
 }
 
 class ResearchTreeFragment extends Fragment {
-    public static HashMap<Research, TextView> research_hash_map;
-    public static HashMap<TextView, Research> research_hash_map1;
+    public static HashMap<com.example.finalproject.service.Research, TextView> research_hash_map;
+    public static HashMap<TextView, com.example.finalproject.service.Research> research_hash_map1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {}
 

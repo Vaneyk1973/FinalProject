@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,7 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 
 public class ChatMiniFragment extends Fragment {
     @Override
@@ -80,10 +78,9 @@ public class ChatMiniFragment extends Fragment {
         enterMessage.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                Message m = new Message();
-                m.message = v.getText().toString();
-                m.user = new Gson().toJson(MainActivity.player.getUser());
-                m.date=new Date().getTime()-Calendar.getInstance().getTimeZone().getOffset(new Date().getTime())*60*1000;
+                Message m = new Message(v.getText().toString(),
+                        new Gson().toJson(MainActivity.player.getUser()),
+                        new Date().getTime()- Calendar.getInstance().getTimeZone().getOffset(new Date().getTime()) *60L*1000);
                 ref.child(messages.size() + "").setValue(m);
                 v.setText("");
                 return false;
@@ -120,15 +117,15 @@ public class ChatMiniFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull ChatMiniFragment.ChatAdapter.ChatViewHolder holder, int position) {
-            holder.message.setText(data.get(position).message);
-            long time = data.get(position).date / 1000 / 60 +new Date().getTimezoneOffset()*60;
+            holder.message.setText(data.get(position).getMessage());
+            long time = data.get(position).getDate() / 1000 / 60 +new Date().getTimezoneOffset()*60L;
             String mins, hrs;
             mins = time % 60 >= 10 ? time % 60 + "" : "0" + time % 60;
             time /= 60;
             hrs = (time % 24 + 3) % 24 + "";
             String date = hrs + ":" + mins;
             holder.time.setText(date);
-            holder.user.setText(new Gson().fromJson(data.get(position).user, User.class).getLogin());
+            holder.user.setText(new Gson().fromJson(data.get(position).getUser(), User.class).getLogin());
         }
 
         @Override

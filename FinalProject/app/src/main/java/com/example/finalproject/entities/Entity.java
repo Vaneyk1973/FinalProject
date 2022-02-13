@@ -70,10 +70,9 @@ public class Entity implements Parcelable {
     };
 
     public void take_damage(int damage) {
-       damage=damage-armor<=0?0:damage-armor;
+       damage= Math.max(damage - armor, 0);
        health-=damage;
     }
-
 
     public void regenerate() {
         setHealth(getHealth() + getHealthRegen());
@@ -193,7 +192,7 @@ public class Entity implements Parcelable {
     }
 
     public void setResistances(HashMap<Spell, Double> resistances) {
-        this.resistances = resistances;
+        this.resistances = new HashMap<>(resistances);
     }
 
     public int getGivenExp() {
