@@ -3,20 +3,16 @@ package com.example.finalproject.service
 import android.content.Context
 import android.media.MediaPlayer
 
-data class Music(var mPlayer:MediaPlayer?=null) {
+class Music(var mPlayer:MediaPlayer?) {
     fun stop() {
-        if (mPlayer != null) {
-            mPlayer!!.release();
-            mPlayer = null;
-        }
+        mPlayer?.release()
+        mPlayer=null
     }
 
-    fun start(c:Context, track:Int) {
+    fun start(context:Context, track:Int) {
         stop();
-        mPlayer = MediaPlayer.create(c, track)
-        mPlayer!!.setOnCompletionListener { MediaPlayer.OnCompletionListener{
-            start(c, track)
-        } }
-        mPlayer!!.start()
+        mPlayer = MediaPlayer.create(context, track)
+        mPlayer?.setOnCompletionListener {start(context, track)}
+        mPlayer?.start()
     }
 }
