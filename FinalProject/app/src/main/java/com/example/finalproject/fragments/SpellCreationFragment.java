@@ -126,7 +126,7 @@ public class SpellCreationFragment extends Fragment {
 
         public SpellAdapter(ArrayList<T> data) {
             for (int i=0;i<data.size();i++){
-                if (data.get(i).isAvailable())
+                if (data.get(i).getAvailable())
                     this.data.add(data.get(i));
             }
         }

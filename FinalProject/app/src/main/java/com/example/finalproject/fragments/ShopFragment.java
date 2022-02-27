@@ -282,19 +282,19 @@ public class ShopFragment extends Fragment {
                         fr.remove(fm1.findFragmentById(R.id.characteristics3));
                     fr.commit();
                 } else if (mode){
-                    holder.name.setText(">"+dataA.get(position).first.getName()+":"+dataA.get(position).second+"\n"
-                            +dataA.get(position).third+"\n");
+                    holder.name.setText(">"+dataA.get(position).getFirst().getName()+":"+dataA.get(position).getSecond()+"\n"
+                            +dataA.get(position).getThird()+"\n");
                     holder.name.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            chosenItem=dataA.get(position).first;
-                            user=dataA.get(position).third;
+                            chosenItem=dataA.get(position).getFirst();
+                            user=dataA.get(position).getThird();
                             amount=1;
                             amount_text.setText(amount+"");
                             FragmentTransaction fr=fm1.beginTransaction();
                             if (fm1.findFragmentById(R.id.characteristics3) != null)
                                 fr.remove(fm1.findFragmentById(R.id.characteristics3));
-                            fr.add(R.id.characteristics3, new ItemCharacteristicsFragment(dataA.get(position).first, !mode));
+                            fr.add(R.id.characteristics3, new ItemCharacteristicsFragment(dataA.get(position).getFirst(), !mode));
                             fr.commit();
                         }
                     });
@@ -324,7 +324,7 @@ public class ShopFragment extends Fragment {
             if (auction)
                 if (mode){
                  for (int i=0;i<dataA.size();i++){
-                     if (dataA.get(i).second!=0)
+                     if (dataA.get(i).getSecond()!=0)
                          a.add(dataA.get(i));
                  }
                  dataA.clear();

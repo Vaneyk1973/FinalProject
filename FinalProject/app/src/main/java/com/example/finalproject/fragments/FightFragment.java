@@ -100,8 +100,8 @@ public class FightFragment extends Fragment {
                     enemy = new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                            if (snapshot.getValue() != null)
-                                enemies[0] = new Enemy(snapshot.getRef(), MainActivity.textures[5][6], enemyHealth, enemyMana, p);
+                            //if (snapshot.getValue() != null)
+                                //enemies[0] = new Enemy(snapshot.getRef(), MainActivity.textures[5][6], enemyHealth, enemyMana, p);
                         }
 
                         @Override
@@ -135,7 +135,7 @@ public class FightFragment extends Fragment {
 
                             }
                         });
-                        enemies[0] = new Enemy(databaseReferences[1], MainActivity.textures[5][6], enemyHealth, enemyMana, p);
+                        //enemies[0] = new Enemy(databaseReferences[1], MainActivity.textures[5][6], enemyHealth, enemyMana, p);
                         yourHealth.setText(Math.round(MainActivity.player.getHealth()) + "/" + Math.round(MainActivity.player.getMaxHealth()));
                         yourMana.setText(Math.round(MainActivity.player.getMana()) + "/" + Math.round(MainActivity.player.getMaxMana()));
                         run.setOnClickListener(new View.OnClickListener() {

@@ -11,7 +11,7 @@ data class Research(
     var researched:Boolean,
     var available:Boolean) {
 
-    fun affect()= elements[effect].setAvailable()
+    fun affect()= elements[effect].avail()
 
     fun enable(){
         for (i in requiredResearches)

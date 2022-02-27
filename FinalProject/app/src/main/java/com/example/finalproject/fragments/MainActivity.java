@@ -15,7 +15,6 @@ import android.view.WindowManager;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.finalproject.service.MapTile;
 import com.example.finalproject.R;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.entities.Enemy;
@@ -43,7 +42,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
-
     public static Player player;
     public static int menuWidth, avatarWidth, mapTitleWidth, statusImagesWidth, categoryImageWidth;
     public static boolean showTutorial = true;
@@ -96,10 +94,11 @@ public class MainActivity extends AppCompatActivity {
         map.add(new Map(mapParser));
         mapParser = getResources().getXml(R.xml.first_village_map);
         map.add(new Map(mapParser));
+        Log.d("MAP3", MainActivity.map.get(0).getMap()[3][3].getTexture()+"");
         sh = getPreferences(MODE_PRIVATE);
         display = getWindowManager().getDefaultDisplay();
         res = getResources();
-        m = new Music();
+        m = new Music(null);
         m.start(this, R.raw.main);
         showTutorial = sh.getBoolean("Tutorial", true);
         player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2,  2))), Player.class);
@@ -297,7 +296,8 @@ public class MainActivity extends AppCompatActivity {
                             id=Integer.parseInt(enemiesXml.getAttributeValue(5));
                     String name=names.get(id);
                     ArrayList<Triplex<Item, Integer, Integer>> drop=new ArrayList<>();
-                    enemies.put(id, new Enemy(name, health, mana, damage, armor, givenGold, givenExp, drop, textures[5][texture]));
+                    assert name != null;
+                    enemies.put(id, new Enemy(health, mana, damage, armor, givenGold, givenExp, name, drop, textures[5][texture]));
                     enemiesXml.next();
                     while (!enemiesXml.getName().equals("enemy")){
                         if (enemiesXml.getEventType()==XmlPullParser.START_TAG
@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < typesJson.size(); i++)
                 types.add(new Gson().fromJson(typesJson.get(i), Type.class));
         else {
-            types.add(new Type("On enemy", 0, true));
+            types.add(new Type( 0, "On enemy", true));
             typesJson = new ArrayList<>();
             for (int i = 0; i < types.size(); i++)
                 typesJson.add(new Gson().toJson(types.get(i)));
@@ -383,7 +383,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < formsJson.size(); i++)
                 forms.add(new Gson().fromJson(formsJson.get(i), Form.class));
         else {
-            forms.add(new Form("Sphere", 0, true));
+            forms.add(new Form( 0, "Sphere", true));
             formsJson = new ArrayList<>();
             for (int i = 0; i < forms.size(); i++)
                 formsJson.add(new Gson().toJson(forms.get(i)));
@@ -393,8 +393,8 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < manaReservoirsJson.size(); i++)
                 manaReservoirs.add(new Gson().fromJson(manaReservoirsJson.get(i), ManaReservoir.class));
         else {
-            manaReservoirs.add(new ManaReservoir("Basic", 1, true));
-            manaReservoirs.add(new ManaReservoir("Big", 10, true));
+            manaReservoirs.add(new ManaReservoir(1, "Basic", true));
+            manaReservoirs.add(new ManaReservoir(10, "Big",  true));
             manaReservoirsJson = new ArrayList<>();
             for (int i = 0; i < manaReservoirs.size(); i++)
                 manaReservoirsJson.add(new Gson().toJson(manaReservoirs.get(i)));
@@ -404,7 +404,7 @@ public class MainActivity extends AppCompatActivity {
             for (int i = 0; i < manaChannelsJson.size(); i++)
                 manaChannels.add(new Gson().fromJson(manaChannelsJson.get(i), ManaChannel.class));
         else {
-            manaChannels.add(new ManaChannel("Basic", 2, true));
+            manaChannels.add(new ManaChannel(2, "Basic", true));
             manaChannelsJson = new ArrayList<>();
             for (int i = 0; i < manaChannels.size(); i++)
                 manaChannelsJson.add(new Gson().toJson(manaChannels.get(i)));
@@ -502,7 +502,7 @@ public class MainActivity extends AppCompatActivity {
                         map.add(new ArrayList<>());
                     if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("map_title")) {
                         type = Integer.parseInt(map_xml.getAttributeValue(0));
-                        MapTile tile =new MapTile(null, type);
+                        MapTile tile = new MapTile(type);
                         map.get(map.size() - 1).add(tile);
                     }
                     map_xml.next();
@@ -525,6 +525,30 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public String toString() {
             return new Gson().toJson(this);
+        }
+    }
+
+     public static class MapTile{
+        private int id;
+        private Bitmap texture;
+        MapTile(int id){
+            this.id=id;
+        }
+
+        public int getId() {
+            return id;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public Bitmap getTexture() {
+            return texture;
+        }
+
+        public void setTexture(Bitmap texture) {
+            this.texture =Bitmap.createBitmap(texture);
         }
     }
 }

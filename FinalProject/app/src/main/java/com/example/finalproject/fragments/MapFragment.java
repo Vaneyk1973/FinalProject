@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -308,13 +309,16 @@ public class MapFragment extends Fragment {
                 visible_map[i][j].setOnClickListener(onClickListener);
             }
         }
+        Log.d("MAP1", MainActivity.map.get(mapNum).getMap()[3][3].getTexture()+"");
         MainActivity.player.setTileTexture(
                 Bitmap.createBitmap(MainActivity.map.get(mapNum).
                         getMap()[MainActivity.player.getCoordinates(mapNum).first]
                         [MainActivity.player.getCoordinates(mapNum).second].getTexture()));
+        Log.d("MAP2", MainActivity.map.get(mapNum).getMap()[3][3].getTexture()+"");
         MainActivity.map.get(mapNum).getMap()[MainActivity.player.getCoordinates(mapNum).first]
                 [MainActivity.player.getCoordinates(mapNum).second]
                 .getTexture().eraseColor(Color.BLUE);
+        Log.d("MAP3", MainActivity.map.get(mapNum).getMap()[3][3].getTexture()+"");
     }
 
     private Pair<Integer, Integer> find_title_coordinates(ImageView v, ImageView[][] p){

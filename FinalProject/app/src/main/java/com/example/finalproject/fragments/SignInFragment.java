@@ -71,9 +71,9 @@ public class SignInFragment extends Fragment {
                                 public void onComplete(@NonNull @NotNull Task<AuthResult> task) {
                                     if (task.isSuccessful()) {
                                         MainActivity.player.setUser(new User("", email.getText().toString()));
-                                        MainActivity.player.getUser().setuID(FirebaseAuth.getInstance().getUid());
+                                        MainActivity.player.getUser().setUID(FirebaseAuth.getInstance().getUid());
                                         FirebaseDatabase.getInstance().getReference("Users")
-                                                .child(MainActivity.player.getUser().getuID()).child("login")
+                                                .child(MainActivity.player.getUser().getUID()).child("login")
                                                 .get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                                             @Override
                                             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
@@ -87,7 +87,7 @@ public class SignInFragment extends Fragment {
                                             }
                                         });
                                         FirebaseDatabase.getInstance().getReference("Users").
-                                                child(MainActivity.player.getUser().getuID()).child("loggedIn").setValue(true)
+                                                child(MainActivity.player.getUser().getUID()).child("loggedIn").setValue(true)
                                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                     @Override
                                                     public void onComplete(@NonNull @NotNull Task<Void> task) {

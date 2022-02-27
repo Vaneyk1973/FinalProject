@@ -88,7 +88,7 @@ public class RegisterFragment extends Fragment {
                                     if (task.isSuccessful()) {
                                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
                                         MainActivity.player.setUser(new User(login[0], email[0]));
-                                        MainActivity.player.getUser().setuID(FirebaseAuth.getInstance().getUid());
+                                        MainActivity.player.getUser().setUID(FirebaseAuth.getInstance().getUid());
                                         ref.child(FirebaseAuth.getInstance().getUid()).setValue(MainActivity.player.getUser());
                                         MainActivity.player.getUser().logIn();
                                         FragmentTransaction fr=getParentFragmentManager().beginTransaction();

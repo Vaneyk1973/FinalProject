@@ -106,9 +106,9 @@ public class TaskManagerFragment extends Fragment {
                     description.setText(data.get(position).getDescription());
                 }
             });
-            if(data.get(position).isCompleted())
+            if(data.get(position).getCompleted())
                 holder.name.setBackgroundColor(Color.GREEN);
-            else if (data.get(position).isTaken())
+            else if (data.get(position).getTaken())
                 holder.name.setBackgroundColor(Color.YELLOW);
             else {
                 holder.name.setOnClickListener(new View.OnClickListener() {

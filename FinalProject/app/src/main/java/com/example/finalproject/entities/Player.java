@@ -19,7 +19,6 @@ import com.example.finalproject.items.Food;
 import com.example.finalproject.items.Item;
 import com.example.finalproject.items.Recipe;
 import com.example.finalproject.items.Weapon;
-import com.example.finalproject.service.MapTile;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.service.Triplex;
 import com.example.finalproject.service.User;
@@ -71,7 +70,7 @@ public class Player extends Entity implements Parcelable {
         spells=in.readArrayList(new GenericTypeIndicator<ArrayList<Spell>>(){}.getClass().getClassLoader());
         coordinates=in.readArrayList(new GenericTypeIndicator<ArrayList<Pair<Integer, Integer>>>(){}.getClass().getClassLoader());
         itemsOnAuction=in.readHashMap(new GenericTypeIndicator<HashMap<Integer, Integer>>(){}.getClass().getClassLoader());
-        chosenSpell= (Spell) in.readSerializable();
+        chosenSpell= (Spell) in.readParcelable(Spell.class.getClassLoader());
         tileTexture =in.readParcelable(Bitmap.class.getClassLoader());
         avatar=in.readParcelable(Bitmap.class.getClassLoader());
         enemy=in.readParcelable(Enemy.class.getClassLoader());
@@ -93,7 +92,7 @@ public class Player extends Entity implements Parcelable {
         dest.writeSerializable(spells);
         dest.writeParcelable((Parcelable) coordinates, flags);
         dest.writeSerializable(itemsOnAuction);
-        dest.writeSerializable(chosenSpell);
+        dest.writeParcelable(chosenSpell, flags);
         dest.writeParcelable(tileTexture, flags);
         dest.writeParcelable(avatar, flags);
         dest.writeParcelable(enemy, flags);
@@ -156,8 +155,8 @@ public class Player extends Entity implements Parcelable {
 
     public void take_drop() {
         for (int i = 0; i < getEnemy().getDrop().size(); i++) {
-            if (new Random().nextInt(100) <= getEnemy().getDrop().get(i).second) {
-                Item drop = getEnemy().getDrop().get(i).first;
+            if (new Random().nextInt(100) <= getEnemy().getDrop().get(i).getSecond()) {
+                Item drop = getEnemy().getDrop().get(i).getFirst();
                 Log.d("WWD", new Gson().toJson(drop)+"F");
                 if (isInventoryContainsItem(drop)) {
                     int a = getInventoryItemIndex(drop);
@@ -251,8 +250,8 @@ public class Player extends Entity implements Parcelable {
     }
 
     public void attack() {
-        getEnemy().take_damage(getDamage());
-        if (enemy.isDuel())
+        //getEnemy().take_damage(getDamage());
+        if (enemy.getDuel())
             FirebaseDatabase.getInstance().getReference("Duel")
                     .child(getDuelNum() + "").child(1 - getDuelPnum() + "").child("health").setValue(enemy.getHealth());
     }
@@ -476,19 +475,19 @@ public class Player extends Entity implements Parcelable {
             public void onComplete(@NonNull @NotNull Task<DataSnapshot> task) {
                 if (task.isSuccessful()) {
                     boolean t = false;
-                    if (getAmountOfItemsInInventory(item.first) >= item.second) {
+                    if (getAmountOfItemsInInventory(item.getFirst()) >= item.getSecond()) {
                         ArrayList<Triplex<Item, Integer, String>> a
                                 = task.getResult().getValue(new GenericTypeIndicator<ArrayList<Triplex<Item, Integer, String>>>() {
                         });
                         if (a != null)
                             for (int i = 0; i < a.size(); i++) {
-                                if (a.get(i).first.getName().equals(item.first.getName()) && a.get(i).third.equals(item.third)) {
-                                    ref.child(i + "").child("second").setValue(item.second + a.get(i).second);
+                                if (a.get(i).getFirst().getName().equals(item.getFirst().getName()) && a.get(i).getThird().equals(item.getThird())) {
+                                    ref.child(i + "").child("second").setValue(item.getSecond() + a.get(i).getSecond());
                                     int finalI = i;
-                                    ref.child(i+"").child("pair").child("second").setValue(item.second + a.get(i).second).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    ref.child(i+"").child("pair").child("second").setValue(item.getSecond() + a.get(i).getSecond()).addOnCompleteListener(new OnCompleteListener<Void>() {
                                         @Override
                                         public void onComplete(@NonNull @NotNull Task<Void> task) {
-                                            itemsOnAuction.replace(finalI, item.second);
+                                            itemsOnAuction.replace(finalI, item.getSecond());
                                         }
                                     });
                                     t = true;
@@ -504,7 +503,7 @@ public class Player extends Entity implements Parcelable {
                                 public void onComplete(@NonNull @NotNull Task<Void> task) {
                                     if (task.isSuccessful()) {
                                         removeItemFromInventory(item.getPair());
-                                        itemsOnAuction.put(r, item.second);
+                                        itemsOnAuction.put(r, item.getSecond());
                                         shopList.setAdapter(new ShopFragment.ShopAdapter(inventory));
                                         ref.child(r+"").addValueEventListener(new ValueEventListener() {
                                             @Override
@@ -546,7 +545,7 @@ public class Player extends Entity implements Parcelable {
                         = task.getResult().getValue(new GenericTypeIndicator<ArrayList<Triplex<Item, Integer, String>>>() {
                 });
                 for (int i = 0; i < a.size(); i++) {
-                    if (a.get(i).first.getName().equals(name) && a.get(i).third.equals(user))
+                    if (a.get(i).getFirst().getName().equals(name) && a.get(i).getThird().equals(user))
                         position = i;
                 }
                 DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Auction").child(position + "");
@@ -594,12 +593,12 @@ public class Player extends Entity implements Parcelable {
     }
 
     public void checkTasks(){
-        if (gold>=100&&MainActivity.tasks.get(0).isTaken()&&!MainActivity.tasks.get(0).isCompleted()){
+        if (gold>=100&&MainActivity.tasks.get(0).getTaken()&&!MainActivity.tasks.get(0).getCompleted()){
             MainActivity.tasks.get(0).setCompleted(true);
             addGold(50);
             addExperience(50);
         }
-        if (getLevel()>=5&&MainActivity.tasks.get(1).isTaken()&&!MainActivity.tasks.get(1).isCompleted()){
+        if (getLevel()>=5&&MainActivity.tasks.get(1).getTaken()&&!MainActivity.tasks.get(1).getCompleted()){
             MainActivity.tasks.get(1).setCompleted(true);
             addGold(500);
             addExperience(100);

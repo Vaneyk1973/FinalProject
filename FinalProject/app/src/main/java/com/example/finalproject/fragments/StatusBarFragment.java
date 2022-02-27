@@ -77,7 +77,7 @@ public class StatusBarFragment extends Fragment {
             public void onClick(View v) {
                 if (isInternetAvailable()){
                     FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                    if (MainActivity.player.getUser().isLoggedIn())
+                    if (MainActivity.player.getUser().getLoggedIn())
                     {
                         if (MainActivity.player.getChatMode()){
                             fragmentTransaction.add(R.id.chat_mini, new ChatMiniFragment());
