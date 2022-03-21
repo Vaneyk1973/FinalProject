@@ -84,12 +84,12 @@ public class CraftingStationFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull @NotNull CraftingStationFragment.CraftingAdapter.ViewHolder holder, @SuppressLint("RecyclerView") int position) {
-            holder.name.setText(">"+data.get(position).getProduct().getName());
+            holder.name.setText(">"+data.get(position).getProduct().getFirst().getName());
             String a="";
-            for (int i=0;i<data.get(position).getIngredients().size()-1;i++)
-                a+=data.get(position).getIngredients().get(i).first.getName()+" "+data.get(position).getIngredients().get(i).second+", ";
-            a+=data.get(position).getIngredients().get(data.get(position).getIngredients().size()-1).first.getName()+" "+
-                    data.get(position).getIngredients().get(data.get(position).getIngredients().size()-1).second;
+            for (int i=0;i<data.get(position).getIngredients1().size()-1;i++)
+                a+=data.get(position).getIngredients1().get(i).getFirst().getName()+" "+data.get(position).getIngredients1().get(i).getSecond()+", ";
+            a+=data.get(position).getIngredients1().get(data.get(position).getIngredients1().size()-1).getFirst().getName()+" "+
+                    data.get(position).getIngredients1().get(data.get(position).getIngredients1().size()-1).getSecond();
             holder.ingredients.setText(a);
             holder.name.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -98,7 +98,7 @@ public class CraftingStationFragment extends Fragment {
                     FragmentTransaction fr=fm.beginTransaction();
                     if (fm.findFragmentById(R.id.characteristics1)!=null)
                         fr.remove(fm.findFragmentById(R.id.characteristics1));
-                    fr.add(R.id.characteristics1, new ItemCharacteristicsFragment(data.get(position).getProduct()));
+                    fr.add(R.id.characteristics1, new ItemCharacteristicsFragment(data.get(position).getProduct().getFirst()));
                     fr.commit();
                     chosenRecipe=data.get(position);
                 }

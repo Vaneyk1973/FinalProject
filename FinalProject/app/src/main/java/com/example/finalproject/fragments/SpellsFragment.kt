@@ -1,0 +1,67 @@
+package com.example.finalproject.fragments
+
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.finalproject.R
+import com.example.finalproject.service.spell.Spell
+
+class SpellsFragment:Fragment() {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_spells, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val spells:RecyclerView =requireView().findViewById(R.id.spells_list)
+        spells.layoutManager=LinearLayoutManager(context)
+        spells.adapter= SpellsAdapter(MainActivity.player.spells)
+        val back:Button=requireView().findViewById(R.id.spells_back_button)
+        val f:FragmentManager= parentFragmentManager
+        back.setOnClickListener {
+            val fragmentTransaction = f.beginTransaction()
+            fragmentTransaction.remove(f.findFragmentById(R.id.spells)!!)
+            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+            fragmentTransaction.add(R.id.status, StatusBarFragment())
+            fragmentTransaction.add(R.id.menu, MenuFragment())
+            fragmentTransaction.commit()
+        }
+    }
+
+    inner class SpellsAdapter(val spells: ArrayList<Spell>) :
+        RecyclerView.Adapter<SpellsAdapter.SpellsViewHolder>() {
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpellsViewHolder {
+            return SpellsViewHolder(LayoutInflater.from(parent.context)
+                .inflate(R.layout.spells_item, parent, false) as View
+            )
+        }
+
+        override fun onBindViewHolder(holder: SpellsViewHolder, position: Int) {
+            holder.name.text = spells[position].name
+            holder.name.setOnClickListener {
+                val fm:FragmentManager=childFragmentManager
+                val fr:FragmentTransaction=fm.beginTransaction()
+                fr.remove(fm.findFragmentById(R.id.spells_char)!!)
+                fr.add(R.id.spells_char, SpellCharacteristicsFragment(spells[position]))
+                fr.commit()
+            }
+        }
+
+        override fun getItemCount(): Int=spells.size
+
+        inner class SpellsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+            val name:TextView=itemView.findViewById(R.id.spell_in_list)
+        }
+    }
+}

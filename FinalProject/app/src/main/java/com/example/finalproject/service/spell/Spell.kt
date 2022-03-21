@@ -75,6 +75,6 @@ class Spell() :Parcelable {
         }
     }
 
-    fun getElement():Element= components[0] as Element
-    fun getType():Type= components[1] as Type
+    fun getElement():Element= Element(components[0] as Element)
+    fun getType():Type= Type(components[1] as Type)
 }

@@ -1,3 +1,4 @@
+/*
 package com.example.finalproject.entities;
 
 import android.content.Context;
@@ -41,7 +42,8 @@ import java.util.Random;
 
 public class Player extends Entity implements Parcelable {
 
-    private int gold, researchPoints, mapNum, duelNum, duelPnum;
+    private int researchPoints, mapNum, duelNum, duelPnum;
+    private double gold;
     private boolean chatMode;
     private User user;
     private ArrayList<Integer> elementBonuses = new ArrayList<>();
@@ -57,7 +59,7 @@ public class Player extends Entity implements Parcelable {
 
     protected Player(Parcel in) {
         super(in);
-        gold = in.readInt();
+        gold = in.readDouble();
         researchPoints = in.readInt();
         mapNum=in.readInt();
         duelNum=in.readInt();
@@ -79,7 +81,7 @@ public class Player extends Entity implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
-        dest.writeInt(gold);
+        dest.writeDouble(gold);
         dest.writeInt(researchPoints);
         dest.writeInt(mapNum);
         dest.writeInt(duelNum);
@@ -172,7 +174,6 @@ public class Player extends Entity implements Parcelable {
 
     public void castSpell() {
         chosenSpell.affect(enemy);
-        Log.d("KKKGGGG", chosenSpell.getManaConsumption() + " " + getMana() + " " + getManaRegen());
     }
 
     public void choose_spell(Spell spell) {
@@ -287,8 +288,7 @@ public class Player extends Entity implements Parcelable {
     }
 
     private double expFormula(double x) {
-        return ((Math.pow(x, Math.PI) - Math.pow(Math.PI, Math.E))
-                * Math.cbrt(Math.pow(x, Math.E) - Math.PI))
+        return ((Math.pow(x, Math.PI) - Math.pow(Math.PI, Math.E)) * Math.cbrt(Math.pow(x, Math.E) - Math.PI))
                 / (Math.pow(x, Math.E / 7));
     }
 
@@ -297,7 +297,7 @@ public class Player extends Entity implements Parcelable {
         levelUp();
     }
 
-    public void addGold(int gld) {
+    public void addGold(double gld) {
         setGold(gld + getGold());
         checkTasks();
     }
@@ -322,11 +322,11 @@ public class Player extends Entity implements Parcelable {
         this.spells = spells;
     }
 
-    public int getGold() {
+    public double getGold() {
         return gold;
     }
 
-    public void setGold(int gold) {
+    public void setGold(double gold) {
         this.gold = gold;
     }
 
@@ -637,3 +637,4 @@ public class Player extends Entity implements Parcelable {
         this.duelPnum = duelPnum;
     }
 }
+*/

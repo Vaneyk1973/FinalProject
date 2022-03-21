@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity {
                                     rarity= Integer.parseInt(itemsXml.getAttributeValue(4)),
                                     category= Integer.parseInt(itemsXml.getAttributeValue(0));
                             ids.put(id, items.size());
-                            items.add(new Item(name, costSell, costBuy, rarity, category));
+                            items.add(new Item(costSell, costBuy, rarity, category, name));
                             break;
                         }
                         case "armor":{
@@ -231,7 +231,6 @@ public class MainActivity extends AppCompatActivity {
                                     typeOfArmor= Integer.parseInt(itemsXml.getAttributeValue(6));
                             ids.put(id, items.size());
                             items.add(new Armor(name, costSell, costBuy, armor, weight, typeOfArmor, category, rarity));
-                            Log.d("HHH", ids.get(id)+"");
                         }
                     }
                 }
@@ -242,18 +241,18 @@ public class MainActivity extends AppCompatActivity {
                         &&recipesXml.getName().equals("recipe")){
                     int productId=Integer.parseInt(recipesXml.getAttributeValue(0)),
                             productsNumber=Integer.parseInt(recipesXml.getAttributeValue(1));
-                    ArrayList<Pair<Item, Integer>> ingredients=new ArrayList<>();
+                    ArrayList<kotlin.Pair<Item, Integer>> ingredients=new ArrayList<>();
                     recipesXml.next();
                     while (!recipesXml.getName().equals("recipe")) {
                         if (recipesXml.getEventType() == XmlPullParser.START_TAG
                                 && recipesXml.getName().equals("ingredient")) {
                             int ingredientId = Integer.parseInt(recipesXml.getAttributeValue(0)),
                                     ingredientsNumber = Integer.parseInt(recipesXml.getAttributeValue(1));
-                            ingredients.add(new Pair<>(items.get(ids.get(ingredientId)), ingredientsNumber));
+                            ingredients.add(new kotlin.Pair(items.get(ids.get(ingredientId)), ingredientsNumber));
                         }
                         recipesXml.next();
                     }
-                    recipes.add(new Recipe(items.get(ids.get(productId)), ingredients));
+                    recipes.add(new Recipe(new kotlin.Pair(items.get(ids.get(productId)), 1), ingredients));
                     continue;
                 }
                 recipesXml.next();

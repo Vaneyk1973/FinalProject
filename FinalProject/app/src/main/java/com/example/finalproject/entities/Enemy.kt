@@ -8,13 +8,13 @@ import com.example.finalproject.items.Item
 import com.example.finalproject.service.Triplex
 
 class Enemy() : Entity(), Parcelable {
-    lateinit var drop:ArrayList<Triplex<Item, Int, Int>>
-    lateinit var texture: Bitmap
-    var defence:Int=0
+    val drop:ArrayList<Triplex<Item, Int, Int>> =ArrayList(0) //item, chance, number
+    lateinit var texture:Bitmap
+    var defence:Double=0.0
     var duel:Boolean=false
-    var fightTick:Int=0
+    private var fightTick:Int=0
 
-    constructor(health: Double, mana:Double, damage:Double, armor:Double, givenGold:Int, givenExp:Int,
+    constructor(health: Double, mana:Double, damage:Double, armor:Double, givenGold:Double, givenExp:Double,
                 name:String,
                 drop:ArrayList<Triplex<Item, Int, Int>>,
                 texture: Bitmap): this() {
@@ -26,17 +26,26 @@ class Enemy() : Entity(), Parcelable {
         this.givenGold=givenGold
         this.givenExp=givenExp
         this.name=name
-        this.drop=ArrayList(drop)
+        this.drop.addAll(drop)
         this.texture= Bitmap.createBitmap(texture)
     }
 
     constructor(enemy: Enemy):this(){
-
+        healthRegen=2.0
+        armor=enemy.armor
+        health=enemy.health
+        mana=enemy.mana
+        damage=enemy.damage
+        givenGold=enemy.givenGold
+        givenExp=enemy.givenExp
+        name=enemy.name
+        drop.addAll(enemy.drop)
+        texture= Bitmap.createBitmap(enemy.texture)
     }
 
     constructor(parcel: Parcel) : this() {
         texture = parcel.readParcelable(Bitmap::class.java.classLoader)!!
-        defence = parcel.readInt()
+        defence = parcel.readDouble()
         duel = parcel.readByte() != 0.toByte()
         fightTick = parcel.readInt()
     }
@@ -44,7 +53,7 @@ class Enemy() : Entity(), Parcelable {
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         super.writeToParcel(parcel, flags)
         parcel.writeParcelable(texture, flags)
-        parcel.writeInt(defence)
+        parcel.writeDouble(defence)
         parcel.writeByte(if (duel) 1 else 0)
         parcel.writeInt(fightTick)
     }

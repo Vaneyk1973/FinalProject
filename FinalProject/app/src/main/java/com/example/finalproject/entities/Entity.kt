@@ -11,11 +11,11 @@ open class Entity():Parcelable{
     var level:Int=0
     var experience:Double=0.0
     var powerLevel:Int=0
-    var experienceToNextLevelRequired:Int=0
+    var experienceToNextLevelRequired:Double=0.0
     var damage:Double=0.0
     var armor:Double=0.0
-    var givenExp:Int=0
-    var givenGold:Int=0
+    var givenExp:Double=0.0
+    var givenGold:Double=0.0
     var health:Double=0.0
     var maxHealth:Double=0.0
     var mana:Double=0.0
@@ -29,11 +29,11 @@ open class Entity():Parcelable{
     constructor(level:Int,
                 experience:Double,
                 powerLevel:Int,
-                experienceToNextLevelRequired:Int,
+                experienceToNextLevelRequired:Double,
                 damage:Double,
                 armor:Double,
-                givenExp:Int,
-                givenGold:Int,
+                givenExp:Double,
+                givenGold:Double,
                 health:Double,
                 maxHealth:Double,
                 mana:Double,
@@ -46,11 +46,11 @@ open class Entity():Parcelable{
         parcel.readInt(),
         parcel.readDouble(),
         parcel.readInt(),
-        parcel.readInt(),
         parcel.readDouble(),
         parcel.readDouble(),
-        parcel.readInt(),
-        parcel.readInt(),
+        parcel.readDouble(),
+        parcel.readDouble(),
+        parcel.readDouble(),
         parcel.readDouble(),
         parcel.readDouble(),
         parcel.readDouble(),
@@ -74,11 +74,11 @@ open class Entity():Parcelable{
         parcel.writeInt(level)
         parcel.writeDouble(experience)
         parcel.writeInt(powerLevel)
-        parcel.writeInt(experienceToNextLevelRequired)
+        parcel.writeDouble(experienceToNextLevelRequired)
         parcel.writeDouble(damage)
         parcel.writeDouble(armor)
-        parcel.writeInt(givenExp)
-        parcel.writeInt(givenGold)
+        parcel.writeDouble(givenExp)
+        parcel.writeDouble(givenGold)
         parcel.writeDouble(health)
         parcel.writeDouble(maxHealth)
         parcel.writeDouble(mana)

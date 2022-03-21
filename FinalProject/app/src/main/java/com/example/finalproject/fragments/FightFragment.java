@@ -117,7 +117,7 @@ public class FightFragment extends Fragment {
                         p.animate();
                         databaseReferences[1] = task.getResult().child(task.getResult().getChildrenCount() - 1 + "").getRef().child("0");
                         databaseReferences[0] = task.getResult().child(task.getResult().getChildrenCount() - 1 + "").getRef().child("1");
-                        MainActivity.player.addPlayerToDuel(databaseReferences[0]);
+                        MainActivity.player.addToDuel(databaseReferences[0]);
                         MainActivity.player.setDuelNum(Integer.parseInt(task.getResult().getChildrenCount() - 1 + ""));
                         MainActivity.player.setDuelPnum(1);
                         databaseReferences[1].addValueEventListener(enemy);

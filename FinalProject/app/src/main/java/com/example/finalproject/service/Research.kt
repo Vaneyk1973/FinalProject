@@ -1,5 +1,6 @@
 package com.example.finalproject.service
 
+import com.example.finalproject.fragments.MainActivity
 import com.example.finalproject.fragments.MainActivity.elements
 
 data class Research(
@@ -18,6 +19,12 @@ data class Research(
             if (!i.researched) return
         available=true
     }
+
+    fun research(){
+        for (i in MainActivity.researches)
+            i.enable()
+        this.affect()
+    }
     /*@Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -25,5 +32,4 @@ data class Research(
         com.example.finalproject.service.Research research = (com.example.finalproject.service.Research) o;
         return Objects.equals(name, research.name);
     }*/
-
 }
