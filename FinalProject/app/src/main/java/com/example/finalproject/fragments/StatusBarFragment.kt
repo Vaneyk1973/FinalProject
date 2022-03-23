@@ -87,7 +87,11 @@ class StatusBarFragment:Fragment() {
         }
     }
 
-    fun isInternetAvailable():Boolean{
+    fun update(){
+
+    }
+
+    private fun isInternetAvailable():Boolean{
         val cm:ConnectivityManager= requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         val an: NetworkInfo? =cm.activeNetworkInfo
         return an!=null&&

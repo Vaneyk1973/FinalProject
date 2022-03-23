@@ -9,7 +9,7 @@ import com.example.finalproject.service.Triplex
 
 class Enemy() : Entity(), Parcelable {
     val drop:ArrayList<Triplex<Item, Int, Int>> =ArrayList(0) //item, chance, number
-    lateinit var texture:Bitmap
+    private lateinit var texture:Bitmap
     var defence:Double=0.0
     var duel:Boolean=false
     private var fightTick:Int=0
@@ -73,11 +73,11 @@ class Enemy() : Entity(), Parcelable {
     }
 
 
-    fun attack(){
+    private fun attack(){
         MainActivity.player.takeDamage(damage)
     }
 
-    fun defend(){
+    private fun defend(){
 
     }
 
@@ -87,4 +87,6 @@ class Enemy() : Entity(), Parcelable {
         else defend()
         fightTick++
     }
+
+    fun getTexture():Bitmap=Bitmap.createBitmap(texture)
 }

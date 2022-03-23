@@ -25,8 +25,8 @@ class Player():Entity() {
     val user:User= User("", "")
     var chosenSpell:Spell?=null
     var chatMode:Boolean=false
-    var titleTexture:Bitmap?=null
-    var avatar:Bitmap?=null
+    private lateinit var titleTexture:Bitmap
+    private lateinit var avatar:Bitmap
     var enemy:Enemy?=null
 
     constructor(x:Int, y:Int):this() {
@@ -238,4 +238,12 @@ class Player():Entity() {
         this.user.uID=user.uID
         this.user.loggedIn=user.loggedIn
     }
+
+    fun setTileTexture(texture:Bitmap){
+        titleTexture= Bitmap.createBitmap(texture)
+    }
+
+    fun getTileTexture(): Bitmap =Bitmap.createBitmap(titleTexture)
+
+    fun getAvatar():Bitmap= Bitmap.createBitmap(avatar)
 }

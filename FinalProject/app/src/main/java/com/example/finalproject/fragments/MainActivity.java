@@ -8,7 +8,6 @@ import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Pair;
 import android.view.Display;
 import android.view.WindowManager;
 
@@ -16,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.finalproject.R;
+import com.example.finalproject.service.Map;
 import com.example.finalproject.service.Research;
 import com.example.finalproject.entities.Enemy;
 import com.example.finalproject.entities.Player;
@@ -40,6 +40,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+
+import kotlin.Pair;
 
 public class MainActivity extends AppCompatActivity {
     public static Player player;
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
     private static Display display;
     private static Resources res;
     public static Bitmap[][] textures;
-    public static Music m;
+    public static Music music;
     private static SharedPreferences sh;
 
     @Override
@@ -98,8 +100,8 @@ public class MainActivity extends AppCompatActivity {
         sh = getPreferences(MODE_PRIVATE);
         display = getWindowManager().getDefaultDisplay();
         res = getResources();
-        m = new Music(null);
-        m.start(this, R.raw.main);
+        music = new Music(null);
+        music.start(this, R.raw.main);
         showTutorial = sh.getBoolean("Tutorial", true);
         player=new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2,  2))), Player.class);
         setInitialData(itemsParser, namesParser, recipesParser, enemiesParser, locationsParser);
@@ -436,7 +438,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        m.start(this, R.raw.main);
+        music.start(this, R.raw.main);
         sh = getPreferences(MODE_PRIVATE);
         player = new Gson().fromJson(sh.getString("Player", new Gson().toJson(new Player(2, 2))), Player.class);
         player.setUser(new Gson().fromJson(sh.getString("User", new Gson().toJson(new User("", ""))), User.class));
@@ -451,7 +453,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onStop() {
-        m.stop();
+        music.stop();
         sh = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();
@@ -470,7 +472,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        m.stop();
+        music.stop();
         sh = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor ed = sh.edit();
         ed.clear();
@@ -485,69 +487,5 @@ public class MainActivity extends AppCompatActivity {
         ed.putString("Mana reservoirs", new Gson().toJson(manaReservoirsJson));
         ed.apply();
         super.onDestroy();
-    }
-
-    public static class Map {
-        private final int length;
-        private final int width;
-        private final MapTile[][] map;
-
-        public Map(XmlPullParser map_xml) {
-            ArrayList<ArrayList<MapTile>> map = new ArrayList();
-            int type;
-            try {
-                while (map_xml.getEventType() != XmlPullParser.END_DOCUMENT) {
-                    if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("row"))
-                        map.add(new ArrayList<>());
-                    if (map_xml.getEventType() == XmlPullParser.START_TAG && map_xml.getName().equals("map_title")) {
-                        type = Integer.parseInt(map_xml.getAttributeValue(0));
-                        MapTile tile = new MapTile(type);
-                        map.get(map.size() - 1).add(tile);
-                    }
-                    map_xml.next();
-                }
-            } catch (XmlPullParserException | IOException e) {
-                e.printStackTrace();
-            }
-            width = map.get(0).size();
-            length = map.size();
-            this.map = new MapTile[length][width];
-            for (int i = 0; i < length; i++)
-                for (int j = 0; j < width; j++)
-                    this.map[i][j] = map.get(i).get(j);
-        }
-
-        public MapTile[][] getMap() {
-            return map;
-        }
-
-        @Override
-        public String toString() {
-            return new Gson().toJson(this);
-        }
-    }
-
-     public static class MapTile{
-        private int id;
-        private Bitmap texture;
-        MapTile(int id){
-            this.id=id;
-        }
-
-        public int getId() {
-            return id;
-        }
-
-        public void setId(int id) {
-            this.id = id;
-        }
-
-        public Bitmap getTexture() {
-            return texture;
-        }
-
-        public void setTexture(Bitmap texture) {
-            this.texture =Bitmap.createBitmap(texture);
-        }
     }
 }
