@@ -1,7 +1,7 @@
 package com.example.finalproject.service
 
 import com.example.finalproject.fragments.MainActivity
-import com.example.finalproject.fragments.MainActivity.elements
+import com.example.finalproject.fragments.MainActivity.Companion.elements
 
 data class Research(
     val requiredResearches:ArrayList<Research>,
@@ -12,9 +12,9 @@ data class Research(
     var researched:Boolean,
     var available:Boolean) {
 
-    fun affect()= elements[effect].avail()
+    private fun affect()= elements[effect].avail()
 
-    fun enable(){
+    private fun enable(){
         for (i in requiredResearches)
             if (!i.researched) return
         available=true

@@ -8,6 +8,8 @@ import java.io.IOException
 class Map(mapXml:XmlPullParser) {
 
     val map=ArrayList<ArrayList<MapTile>>()
+    var length:Int=0
+    var width:Int=0
 
     init{
         try {
@@ -26,6 +28,8 @@ class Map(mapXml:XmlPullParser) {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+        length=map.size
+        width=map[0].size
     }
 
     class MapTile(val id:Int){

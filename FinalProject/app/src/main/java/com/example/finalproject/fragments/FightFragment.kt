@@ -30,7 +30,7 @@ class FightFragment(private var duel:Boolean=false) : Fragment() {
         val fm = parentFragmentManager
         val duelProgressBar= requireView().findViewById<ProgressBar>(R.id.fight_progress_bar)
         duelProgressBar.visibility = View.GONE
-        MainActivity.music.start(requireContext(), R.raw.fight)
+        MainActivity.music?.start(requireContext(), R.raw.fight)
         val run:Button = requireView().findViewById(R.id.run)
         val attack:Button = requireView().findViewById(R.id.attack)
         val castSpell:Button = requireView().findViewById(R.id.cast_spell)
@@ -207,7 +207,7 @@ class FightFragment(private var duel:Boolean=false) : Fragment() {
                     fragmentTransaction.add(R.id.status, StatusBarFragment())
                     fragmentTransaction.add(R.id.menu, MenuFragment())
                     fragmentTransaction.commit()
-                    MainActivity.music.start(requireContext(), R.raw.main)
+                    MainActivity.music?.start(requireContext(), R.raw.main)
                 }
                 if (MainActivity.player.health <= 0) {
                     MainActivity.player = Player(2, 2)
@@ -226,7 +226,7 @@ class FightFragment(private var duel:Boolean=false) : Fragment() {
                     fragmentTransaction.add(R.id.status, StatusBarFragment())
                     fragmentTransaction.add(R.id.menu, MenuFragment())
                     fragmentTransaction.commit()
-                    MainActivity.music.start(requireContext(), R.raw.main)
+                    MainActivity.music?.start(requireContext(), R.raw.main)
                 }
             }
             run.setOnClickListener {

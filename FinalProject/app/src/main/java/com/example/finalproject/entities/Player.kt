@@ -1,6 +1,8 @@
 package com.example.finalproject.entities
 
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.util.Log
 import com.example.finalproject.fragments.MainActivity
 import com.example.finalproject.items.*
 import com.example.finalproject.service.Research
@@ -18,12 +20,12 @@ class Player():Entity() {
     var researchPoints:Int=0
     val coordinates:ArrayList<Pair<Int, Int>> =ArrayList(2)
     val inventory:ArrayList<Pair<Item, Int>> =ArrayList()
-    val elementBonuses:ArrayList<Double> =ArrayList()
+    private val elementBonuses:ArrayList<Double> =ArrayList()
     val spells:ArrayList<Spell> =ArrayList()
     val itemsOnAuction:HashMap<Int, Int> =HashMap()
-    val equipment:ArrayList<Item?> =ArrayList(6)
+    private val equipment:ArrayList<Item?> =ArrayList(6)
     val user:User= User("", "")
-    var chosenSpell:Spell?=null
+    private var chosenSpell:Spell?=null
     var chatMode:Boolean=false
     private lateinit var titleTexture:Bitmap
     private lateinit var avatar:Bitmap
@@ -43,7 +45,7 @@ class Player():Entity() {
         experienceToNextLevelRequired=expFormula(1.0)
         coordinates.add(Pair(x, y))
         coordinates.add(Pair(6, 3))
-        for (i in 0 until 6)
+        for (i in equipment.indices)
             equipment[i]=null
     }
 
@@ -199,12 +201,11 @@ class Player():Entity() {
         //TODO duel
     }
 
-
-    //TODO
     fun addToDuel(){
 
     }
 
+    //TODO auction
     fun buyItemOnAuction(){}
 
     fun placeItemOnAuction(){}
@@ -241,6 +242,10 @@ class Player():Entity() {
 
     fun setTileTexture(texture:Bitmap){
         titleTexture= Bitmap.createBitmap(texture)
+    }
+
+    fun setAvatar(av:Bitmap){
+        avatar= av
     }
 
     fun getTileTexture(): Bitmap =Bitmap.createBitmap(titleTexture)

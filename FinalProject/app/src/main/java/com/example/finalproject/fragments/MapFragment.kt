@@ -1,11 +1,8 @@
 package com.example.finalproject.fragments
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.provider.SyncStateContract.Helpers.update
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +18,7 @@ import java.util.*
 import kotlin.math.abs
 
 class MapFragment(val mapNum: Int=0): Fragment() {
+
     constructor() : this(0) {
         MainActivity.player.mapNum = 0
     }
@@ -38,6 +36,7 @@ class MapFragment(val mapNum: Int=0): Fragment() {
         for (i in 0 until table.childCount) rows[i] = table.getChildAt(i) as TableRow
         val visibleMap:Array<Array<ImageView?>> = Array(5) {arrayOfNulls(5)}
         val idLocation = 512
+        Log.d("Avatar", MainActivity.player.getTileTexture().toString())
         val onClickListener =
             View.OnClickListener { v ->
                 val coords = findTitleCoordinates(v as ImageView, visibleMap)

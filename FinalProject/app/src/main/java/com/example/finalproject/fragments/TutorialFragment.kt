@@ -1,26 +1,26 @@
 package com.example.finalproject.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Switch
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import com.example.finalproject.R
 
 class TutorialFragment : Fragment() {
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_tutorial, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val sw:SwitchCompat= requireView().findViewById(R.id.show_tutorial)
+        val sw: Switch = requireView().findViewById(R.id.show_tutorial)
+        Log.d("Avatar", MainActivity.player.getTileTexture().toString())
         sw.setOnCheckedChangeListener { _, _ ->
             MainActivity.showTutorial = sw.isChecked
         }
