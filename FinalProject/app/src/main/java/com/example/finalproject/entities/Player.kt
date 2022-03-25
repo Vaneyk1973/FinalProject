@@ -8,6 +8,7 @@ import com.example.finalproject.items.*
 import com.example.finalproject.service.Research
 import com.example.finalproject.service.User
 import com.example.finalproject.service.spell.Spell
+import com.google.gson.Gson
 import java.lang.Math.cbrt
 import kotlin.math.*
 import kotlin.random.Random
@@ -47,6 +48,7 @@ class Player():Entity() {
         coordinates.add(Pair(6, 3))
         for (i in equipment.indices)
             equipment[i]=null
+        Log.d("Player", Gson().toJson(this))
     }
 
     private fun expFormula(lvl:Double)=(lvl.pow(3.14))* cbrt(lvl.pow(2.7))/ lvl.pow(0.39)
