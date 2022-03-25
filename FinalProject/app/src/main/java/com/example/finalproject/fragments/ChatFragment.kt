@@ -1,6 +1,7 @@
 package com.example.finalproject.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,7 @@ class ChatFragment : Fragment() {
                 chat.adapter = ChatAdapter(messages)
                 chat.scrollToPosition(messages.size-1)
                 progressBar.visibility = View.GONE
+                Log.d("Messages", messages.toString())
             }
 
             override fun onCancelled(error: DatabaseError) {

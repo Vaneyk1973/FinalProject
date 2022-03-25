@@ -27,8 +27,8 @@ class Player():Entity() {
     val user:User= User("", "")
     private var chosenSpell:Spell?=null
     var chatMode:Boolean=false
-    private lateinit var titleTexture:Bitmap
-    private lateinit var avatar:Bitmap
+    private var titleTexture:Bitmap= Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888)
+    private var avatar:Bitmap = Bitmap.createBitmap(256, 256, Bitmap.Config.ARGB_8888)
     var enemy:Enemy?=null
 
     constructor(x:Int, y:Int):this() {
@@ -73,6 +73,7 @@ class Player():Entity() {
         while (experience>=experienceToNextLevelRequired){
             level++
             experience-=experienceToNextLevelRequired
+            experienceToNextLevelRequired=expFormula(level.toDouble())
             researchPoints+=level%3
             maxMana*=1.3
             mana=maxMana
@@ -245,7 +246,7 @@ class Player():Entity() {
     }
 
     fun setAvatar(av:Bitmap){
-        avatar= av
+        avatar= Bitmap.createBitmap(av)
     }
 
     fun getTileTexture(): Bitmap =Bitmap.createBitmap(titleTexture)

@@ -1,9 +1,9 @@
 package com.example.finalproject.fragments
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +14,17 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.finalproject.R
 import com.example.finalproject.entities.Enemy
-import java.util.*
 import kotlin.math.abs
+import com.example.finalproject.fragments.MainActivity.Companion.player
+import java.util.*
+import kotlin.random.Random
 
 class MapFragment(val mapNum: Int=0): Fragment() {
 
+    val map=MainActivity.map[mapNum].map
+
     constructor() : this(0) {
-        MainActivity.player.mapNum = 0
+        player.mapNum = 0
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -30,27 +34,25 @@ class MapFragment(val mapNum: Int=0): Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val playerCoords: Pair<Int, Int> = MainActivity.player.coordinates[mapNum]
+        val playerCoords: Pair<Int, Int> = player.coordinates[mapNum]
         val table:TableLayout = requireView().findViewById(R.id.tableLayout)
         val rows:Array<TableRow?> = arrayOfNulls(table.childCount)
         for (i in 0 until table.childCount) rows[i] = table.getChildAt(i) as TableRow
         val visibleMap:Array<Array<ImageView?>> = Array(5) {arrayOfNulls(5)}
         val idLocation = 512
-        Log.d("Avatar", MainActivity.player.getTileTexture().toString())
-        val onClickListener =
-            View.OnClickListener { v ->
+        val onClickListener = View.OnClickListener { v ->
                 val coords = findTitleCoordinates(v as ImageView, visibleMap)
-                var playerCoords1: Pair<Int, Int> = MainActivity.player.coordinates[mapNum]
-                if (MainActivity.player.coordinates[mapNum] != coords
-                    && MainActivity.map[mapNum].map[coords.first][coords.second].id != idLocation
-                    && MainActivity.map[mapNum].map[coords.first][coords.second].id != 255 + idLocation) {
+                var playerCoords1: Pair<Int, Int> = player.coordinates[mapNum]
+                if (playerCoords != coords
+                    && map[coords.first][coords.second].id != idLocation
+                    && map[coords.first][coords.second].id != 255 + idLocation) {
                     val dx = coords.first - playerCoords1.first
                     val dy = coords.second - playerCoords1.second
                     if (abs(dx) <= 1 && abs(dy) <= 1) {
-                        MainActivity.player.regenerate()
-                        var a = Random().nextInt(100)
-                        val coordsId = MainActivity.map[mapNum].map[coords.first][coords.second].id
-                        if (coordsId != 512 && mapNum != 1 && a < MainActivity.chancesOfFight[coordsId]!!) {
+                        player.regenerate()
+                        var chance = Random(Date().time).nextInt(101)
+                        val coordsId = map[coords.first][coords.second].id
+                        if (coordsId != 512 && mapNum != 1 && chance < MainActivity.chancesOfFight[coordsId]!!) {
                             val fm = parentFragmentManager
                             val fragmentTransaction = fm.beginTransaction()
                             fragmentTransaction.remove(fm.findFragmentById(R.id.map)!!)
@@ -58,19 +60,19 @@ class MapFragment(val mapNum: Int=0): Fragment() {
                             fragmentTransaction.remove(fm.findFragmentById(R.id.status)!!)
                             fragmentTransaction.add(R.id.fight, FightFragment())
                             fragmentTransaction.commit()
-                            a = Random().nextInt(101)
+                            chance = Random(Date().time).nextInt(101)
                             when (coordsId) {
                                 1+idLocation -> {
-                                    if (a < 30) MainActivity.player.enemy = Enemy(
+                                    if (chance < 30) MainActivity.player.enemy = Enemy(
                                         MainActivity.chancesOfEnemy[1 + idLocation]!![30]!!)
                                     else MainActivity.player.enemy = Enemy(
                                         MainActivity.chancesOfEnemy[1 + idLocation]!![70]!!)
                                 }
                                 2 + idLocation -> {
                                     when {
-                                        a < 60 -> MainActivity.player.enemy = Enemy(
+                                        chance < 60 -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[2 + idLocation]!![60]!!)
-                                        a < 95 -> MainActivity.player.enemy = Enemy(
+                                        chance < 95 -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[2 + idLocation]!![35]!!)
                                         else -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[2 + idLocation]!![5]!!)
@@ -78,11 +80,11 @@ class MapFragment(val mapNum: Int=0): Fragment() {
                                 }
                                 4 + idLocation -> {
                                     when {
-                                        a < 75 -> MainActivity.player.enemy = Enemy(
+                                        chance < 75 -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[4 + idLocation]!![75]!!)
-                                        a < 95 -> MainActivity.player.enemy = Enemy(
+                                        chance < 95 -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[4 + idLocation]!![20]!!)
-                                        a < 99 -> MainActivity.player.enemy = Enemy(
+                                        chance < 99 -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[4 + idLocation]!![4]!!)
                                         else -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[4 + idLocation]!![1]!!)
@@ -90,25 +92,25 @@ class MapFragment(val mapNum: Int=0): Fragment() {
                                 }
                                 5 + idLocation -> {
                                     when {
-                                        a < 75 -> MainActivity.player.enemy = Enemy(
+                                        chance < 75 -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[5 + idLocation]!![75]!!)
-                                        a < 95 -> MainActivity.player.enemy = Enemy(
+                                        chance < 95 -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[5 + idLocation]!![20]!!)
-                                        a < 99 -> MainActivity.player.enemy = Enemy(
+                                        chance < 99 -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[5 + idLocation]!![4]!!)
                                         else -> MainActivity.player.enemy = Enemy(
                                             MainActivity.chancesOfEnemy[5 + idLocation]!![1]!!)
                                     }
                                 }
                                 6 + idLocation -> {
-                                    if (a < 60) MainActivity.player.enemy = Enemy(
+                                    if (chance < 60) MainActivity.player.enemy = Enemy(
                                         MainActivity.chancesOfEnemy[6 + idLocation]!![60]!!)
                                     else MainActivity.player.enemy = Enemy(
                                         MainActivity.chancesOfEnemy[6 + idLocation]!![40]!!
                                     )
                                 }
                                 7 + idLocation -> {
-                                    if (a < 60) MainActivity.player.enemy = Enemy(
+                                    if (chance < 60) MainActivity.player.enemy = Enemy(
                                         MainActivity.chancesOfEnemy[7 + idLocation]!![60]!!)
                                     else MainActivity.player.enemy = Enemy(
                                         MainActivity.chancesOfEnemy[7 + idLocation]!![40]!!
@@ -119,7 +121,7 @@ class MapFragment(val mapNum: Int=0): Fragment() {
                             when (coordsId) {
                                 3 + idLocation -> {
                                     MainActivity.player.mapNum = 1
-                                    MainActivity.player.coordinates[1]=Pair(6, 3)
+                                    player.coordinates[1]=Pair(6, 3)
                                     val fm = parentFragmentManager
                                     val fragmentTransaction = fm.beginTransaction()
                                     fragmentTransaction.remove(fm.findFragmentById(R.id.map)!!)
@@ -200,58 +202,80 @@ class MapFragment(val mapNum: Int=0): Fragment() {
                             }
                         }
                         if (coordsId > idLocation+14 || coordsId < idLocation+8) {
+                            map[playerCoords1.first][playerCoords1.second].setTexture(
+                                player.getTileTexture())
 
-                            MainActivity.map[mapNum].map[playerCoords1.first][playerCoords1.second].setTexture(
-                                MainActivity.player.getTileTexture())
+                            player.coordinates[mapNum]=Pair(playerCoords1.first + dx, playerCoords1.second + dy)
 
-                            MainActivity.player.coordinates[mapNum]=Pair(playerCoords1.first + dx, playerCoords1.second + dy)
+                            playerCoords1 = player.coordinates[mapNum]
 
-                            playerCoords1 = MainActivity.player.coordinates[mapNum]
+                            player.setTileTexture(
+                                Bitmap.createBitmap(
+                                    map[playerCoords1.first][playerCoords1.second].getTexture()))
 
-                            MainActivity.player.setTileTexture(
-                                MainActivity.map[mapNum].map[playerCoords1.first][playerCoords1.second].getTexture())
+                            map[playerCoords1.first][playerCoords1.second].setTexture(
+                                player.getAvatar())
 
-                            MainActivity.map[mapNum].map[playerCoords1.first][playerCoords1.second].setTexture(
-                                MainActivity.player.getAvatar())
-
-                            if (playerCoords1.first + dx >= 2 && playerCoords1.second + dy >= 2) {
+                            if (playerCoords1.first>= 2 && playerCoords1.second>= 2) {
                                 for (i in 0..4)
-                                    for (j in 0..4)
+                                    for (j in 0..4) {
+                                        visibleMap[i][j] = rows[i]!!.getChildAt(j) as ImageView
                                         visibleMap[i][j]!!.setImageBitmap(
-                                            MainActivity.map[mapNum].map[playerCoords1.first - 2 + i][playerCoords1.second - 2 + j].getTexture())
-                            } else if (playerCoords1.first + dx >= 2) {
+                                            Bitmap.createBitmap(
+                                                map[playerCoords1.first - 2 + i][playerCoords1.second - 2 + j].getTexture()
+                                            )
+                                        )
+                                    }
+                            } else if (playerCoords1.first>= 2) {
                                 for (i in 0..4)
-                                    for (j in 0..4)
+                                    for (j in 0..4) {
+                                        visibleMap[i][j] = rows[i]!!.getChildAt(j) as ImageView
                                         visibleMap[i][j]!!.setImageBitmap(
-                                            MainActivity.map[mapNum].map[playerCoords1.first - 2 + i][j].getTexture())
-                            } else if (playerCoords1.second + dy >= 2) {
+                                            Bitmap.createBitmap(
+                                                map[playerCoords1.first - 2 + i][j].getTexture()
+                                            )
+                                        )
+                                    }
+                            } else if (playerCoords1.second >= 2) {
                                 for (i in 0..4)
-                                    for (j in 0..4)
+                                    for (j in 0..4) {
+                                        visibleMap[i][j] = rows[i]!!.getChildAt(j) as ImageView
                                         visibleMap[i][j]!!.setImageBitmap(
-                                            MainActivity.map[mapNum].map[i][playerCoords1.second - 2 + j].getTexture())
+                                            Bitmap.createBitmap(
+                                                map[i][playerCoords1.second - 2 + j].getTexture()
+                                            )
+                                        )
+                                    }
                             } else {
                                 for (i in 0..4)
-                                    for (j in 0..4)
-                                        visibleMap[i][j]!!
-                                            .setImageBitmap(MainActivity.map[mapNum].map[i][j].getTexture())
+                                    for (j in 0..4) {
+                                        visibleMap[i][j] = rows[i]!!.getChildAt(j) as ImageView
+                                        visibleMap[i][j]!!.setImageBitmap(
+                                            Bitmap.createBitmap(
+                                                map[i][j].getTexture()
+                                            )
+                                        )
+                                    }
                             }
                         }
                     }
                 }
                 (parentFragmentManager.findFragmentById(R.id.status) as StatusBarFragment).update()
             }
+        map[player.coordinates[mapNum].first][player.coordinates[mapNum].second]
+            .setTexture(player.getAvatar())
+        player.setTileTexture(Bitmap.createBitmap(
+            map[player.coordinates[mapNum].first][player.coordinates[mapNum].second].getTexture()))
         for (i in 0..4) {
             for (j in 0..4) {
                 visibleMap[i][j] = rows[i]!!.getChildAt(j) as ImageView
-                visibleMap[i][j]!!.setImageBitmap(
-                    MainActivity.map[mapNum].map[playerCoords.first - 2 + i][playerCoords.second - 2 + j].getTexture())
                 visibleMap[i][j]!!.setOnClickListener(onClickListener)
+                visibleMap[i][j]!!.setImageBitmap(
+                    Bitmap.createBitmap(
+                        map[playerCoords.first - 2 + i][playerCoords.second - 2 + j].getTexture()))
+
             }
         }
-        MainActivity.player.setTileTexture(
-            MainActivity.map[mapNum].map[MainActivity.player.coordinates[mapNum].first][MainActivity.player.coordinates[mapNum].second].getTexture())
-        MainActivity.map[mapNum].map[MainActivity.player.coordinates[mapNum].first][MainActivity.player.coordinates[mapNum].second]
-            .setTexture(MainActivity.player.getAvatar())
     }
 
     private fun findTitleCoordinates(v: ImageView, p: Array<Array<ImageView?>>): Pair<Int, Int> {
@@ -259,8 +283,8 @@ class MapFragment(val mapNum: Int=0): Fragment() {
             for (j in 0..4) {
                 if (v === p[i][j])
                     return Pair(
-                        i + MainActivity.player.coordinates[mapNum].first - 2,
-                        j + MainActivity.player.coordinates[mapNum].second - 2)
+                        i + player.coordinates[mapNum].first - 2,
+                        j + player.coordinates[mapNum].second - 2)
             }
         }
         return Pair(-1, -1)

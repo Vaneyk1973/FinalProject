@@ -50,7 +50,7 @@ class SignInFragment : Fragment() {
                                 .get().addOnCompleteListener { task1 ->
                                     if (task1.isSuccessful) {
                                         MainActivity.player.user.login =
-                                            task1.result.toString()
+                                            task1.result.value.toString()
                                         val fr = fm.beginTransaction()
                                         fr.add(R.id.chat, ChatFragment())
                                         fr.remove(fm.findFragmentById(R.id.log_in)!!)

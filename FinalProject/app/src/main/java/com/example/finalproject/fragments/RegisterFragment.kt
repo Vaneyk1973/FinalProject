@@ -53,7 +53,7 @@ class RegisterFragment : Fragment() {
                 passwordView.error = "Password is required"
             } else if (password.length < 8) {
                 passwordView.error = "Password should at least 8 characters long"
-            } else if (confirmPassword == password) {
+            } else if (confirmPassword != password) {
                 confirmPasswordView.error = "Passwords should match"
             } else {
                 t.visibility = View.VISIBLE

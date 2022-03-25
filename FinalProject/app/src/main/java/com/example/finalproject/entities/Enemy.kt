@@ -22,6 +22,8 @@ class Enemy() : Entity(), Parcelable {
         this.armor=armor
         this.health=health
         this.mana=mana
+        this.maxMana=mana
+        this.maxHealth=health
         this.damage=damage
         this.givenGold=givenGold
         this.givenExp=givenExp
@@ -39,6 +41,8 @@ class Enemy() : Entity(), Parcelable {
         givenGold=enemy.givenGold
         givenExp=enemy.givenExp
         name=enemy.name
+        maxHealth=enemy.maxHealth
+        maxMana=enemy.maxMana
         drop.addAll(enemy.drop)
         texture= Bitmap.createBitmap(enemy.texture)
     }

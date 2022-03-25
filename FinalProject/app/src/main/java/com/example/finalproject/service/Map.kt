@@ -35,9 +35,7 @@ class Map(mapXml:XmlPullParser) {
     class MapTile(val id:Int){
         private lateinit var texture: Bitmap
 
-        fun getTexture():Bitmap{
-            return Bitmap.createBitmap(texture)
-        }
+        fun getTexture():Bitmap=Bitmap.createBitmap(texture)
 
         fun setTexture(texture:Bitmap){
             this.texture= Bitmap.createBitmap(texture)
