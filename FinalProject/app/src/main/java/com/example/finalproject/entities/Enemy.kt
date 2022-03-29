@@ -18,7 +18,7 @@ class Enemy() : Entity(), Parcelable {
                 name:String,
                 drop:ArrayList<Triplex<Item, Int, Int>>,
                 texture: Bitmap): this() {
-        healthRegen=2.0
+        healthRegen=1.0
         this.armor=armor
         this.health=health
         this.mana=mana
@@ -33,7 +33,7 @@ class Enemy() : Entity(), Parcelable {
     }
 
     constructor(enemy: Enemy):this(){
-        healthRegen=2.0
+        healthRegen=1.0
         armor=enemy.armor
         health=enemy.health
         mana=enemy.mana

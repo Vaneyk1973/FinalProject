@@ -1,8 +1,11 @@
 package com.example.finalproject.entities
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import android.util.Log
+import com.example.finalproject.fragments.MainActivity
 import com.example.finalproject.service.spell.Spell
 import kotlin.math.max
 import kotlin.math.min
@@ -40,7 +43,26 @@ open class Entity():Parcelable{
                 maxMana:Double,
                 healthRegen:Double,
                 manaRegen:Double,
-                name:String,resistances:HashMap<Spell, Double>) : this()
+                name:String,resistances:HashMap<Spell, Double>) : this(){
+        this.level=level
+        this.experience=experience
+        this.powerLevel=powerLevel
+        this.experienceToNextLevelRequired=experienceToNextLevelRequired
+        this.maxHealth=maxHealth
+        this.maxMana=maxMana
+        this.manaRegen=manaRegen
+        this.resistances=HashMap(resistances)
+        this.healthRegen=healthRegen
+        this.armor=armor
+        this.health=health
+        this.mana=mana
+        this.maxMana=mana
+        this.maxHealth=health
+        this.damage=damage
+        this.givenGold=givenGold
+        this.givenExp=givenExp
+        this.name=name
+                }
 
     constructor(parcel: Parcel) : this(
         parcel.readInt(),
@@ -61,11 +83,11 @@ open class Entity():Parcelable{
         parcel.readBundle()?.getSerializable("resistances") as HashMap<Spell, Double>
     )
 
-    open fun takeDamage(damage: Double){
+    fun takeDamage(damage: Double){
         health-=max(damage-armor, 0.0)
     }
 
-    open fun regenerate(){
+    fun regenerate(){
         health=min(maxHealth, health+healthRegen)
         mana=min(maxMana, mana+maxMana)
     }
@@ -103,10 +125,5 @@ open class Entity():Parcelable{
         override fun newArray(size: Int): Array<Entity?> {
             return arrayOfNulls(size)
         }
-    }
-
-     @JvmName("setResistances1")
-     fun setResistances(resistances: HashMap<Spell, Double>){
-        this.resistances=HashMap<Spell, Double>(resistances)
     }
 }

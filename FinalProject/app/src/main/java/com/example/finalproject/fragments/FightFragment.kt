@@ -17,8 +17,14 @@ import com.google.firebase.database.*
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
+import com.example.finalproject.fragments.MainActivity.Companion.player
 
-class FightFragment(private var duel:Boolean=false) : Fragment() {
+class FightFragment(private var duel:Boolean=false) : Fragment(), View.OnClickListener {
+
+    private lateinit var run:Button
+    private lateinit var attack:Button
+    private lateinit var castSpell:Button
+    private lateinit var spells:RecyclerView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
@@ -28,14 +34,13 @@ class FightFragment(private var duel:Boolean=false) : Fragment() {
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val fm = parentFragmentManager
         val duelProgressBar= requireView().findViewById<ProgressBar>(R.id.fight_progress_bar)
+        run= requireView().findViewById(R.id.run)
+        attack = requireView().findViewById(R.id.attack)
+        castSpell= requireView().findViewById(R.id.cast_spell)
         duelProgressBar.visibility = View.GONE
         MainActivity.music?.start(requireContext(), R.raw.fight)
-        val run:Button = requireView().findViewById(R.id.run)
-        val attack:Button = requireView().findViewById(R.id.attack)
-        val castSpell:Button = requireView().findViewById(R.id.cast_spell)
-        val spells:RecyclerView = requireView().findViewById(R.id.avaliable_spells)
+        spells= requireView().findViewById(R.id.avaliable_spells)
         spells.layoutManager = LinearLayoutManager(context)
         val playerImage:ImageView = requireView().findViewById(R.id.player)
         val enemyImage:ImageView = requireView().findViewById(R.id.enemy)
@@ -192,65 +197,11 @@ class FightFragment(private var duel:Boolean=false) : Fragment() {
             enemyImage.setImageBitmap(MainActivity.textures[5][6])*/
         } else {
             playerImage.setImageBitmap(MainActivity.getAvatar())
-            enemyImage.setImageBitmap(MainActivity.player.enemy!!.getTexture())
+            enemyImage.setImageBitmap(player.enemy!!.getTexture())
             updateStatus()
-            attack.setOnClickListener {
-                Log.d("Attack", MainActivity.player.damage.toString())
-                MainActivity.player.regenerate()
-                MainActivity.player.enemy!!.regenerate()
-                MainActivity.player.attack()
-                MainActivity.player.enemy!!.fight()
-                updateStatus()
-                if (MainActivity.player.enemy!!.health <= 0) {
-                    MainActivity.player.takeDrop()
-                    val fragmentTransaction = fm.beginTransaction()
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
-                    fragmentTransaction.add(R.id.map, MapFragment())
-                    fragmentTransaction.add(R.id.status, StatusBarFragment())
-                    fragmentTransaction.add(R.id.menu, MenuFragment())
-                    fragmentTransaction.commit()
-                    MainActivity.music?.start(requireContext(), R.raw.main)
-                }
-                if (MainActivity.player.health <= 0) {
-                    MainActivity.player = Player(2, 2)
-                    MainActivity.setInitialData(
-                        resources.getXml(R.xml.items),
-                        resources.getXml(R.xml.names),
-                        resources.getXml(R.xml.recipes),
-                        resources.getXml(R.xml.enemies),
-                        resources.getXml(R.xml.locations))
-                    Toast.makeText(context,
-                        "You died \n All of your progress will be deleted \n Better luck this time",
-                        Toast.LENGTH_LONG).show()
-                    val fragmentTransaction = fm.beginTransaction()
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
-                    fragmentTransaction.add(R.id.map, MapFragment())
-                    fragmentTransaction.add(R.id.status, StatusBarFragment())
-                    fragmentTransaction.add(R.id.menu, MenuFragment())
-                    fragmentTransaction.commit()
-                    MainActivity.music?.start(requireContext(), R.raw.main)
-                }
-            }
-            run.setOnClickListener {
-                val a = Random().nextInt(100)
-                if (a >= 50) {
-                    val fragmentTransaction = fm.beginTransaction()
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
-                    fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
-                    fragmentTransaction.add(R.id.status, StatusBarFragment())
-                    fragmentTransaction.add(R.id.menu, MenuFragment())
-                    fragmentTransaction.commit()
-                }else{
-                    MainActivity.player.regenerate()
-                    MainActivity.player.enemy!!.regenerate()
-                    MainActivity.player.enemy!!.fight()
-                    updateStatus()
-                }
-            }
-            castSpell.setOnClickListener {
-                updateStatus()
-                spells.adapter = SpellsAdapter(MainActivity.player.spells)
-            }
+            attack.setOnClickListener(this)
+            run.setOnClickListener(this)
+            castSpell.setOnClickListener(this)
         }
     }
 
@@ -260,10 +211,10 @@ class FightFragment(private var duel:Boolean=false) : Fragment() {
         val yourMana:TextView = requireView().findViewById(R.id.your_mana)
         val enemyHealth:TextView = requireView().findViewById(R.id.enemy_health)
         val enemyMana:TextView = requireView().findViewById(R.id.enemy_mana)
-        yourHealth.text = "${MainActivity.player.health.roundToInt()}/${MainActivity.player.maxHealth.roundToInt()}"
-        yourMana.text = "${MainActivity.player.mana.roundToInt()}/${MainActivity.player.maxMana.roundToInt()}"
-        enemyHealth.text ="${MainActivity.player.enemy!!.health.roundToInt()}/${MainActivity.player.enemy!!.maxHealth.roundToInt()}"
-        enemyMana.text ="${MainActivity.player.enemy!!.mana.roundToInt()}/${MainActivity.player.enemy!!.maxMana.roundToInt()}"
+        yourHealth.text = "${player.health.roundToInt()}/${player.maxHealth.roundToInt()}"
+        yourMana.text = "${player.mana.roundToInt()}/${player.maxMana.roundToInt()}"
+        enemyHealth.text ="${player.enemy!!.health.roundToInt()}/${player.enemy!!.maxHealth.roundToInt()}"
+        enemyMana.text ="${player.enemy!!.mana.roundToInt()}/${player.enemy!!.maxMana.roundToInt()}"
     }
 
     private inner class SpellsAdapter(val data: ArrayList<Spell> = ArrayList()) : RecyclerView.Adapter<SpellsAdapter.SpellViewHolder>() {
@@ -276,22 +227,22 @@ class FightFragment(private var duel:Boolean=false) : Fragment() {
         override fun onBindViewHolder(holder: SpellViewHolder, position: Int) {
             holder.name.text = data[position].name
             holder.name.setOnClickListener {
-                MainActivity.player.chooseSpell(data[position])
+                player.chooseSpell(data[position])
                 (view!!.findViewById<View>(R.id.avaliable_spells) as RecyclerView).adapter = SpellsAdapter()
-                if (MainActivity.player.mana < data[position].manaConsumption)
+                if (player.mana < data[position].manaConsumption)
                     Toast.makeText(context,
                         "Not enough mana", Toast.LENGTH_SHORT).show()
-                MainActivity.player.castSpell()
-                MainActivity.player.regenerate()
-                MainActivity.player.enemy!!.regenerate()
-                MainActivity.player.enemy!!.fight()
+                player.castSpell()
+                player.regenerate()
+                player.enemy!!.regenerate()
+                player.enemy!!.fight()
                 updateStatus()
-                if (MainActivity.player.enemy!!.health <= 0) {
-                    MainActivity.player.takeDrop()
+                if (player.enemy!!.health <= 0) {
+                    player.takeDrop()
                     val fm = parentFragmentManager
                     val fragmentTransaction = fm.beginTransaction()
                     fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
-                    fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+                    fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
                     fragmentTransaction.add(R.id.status, StatusBarFragment())
                     fragmentTransaction.add(R.id.menu, MenuFragment())
                     fragmentTransaction.commit()
@@ -304,6 +255,64 @@ class FightFragment(private var duel:Boolean=false) : Fragment() {
         inner class SpellViewHolder(itemView: View) :
             RecyclerView.ViewHolder(itemView) {
             val name: TextView = itemView.findViewById(R.id.spell_in_list)
+        }
+    }
+
+    override fun onClick(v: View?) {
+        val fm = parentFragmentManager
+        if (v!! == attack){
+            player.regenerate()
+            player.enemy!!.regenerate()
+            player.attack()
+            player.enemy!!.fight()
+            updateStatus()
+            if (player.enemy!!.health <= 0) {
+                player.takeDrop()
+                val fragmentTransaction = fm.beginTransaction()
+                fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
+                fragmentTransaction.add(R.id.map, MapFragment())
+                fragmentTransaction.add(R.id.status, StatusBarFragment())
+                fragmentTransaction.add(R.id.menu, MenuFragment())
+                fragmentTransaction.commit()
+                MainActivity.music?.start(requireContext(), R.raw.main)
+            }
+            if (player.health <= 0) {
+                player = Player(2, 2)
+                MainActivity.setInitialData(
+                    resources.getXml(R.xml.items),
+                    resources.getXml(R.xml.names),
+                    resources.getXml(R.xml.recipes),
+                    resources.getXml(R.xml.enemies),
+                    resources.getXml(R.xml.locations))
+                Toast.makeText(context,
+                    "You died \n All of your progress will be deleted \n Better luck this time",
+                    Toast.LENGTH_LONG).show()
+                val fragmentTransaction = fm.beginTransaction()
+                fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
+                fragmentTransaction.add(R.id.map, MapFragment())
+                fragmentTransaction.add(R.id.status, StatusBarFragment())
+                fragmentTransaction.add(R.id.menu, MenuFragment())
+                fragmentTransaction.commit()
+                MainActivity.music?.start(requireContext(), R.raw.main)
+            }
+        } else if(v==run){
+            val a = Random().nextInt(100)
+            if (a >= 50) {
+                val fragmentTransaction = fm.beginTransaction()
+                fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
+                fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+                fragmentTransaction.add(R.id.status, StatusBarFragment())
+                fragmentTransaction.add(R.id.menu, MenuFragment())
+                fragmentTransaction.commit()
+            }else{
+                player.regenerate()
+                player.enemy!!.regenerate()
+                player.enemy!!.fight()
+                updateStatus()
+            }
+        } else if(v==castSpell){
+            updateStatus()
+            spells.adapter = SpellsAdapter(player.spells)
         }
     }
 }

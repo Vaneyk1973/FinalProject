@@ -82,6 +82,7 @@ class Player():Entity() {
             health=maxHealth
             manaRegen*=1.4
             healthRegen*=1.4
+            damage+=5
             checkTasks()
         }
     }
