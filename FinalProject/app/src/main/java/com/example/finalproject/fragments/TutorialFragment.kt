@@ -20,7 +20,6 @@ class TutorialFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sw: Switch = requireView().findViewById(R.id.show_tutorial)
-        Log.d("Avatar", MainActivity.player.getTileTexture().toString())
         sw.setOnCheckedChangeListener { _, _ ->
             MainActivity.showTutorial = sw.isChecked
         }

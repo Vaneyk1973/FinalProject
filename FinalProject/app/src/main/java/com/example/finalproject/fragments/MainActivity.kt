@@ -198,9 +198,12 @@ class MainActivity : AppCompatActivity() {
         private val categories = HashMap<Int, String>()
         private val ids = HashMap<Int, Int>()
         private val names = HashMap<Int, String>()
+        private lateinit var avatar:Bitmap
         lateinit var textures: Array<Array<Bitmap>>
         var music: Music? = null
         private lateinit var sh: SharedPreferences
+
+        fun getAvatar():Bitmap= Bitmap.createBitmap(avatar)
 
         private fun setTasks() {
             tasks.add(Task("Earn 100 gold to get 50 exp and 50 gold", "First money"))
@@ -282,8 +285,7 @@ class MainActivity : AppCompatActivity() {
                             )
                             map[i].map[j][k].getTexture().eraseColor(Color.BLACK)
                         }
-            player.setAvatar(Bitmap.createScaledBitmap(textures[5][5], mapTitleWidth, mapTitleWidth, false))
-            player.setTileTexture(Bitmap.createScaledBitmap(textures[1][1], mapTitleWidth, mapTitleWidth, false))
+            avatar=Bitmap.createScaledBitmap(textures[5][5], mapTitleWidth, mapTitleWidth, false)
         }
 
         private fun setResearches() {

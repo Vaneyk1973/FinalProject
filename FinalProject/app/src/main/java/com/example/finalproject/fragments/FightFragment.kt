@@ -2,6 +2,7 @@ package com.example.finalproject.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -190,10 +191,11 @@ class FightFragment(private var duel:Boolean=false) : Fragment() {
             playerImage.setImageBitmap(MainActivity.textures[5][5])
             enemyImage.setImageBitmap(MainActivity.textures[5][6])*/
         } else {
-            playerImage.setImageBitmap(MainActivity.player.getAvatar())
+            playerImage.setImageBitmap(MainActivity.getAvatar())
             enemyImage.setImageBitmap(MainActivity.player.enemy!!.getTexture())
             updateStatus()
             attack.setOnClickListener {
+                Log.d("Attack", MainActivity.player.damage.toString())
                 MainActivity.player.regenerate()
                 MainActivity.player.enemy!!.regenerate()
                 MainActivity.player.attack()
