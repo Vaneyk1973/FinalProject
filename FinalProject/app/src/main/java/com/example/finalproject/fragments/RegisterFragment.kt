@@ -14,7 +14,10 @@ import com.example.finalproject.service.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
-class RegisterFragment : Fragment() {
+class RegisterFragment : Fragment(), View.OnClickListener {
+
+    private lateinit var register:Button
+    private lateinit var back:Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
@@ -23,28 +26,23 @@ class RegisterFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val back:Button = requireView().findViewById(R.id.register_back_button)
-        val register:Button = requireView().findViewById(R.id.register_button)
-        val loginView:EditText = requireView().findViewById(R.id.login_reg)
-        val emailView:EditText = requireView().findViewById(R.id.email_reg)
-        val passwordView:EditText = requireView().findViewById(R.id.password_reg)
-        val confirmPasswordView:EditText = requireView().findViewById(R.id.confirm_password_reg)
-        var login:String
-        var email:String
-        var password:String
-        var confirmPassword:String
-        val t:ProgressBar = requireView().findViewById(R.id.register_loading)
-        back.setOnClickListener {
-            val fr = parentFragmentManager.beginTransaction()
-            fr.remove(parentFragmentManager.findFragmentById(R.id.register)!!)
-            fr.add(R.id.log_in, SignInFragment())
-            fr.commit()
-        }
-        register.setOnClickListener {
-            login = loginView.text.toString()
-            email= emailView.text.toString()
-            password = passwordView.text.toString()
-            confirmPassword = confirmPasswordView.text.toString()
+        back= requireView().findViewById(R.id.register_back_button)
+        register = requireView().findViewById(R.id.register_button)
+        back.setOnClickListener(this)
+        register.setOnClickListener(this)
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0==register) {
+            val t:ProgressBar = requireView().findViewById(R.id.register_loading)
+            val loginView:EditText = requireView().findViewById(R.id.login_reg)
+            val emailView:EditText = requireView().findViewById(R.id.email_reg)
+            val passwordView:EditText = requireView().findViewById(R.id.password_reg)
+            val confirmPasswordView:EditText = requireView().findViewById(R.id.confirm_password_reg)
+            val login:String = loginView.text.toString()
+            val email:String = emailView.text.toString()
+            val password:String = passwordView.text.toString()
+            val confirmPassword:String = confirmPasswordView.text.toString()
             if (login.isEmpty()) {
                 loginView.error = "Login is required"
             } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -80,6 +78,12 @@ class RegisterFragment : Fragment() {
                         register.visibility=View.VISIBLE
                     }
             }
+        } else if (p0==back) {
+            val fragmentManager =parentFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.register)!!)
+            fragmentTransaction.add(R.id.log_in, SignInFragment())
+            fragmentTransaction.commit()
         }
     }
 }

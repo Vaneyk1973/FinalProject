@@ -1,6 +1,5 @@
 package com.example.finalproject.fragments
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.net.ConnectivityManager
@@ -18,33 +17,35 @@ import androidx.fragment.app.FragmentManager
 import com.example.finalproject.R
 import kotlin.math.round
 
-class StatusBarFragment:Fragment() {
+class StatusBarFragment:Fragment(), View.OnClickListener {
+
+    private lateinit var lvl:TextView
+    private lateinit var gold:TextView
+    private lateinit var exp:TextView
+    private lateinit var health:TextView
+    private lateinit var mana:TextView
+    private lateinit var chat:Button
+    private lateinit var avatar:ImageView
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_status_bar, container, false)
     }
 
-    @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val expImg:ImageView=requireView().findViewById(R.id.exp_image)
         val goldImg:ImageView=requireView().findViewById(R.id.gold_image)
         val healthImg:ImageView=requireView().findViewById(R.id.health_image)
         val manaImg:ImageView=requireView().findViewById(R.id.mana_image)
-        val avatar:ImageView=requireView().findViewById(R.id.avatar)
-        val lvl:TextView=requireView().findViewById(R.id.level)
-        val gold:TextView=requireView().findViewById(R.id.gold)
-        val exp:TextView=requireView().findViewById(R.id.exp)
-        val health:TextView=requireView().findViewById(R.id.health)
-        val mana:TextView=requireView().findViewById(R.id.mana)
-        val chat:Button=requireView().findViewById(R.id.chat_button)
-        val fm:FragmentManager=parentFragmentManager
+        avatar=requireView().findViewById(R.id.avatar)
+        lvl=requireView().findViewById(R.id.level)
+        gold=requireView().findViewById(R.id.gold)
+        exp=requireView().findViewById(R.id.exp)
+        health=requireView().findViewById(R.id.health)
+        mana=requireView().findViewById(R.id.mana)
+        chat=requireView().findViewById(R.id.chat_button)
         chat.visibility=View.VISIBLE
-        lvl.text=MainActivity.player.level.toString()
-        gold.text=MainActivity.player.gold.toString()
-        health.text="${round(MainActivity.player.health)}/${round(MainActivity.player.maxHealth)}"
-        mana.text="${round(MainActivity.player.mana)}/${round(MainActivity.player.maxMana)}"
-        exp.text="${round(MainActivity.player.experience)}/${round(MainActivity.player.experienceToNextLevelRequired)}"
         avatar.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.textures[5][5],
             MainActivity.avatarWidth, MainActivity.avatarWidth, false))
         goldImg.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.textures[3][5],
@@ -55,9 +56,34 @@ class StatusBarFragment:Fragment() {
             MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false))
         expImg.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.textures[3][4],
             MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false))
-        chat.setOnClickListener {
+        chat.setOnClickListener(this)
+        avatar.setOnClickListener(this)
+        update()
+    }
+
+    fun update(){
+        lvl.text=MainActivity.player.level.toString()
+        gold.text=MainActivity.player.gold.toString()
+        var txt="${round(MainActivity.player.health)}/${round(MainActivity.player.maxHealth)}"
+        health.text=txt
+        txt="${round(MainActivity.player.mana)}/${round(MainActivity.player.maxMana)}"
+        mana.text=txt
+        txt="${round(MainActivity.player.experience)}/${round(MainActivity.player.experienceToNextLevelRequired)}"
+        exp.text=txt
+    }
+
+    private fun isInternetAvailable():Boolean{
+        val cm:ConnectivityManager= requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val an: NetworkInfo? =cm.activeNetworkInfo
+        return an!=null&&
+                an.isConnectedOrConnecting
+    }
+
+    override fun onClick(p0: View?) {
+        val fm:FragmentManager=parentFragmentManager
+        val fragmentTransaction = fm.beginTransaction()
+        if (p0==chat){
             if (isInternetAvailable()) {
-                val fragmentTransaction = fm.beginTransaction()
                 if (MainActivity.player.user.loggedIn) {
                     if (MainActivity.player.chatMode) {
                         fragmentTransaction.add(R.id.chat_mini, ChatMiniFragment())
@@ -74,27 +100,13 @@ class StatusBarFragment:Fragment() {
                     fragmentTransaction.remove(fm.findFragmentById(R.id.menu)!!)
                     fragmentTransaction.remove(fm.findFragmentById(R.id.status)!!)
                 }
-                fragmentTransaction.commit()
             } else Toast.makeText(context, "Check your Internet connection", Toast.LENGTH_SHORT).show()
+        } else if (p0==avatar){
+            fragmentTransaction.remove(fm.findFragmentById(R.id.map)!!)
+            fragmentTransaction.remove(fm.findFragmentById(R.id.menu)!!)
+            fragmentTransaction.remove(fm.findFragmentById(R.id.status)!!)
+            fragmentTransaction.add(R.id.settings_menu, SettingsMenuFragment())
         }
-        avatar.setOnClickListener {
-            val fr = fm.beginTransaction()
-            fr.remove(fm.findFragmentById(R.id.map)!!)
-            fr.remove(fm.findFragmentById(R.id.menu)!!)
-            fr.remove(fm.findFragmentById(R.id.status)!!)
-            fr.add(R.id.settings_menu, SettingsMenuFragment())
-            fr.commit()
-        }
-    }
-
-    fun update(){
-
-    }
-
-    private fun isInternetAvailable():Boolean{
-        val cm:ConnectivityManager= requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        val an: NetworkInfo? =cm.activeNetworkInfo
-        return an!=null&&
-                an.isConnectedOrConnecting
+        fragmentTransaction.commit()
     }
 }

@@ -9,65 +9,83 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.finalproject.R
 
-class MenuFragment : Fragment() {
+class MenuFragment : Fragment(), View.OnClickListener {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    private lateinit var controlPanel: Array<ImageView>
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_menu, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val cntrlpanel:Array<ImageView> = arrayOf(
+        controlPanel = arrayOf(
             requireView().findViewById(R.id.inventory_button),
             requireView().findViewById(R.id.spellCreation_button),
             requireView().findViewById(R.id.spells_button),
             requireView().findViewById(R.id.research_tree_button)
         )
-        val fm = parentFragmentManager
-        val fragmentTransaction = fm.beginTransaction()
-        for (i in cntrlpanel.indices)
-            cntrlpanel[i].setImageBitmap(MainActivity.menu[i])
-        cntrlpanel[0].setOnClickListener{
-            fragmentTransaction.add(R.id.inventory, InventoryFragment())
-            fm.findFragmentById(R.id.map)?.let { it1 -> fragmentTransaction.remove(it1) }
-            fm.findFragmentById(R.id.chat)?.let { it1 -> fragmentTransaction.remove(it1) }
-            fragmentTransaction.remove(fm.findFragmentById(R.id.status)!!)
-            fragmentTransaction.remove(fm.findFragmentById(R.id.menu)!!)
-            fragmentTransaction.commit()
+
+        for (i in controlPanel.indices) {
+            controlPanel[i].setImageBitmap(MainActivity.menu[i])
+            controlPanel[i].setOnClickListener(this)
         }
-        cntrlpanel[1].setOnClickListener{
+    }
+
+    override fun onClick(p0: View?) {
+        val fragmentManager = parentFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        if (p0 == controlPanel[0]) {
+            fragmentTransaction.add(R.id.inventory, InventoryFragment())
+            fragmentManager.findFragmentById(R.id.map)
+                ?.let { it1 -> fragmentTransaction.remove(it1) }
+            fragmentManager.findFragmentById(R.id.chat)
+                ?.let { it1 -> fragmentTransaction.remove(it1) }
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.status)!!)
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.menu)!!)
+            fragmentTransaction.commit()
+        } else if (p0 == controlPanel[1]) {
             if (MainActivity.researches[0].researched) {
                 fragmentTransaction.add(R.id.spell_creation, SpellCreationFragment())
-                fm.findFragmentById(R.id.map)?.let { it1 -> fragmentTransaction.remove(it1) }
-                fm.findFragmentById(R.id.chat)?.let { it1 -> fragmentTransaction.remove(it1) }
-                fragmentTransaction.remove(fm.findFragmentById(R.id.status)!!)
-                fragmentTransaction.remove(fm.findFragmentById(R.id.menu)!!)
+                fragmentManager.findFragmentById(R.id.map)
+                    ?.let { it1 -> fragmentTransaction.remove(it1) }
+                fragmentManager.findFragmentById(R.id.chat)
+                    ?.let { it1 -> fragmentTransaction.remove(it1) }
+                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.status)!!)
+                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.menu)!!)
                 fragmentTransaction.commit()
             } else
-                Toast.makeText(context, "You don't know how to make spells yet", Toast.LENGTH_SHORT).show()
-        }
-        cntrlpanel[2].setOnClickListener{
+                Toast.makeText(context, "You don't know how to make spells yet", Toast.LENGTH_SHORT)
+                    .show()
+        } else if (p0 == controlPanel[2]) {
             if (MainActivity.researches[0].researched) {
                 if (MainActivity.player.spells.isEmpty())
-                    Toast.makeText(context, "You don't have any spells yet", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "You don't have any spells yet", Toast.LENGTH_SHORT)
+                        .show()
                 else {
                     fragmentTransaction.add(R.id.spells, SpellsFragment())
-                    fm.findFragmentById(R.id.map)?.let { it1 -> fragmentTransaction.remove(it1) }
-                    fm.findFragmentById(R.id.chat)?.let { it1 -> fragmentTransaction.remove(it1) }
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.status)!!)
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.menu)!!)
+                    fragmentManager.findFragmentById(R.id.map)
+                        ?.let { it1 -> fragmentTransaction.remove(it1) }
+                    fragmentManager.findFragmentById(R.id.chat)
+                        ?.let { it1 -> fragmentTransaction.remove(it1) }
+                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.status)!!)
+                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.menu)!!)
                     fragmentTransaction.commit()
                 }
             } else
-                Toast.makeText(context, "You don't know how to make spells yet", Toast.LENGTH_SHORT).show()
-        }
-        cntrlpanel[3].setOnClickListener{
+                Toast.makeText(context, "You don't know how to make spells yet", Toast.LENGTH_SHORT)
+                    .show()
+        } else if (p0 == controlPanel[3]) {
             fragmentTransaction.add(R.id.research_tree, ResearchTreeFragment())
-            fm.findFragmentById(R.id.map)?.let { it1 -> fragmentTransaction.remove(it1) }
-            fm.findFragmentById(R.id.chat)?.let { it1 -> fragmentTransaction.remove(it1) }
-            fragmentTransaction.remove(fm.findFragmentById(R.id.status)!!)
-            fragmentTransaction.remove(fm.findFragmentById(R.id.menu)!!)
+            fragmentManager.findFragmentById(R.id.map)
+                ?.let { it1 -> fragmentTransaction.remove(it1) }
+            fragmentManager.findFragmentById(R.id.chat)
+                ?.let { it1 -> fragmentTransaction.remove(it1) }
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.status)!!)
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.menu)!!)
             fragmentTransaction.commit()
         }
     }

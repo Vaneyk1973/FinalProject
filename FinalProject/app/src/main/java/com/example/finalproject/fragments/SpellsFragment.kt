@@ -14,7 +14,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
 import com.example.finalproject.service.spell.Spell
 
-class SpellsFragment:Fragment() {
+class SpellsFragment:Fragment(), View.OnClickListener {
+
+    private lateinit var back:Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
@@ -26,19 +28,11 @@ class SpellsFragment:Fragment() {
         val spells:RecyclerView =requireView().findViewById(R.id.spells_list)
         spells.layoutManager=LinearLayoutManager(context)
         spells.adapter= SpellsAdapter(MainActivity.player.spells)
-        val back:Button=requireView().findViewById(R.id.spells_back_button)
-        val f:FragmentManager= parentFragmentManager
-        back.setOnClickListener {
-            val fragmentTransaction = f.beginTransaction()
-            fragmentTransaction.remove(f.findFragmentById(R.id.spells)!!)
-            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
-            fragmentTransaction.add(R.id.status, StatusBarFragment())
-            fragmentTransaction.add(R.id.menu, MenuFragment())
-            fragmentTransaction.commit()
-        }
+        back=requireView().findViewById(R.id.spells_back_button)
+        back.setOnClickListener(this)
     }
 
-    inner class SpellsAdapter(val spells: ArrayList<Spell>) :
+    private inner class SpellsAdapter(val spells: ArrayList<Spell>) :
         RecyclerView.Adapter<SpellsAdapter.SpellsViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpellsViewHolder {
@@ -62,6 +56,18 @@ class SpellsFragment:Fragment() {
 
         inner class SpellsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
             val name:TextView=itemView.findViewById(R.id.spell_in_list)
+        }
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0==back){
+            val fragmentManager:FragmentManager= parentFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.spells)!!)
+            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+            fragmentTransaction.add(R.id.status, StatusBarFragment())
+            fragmentTransaction.add(R.id.menu, MenuFragment())
+            fragmentTransaction.commit()
         }
     }
 }

@@ -459,7 +459,7 @@ class MainActivity : AppCompatActivity() {
                         val texture = enemiesXml.getAttributeValue(7).toInt()
                         val id = enemiesXml.getAttributeValue(5).toInt()
                         val name = names[id]
-                        val drop = ArrayList<Triplex<Item, Int, Int>>()
+                        val drop = ArrayList<Triple<Item, Int, Int>>()
                         assert(name != null)
                         enemies[id] =
                             Enemy(
@@ -486,7 +486,7 @@ class MainActivity : AppCompatActivity() {
                                         val chance = enemiesXml.getAttributeValue(0).toInt()
                                         val itemId = enemiesXml.getAttributeValue(1).toInt()
                                         drop.add(
-                                            Triplex(
+                                            Triple(
                                                 items[ids[itemId]!!], chance, number
                                             )
                                         )

@@ -1,8 +1,6 @@
 package com.example.finalproject.fragments
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,189 +10,53 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
 import com.example.finalproject.entities.Player
+import com.example.finalproject.fragments.MainActivity.Companion.player
 import com.example.finalproject.service.spell.Spell
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.database.*
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
-import com.example.finalproject.fragments.MainActivity.Companion.player
 
-class FightFragment(private var duel:Boolean=false) : Fragment(), View.OnClickListener {
+class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClickListener,
+    ValueEventListener, OnCompleteListener<DataSnapshot> {
 
-    private lateinit var run:Button
-    private lateinit var attack:Button
-    private lateinit var castSpell:Button
-    private lateinit var spells:RecyclerView
+    private lateinit var run: Button
+    private lateinit var attack: Button
+    private lateinit var castSpell: Button
+    private lateinit var spells: RecyclerView
+    private lateinit var playerReference:DatabaseReference
+    private lateinit var enemyReference:DatabaseReference
+    private var taskId:Int=0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_fight, container, false)
     }
 
-    @SuppressLint("SetTextI18n")
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val duelProgressBar= requireView().findViewById<ProgressBar>(R.id.fight_progress_bar)
-        run= requireView().findViewById(R.id.run)
+        val duelProgressBar = requireView().findViewById<ProgressBar>(R.id.fight_progress_bar)
+        run = requireView().findViewById(R.id.run)
         attack = requireView().findViewById(R.id.attack)
-        castSpell= requireView().findViewById(R.id.cast_spell)
+        castSpell = requireView().findViewById(R.id.cast_spell)
         duelProgressBar.visibility = View.GONE
         MainActivity.music?.start(requireContext(), R.raw.fight)
-        spells= requireView().findViewById(R.id.avaliable_spells)
+        spells = requireView().findViewById(R.id.avaliable_spells)
         spells.layoutManager = LinearLayoutManager(context)
-        val playerImage:ImageView = requireView().findViewById(R.id.player)
-        val enemyImage:ImageView = requireView().findViewById(R.id.enemy)
+        val playerImage: ImageView = requireView().findViewById(R.id.player)
+        val enemyImage: ImageView = requireView().findViewById(R.id.enemy)
         if (duel) {
-            //TODO
-            /*duelProgressBar.visibility = View.VISIBLE
-            val databaseReferences = arrayOfNulls<DatabaseReference>(2)
-            val enemies = arrayOfNulls<Enemy>(1)
-            val player: ValueEventListener = object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    MainActivity.player.health = snapshot.child("health").getValue(
-                        Double::class.java
-                    )!!
-                    MainActivity.player.mana = snapshot.child("mana").getValue(Double::class.java)!!
-                    yourHealth.text =
-                        Math.round(MainActivity.player.health).toString() + "/" + Math.round(
-                            MainActivity.player.maxHealth
-                        )
-                    yourMana.text =
-                        Math.round(MainActivity.player.mana).toString() + "/" + Math.round(
-                            MainActivity.player.maxMana
-                        )
-                    if (MainActivity.player.health <= 0) {
-                        snapshot.ref.child("dead").setValue(true)
-                        MainActivity.player.gold = 0.0
-                        MainActivity.player.experience = 0.0
-                        run.callOnClick()
-                    }
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            }
-            val enemy: ValueEventListener = object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    //if (snapshot.getValue() != null)
-                    //enemies[0] = new Enemy(snapshot.getRef(), MainActivity.textures[5][6], enemyHealth, enemyMana, p);
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-            }
+            duelProgressBar.visibility = View.VISIBLE
+            duelProgressBar.animate()
+            taskId="Duel".toInt()
             FirebaseDatabase.getInstance().getReference("Duel")
-                .get().addOnCompleteListener { task ->
-                    if (task.result.child(task.result.childrenCount - 1.toString() + "").childrenCount == 1L) {
-                        duelProgressBar.animate()
-                        databaseReferences[1] =
-                            task.result.child(task.result.childrenCount - 1.toString() + "").ref.child(
-                                "0"
-                            )
-                        databaseReferences[0] =
-                            task.result.child(task.result.childrenCount - 1.toString() + "").ref.child(
-                                "1"
-                            )
-                        MainActivity.player.addToDuel(databaseReferences[0])
-                        MainActivity.player.duelNum =
-                            (task.result.childrenCount - 1.toString() + "").toInt()
-                        MainActivity.player.setDuelPnum(1)
-                        databaseReferences[1]!!.addValueEventListener(enemy)
-                        databaseReferences[0]!!.addValueEventListener(player)
-                        databaseReferences[1]!!.child("ran")
-                            .addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    if (snapshot.getValue(Boolean::class.javaPrimitiveType)!!) {
-                                        run.callOnClick()
-                                    }
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {}
-                            })
-                        //enemies[0] = new Enemy(databaseReferences[1], MainActivity.textures[5][6], enemyHealth, enemyMana, p);
-                        yourHealth.text = Math.round(MainActivity.player.health)
-                            .toString() + "/" + Math.round(MainActivity.player.maxHealth)
-                        yourMana.text = Math.round(MainActivity.player.mana)
-                            .toString() + "/" + Math.round(MainActivity.player.maxMana)
-                        run.setOnClickListener {
-                            databaseReferences[0]!!.child("ran").get()
-                                .addOnCompleteListener { task ->
-                                    if (!task.result.getValue(Boolean::class.javaPrimitiveType)!!) {
-                                        databaseReferences[0]!!.child("ran").setValue(true)
-                                        val fragmentTransaction = fm.beginTransaction()
-                                        fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
-                                        fragmentTransaction.add(
-                                            R.id.map,
-                                            MapFragment(
-                                                MainActivity.player.mapNum
-                                            )
-                                        )
-                                        fragmentTransaction.add(R.id.status, StatusBarFragment())
-                                        fragmentTransaction.add(R.id.menu, MenuFragment())
-                                        fragmentTransaction.commit()
-                                    }
-                                }
-                        }
-                        attack.setOnClickListener { MainActivity.player.attack() }
-                    } else {
-                        val a = (task.result.childrenCount.toString() + "").toInt()
-                        databaseReferences[0] = task.result.child(a.toString() + "").ref.child("0")
-                        MainActivity.player.addPlayerToDuel(databaseReferences[0])
-                        MainActivity.player.duelNum = (a.toString() + "").toInt()
-                        MainActivity.player.setDuelPnum(0)
-                        yourHealth.text = Math.round(MainActivity.player.health)
-                            .toString() + "/" + Math.round(MainActivity.player.maxHealth)
-                        yourMana.text = Math.round(MainActivity.player.mana)
-                            .toString() + "/" + Math.round(MainActivity.player.maxMana)
-                        run.setOnClickListener {
-                            databaseReferences[0]!!.child("ran").get()
-                                .addOnCompleteListener { task ->
-                                    if (!task.result.getValue(Boolean::class.javaPrimitiveType)!!) {
-                                        databaseReferences[0]!!.child("ran").setValue(true)
-                                        val fragmentTransaction =
-                                            parentFragmentManager.beginTransaction()
-                                        fragmentTransaction.remove(
-                                            parentFragmentManager.findFragmentById(
-                                                R.id.fight
-                                            )!!
-                                        )
-                                        fragmentTransaction.add(
-                                            R.id.map,
-                                            MapFragment(
-                                                MainActivity.player.mapNum
-                                            )
-                                        )
-                                        fragmentTransaction.add(R.id.status, StatusBarFragment())
-                                        fragmentTransaction.add(R.id.menu, MenuFragment())
-                                        fragmentTransaction.commit()
-                                    }
-                                }
-                        }
-                        attack.setOnClickListener {
-                            task.result.child(task.result.childrenCount.toString() + "")
-                                .ref.child("1").get()
-                                .addOnCompleteListener { task -> if (task.isSuccessful && task.result.value != null) MainActivity.player.attack() }
-                        }
-                        databaseReferences[0]!!.addValueEventListener(player)
-                        task.result.child(task.result.childrenCount.toString() + "")
-                            .ref.child("1").addValueEventListener(enemy)
-                        task.result.child(task.result.childrenCount.toString() + "")
-                            .ref.child("1").child("ran")
-                            .addValueEventListener(object : ValueEventListener {
-                                override fun onDataChange(snapshot: DataSnapshot) {
-                                    if (snapshot.value != null && snapshot.getValue(
-                                            Boolean::class.javaPrimitiveType
-                                        )!!
-                                    ) {
-                                        run.callOnClick()
-                                    }
-                                }
-
-                                override fun onCancelled(error: DatabaseError) {}
-                            })
-                        duelProgressBar.animate()
-                    }
-                }
+                .get().addOnCompleteListener(this)
             playerImage.setImageBitmap(MainActivity.textures[5][5])
-            enemyImage.setImageBitmap(MainActivity.textures[5][6])*/
+            enemyImage.setImageBitmap(MainActivity.textures[5][6])
         } else {
             playerImage.setImageBitmap(MainActivity.getAvatar())
             enemyImage.setImageBitmap(player.enemy!!.getTexture())
@@ -205,33 +67,41 @@ class FightFragment(private var duel:Boolean=false) : Fragment(), View.OnClickLi
         }
     }
 
-    @SuppressLint("SetTextI18n")
-    private fun updateStatus(){
-        val yourHealth:TextView = requireView().findViewById(R.id.your_health)
-        val yourMana:TextView = requireView().findViewById(R.id.your_mana)
-        val enemyHealth:TextView = requireView().findViewById(R.id.enemy_health)
-        val enemyMana:TextView = requireView().findViewById(R.id.enemy_mana)
-        yourHealth.text = "${player.health.roundToInt()}/${player.maxHealth.roundToInt()}"
-        yourMana.text = "${player.mana.roundToInt()}/${player.maxMana.roundToInt()}"
-        enemyHealth.text ="${player.enemy!!.health.roundToInt()}/${player.enemy!!.maxHealth.roundToInt()}"
-        enemyMana.text ="${player.enemy!!.mana.roundToInt()}/${player.enemy!!.maxMana.roundToInt()}"
+    private fun updateStatus() {
+        val yourHealth: TextView = requireView().findViewById(R.id.your_health)
+        val yourMana: TextView = requireView().findViewById(R.id.your_mana)
+        val enemyHealth: TextView = requireView().findViewById(R.id.enemy_health)
+        val enemyMana: TextView = requireView().findViewById(R.id.enemy_mana)
+        var text = "${player.health.roundToInt()}/${player.maxHealth.roundToInt()}"
+        yourHealth.text = text
+        text = "${player.mana.roundToInt()}/${player.maxMana.roundToInt()}"
+        yourMana.text = text
+        text = "${player.enemy!!.health.roundToInt()}/${player.enemy!!.maxHealth.roundToInt()}"
+        enemyHealth.text = text
+        text = "${player.enemy!!.mana.roundToInt()}/${player.enemy!!.maxMana.roundToInt()}"
+        enemyMana.text = text
     }
 
-    private inner class SpellsAdapter(val data: ArrayList<Spell> = ArrayList()) : RecyclerView.Adapter<SpellsAdapter.SpellViewHolder>() {
+    private inner class SpellsAdapter(val data: ArrayList<Spell> = ArrayList()) :
+        RecyclerView.Adapter<SpellsAdapter.SpellViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpellViewHolder {
             return SpellViewHolder(
-                LayoutInflater.from(parent.context).inflate(R.layout.spells_item, parent, false))
+                LayoutInflater.from(parent.context).inflate(R.layout.spells_item, parent, false)
+            )
         }
 
         override fun onBindViewHolder(holder: SpellViewHolder, position: Int) {
             holder.name.text = data[position].name
             holder.name.setOnClickListener {
                 player.chooseSpell(data[position])
-                (view!!.findViewById<View>(R.id.avaliable_spells) as RecyclerView).adapter = SpellsAdapter()
+                (view!!.findViewById<View>(R.id.avaliable_spells) as RecyclerView).adapter =
+                    SpellsAdapter()
                 if (player.mana < data[position].manaConsumption)
-                    Toast.makeText(context,
-                        "Not enough mana", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        "Not enough mana", Toast.LENGTH_SHORT
+                    ).show()
                 player.castSpell()
                 player.regenerate()
                 player.enemy!!.regenerate()
@@ -239,9 +109,9 @@ class FightFragment(private var duel:Boolean=false) : Fragment(), View.OnClickLi
                 updateStatus()
                 if (player.enemy!!.health <= 0) {
                     player.takeDrop()
-                    val fm = parentFragmentManager
-                    val fragmentTransaction = fm.beginTransaction()
-                    fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
+                    val fragmentManager = parentFragmentManager
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
                     fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
                     fragmentTransaction.add(R.id.status, StatusBarFragment())
                     fragmentTransaction.add(R.id.menu, MenuFragment())
@@ -250,7 +120,7 @@ class FightFragment(private var duel:Boolean=false) : Fragment(), View.OnClickLi
             }
         }
 
-        override fun getItemCount(): Int=data.size
+        override fun getItemCount(): Int = data.size
 
         inner class SpellViewHolder(itemView: View) :
             RecyclerView.ViewHolder(itemView) {
@@ -259,60 +129,137 @@ class FightFragment(private var duel:Boolean=false) : Fragment(), View.OnClickLi
     }
 
     override fun onClick(v: View?) {
-        val fm = parentFragmentManager
-        if (v!! == attack){
-            player.regenerate()
-            player.enemy!!.regenerate()
-            player.attack()
-            player.enemy!!.fight()
-            updateStatus()
-            if (player.enemy!!.health <= 0) {
-                player.takeDrop()
-                val fragmentTransaction = fm.beginTransaction()
-                fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
-                fragmentTransaction.add(R.id.map, MapFragment())
-                fragmentTransaction.add(R.id.status, StatusBarFragment())
-                fragmentTransaction.add(R.id.menu, MenuFragment())
-                fragmentTransaction.commit()
-                MainActivity.music?.start(requireContext(), R.raw.main)
-            }
-            if (player.health <= 0) {
-                player = Player(2, 2)
-                MainActivity.setInitialData(
-                    resources.getXml(R.xml.items),
-                    resources.getXml(R.xml.names),
-                    resources.getXml(R.xml.recipes),
-                    resources.getXml(R.xml.enemies),
-                    resources.getXml(R.xml.locations))
-                Toast.makeText(context,
-                    "You died \n All of your progress will be deleted \n Better luck this time",
-                    Toast.LENGTH_LONG).show()
-                val fragmentTransaction = fm.beginTransaction()
-                fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
-                fragmentTransaction.add(R.id.map, MapFragment())
-                fragmentTransaction.add(R.id.status, StatusBarFragment())
-                fragmentTransaction.add(R.id.menu, MenuFragment())
-                fragmentTransaction.commit()
-                MainActivity.music?.start(requireContext(), R.raw.main)
-            }
-        } else if(v==run){
-            val a = Random().nextInt(100)
-            if (a >= 50) {
-                val fragmentTransaction = fm.beginTransaction()
-                fragmentTransaction.remove(fm.findFragmentById(R.id.fight)!!)
-                fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
-                fragmentTransaction.add(R.id.status, StatusBarFragment())
-                fragmentTransaction.add(R.id.menu, MenuFragment())
-                fragmentTransaction.commit()
-            }else{
+        val fragmentManager = parentFragmentManager
+        if (!duel){
+            if (v==attack) {
                 player.regenerate()
                 player.enemy!!.regenerate()
+                player.attack()
                 player.enemy!!.fight()
                 updateStatus()
+                if (player.enemy!!.health <= 0) {
+                    player.takeDrop()
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
+                    fragmentTransaction.add(R.id.map, MapFragment())
+                    fragmentTransaction.add(R.id.status, StatusBarFragment())
+                    fragmentTransaction.add(R.id.menu, MenuFragment())
+                    fragmentTransaction.commit()
+                    MainActivity.music?.start(requireContext(), R.raw.main)
+                }
+                if (player.health <= 0) {
+                    player = Player(2, 2)
+                    MainActivity.setInitialData(
+                        resources.getXml(R.xml.items),
+                        resources.getXml(R.xml.names),
+                        resources.getXml(R.xml.recipes),
+                        resources.getXml(R.xml.enemies),
+                        resources.getXml(R.xml.locations)
+                    )
+                    Toast.makeText(
+                        context,
+                        "You died \n All of your progress will be reset \n Better luck this time",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
+                    fragmentTransaction.add(R.id.map, MapFragment())
+                    fragmentTransaction.add(R.id.status, StatusBarFragment())
+                    fragmentTransaction.add(R.id.menu, MenuFragment())
+                    fragmentTransaction.commit()
+                    MainActivity.music?.start(requireContext(), R.raw.main)
+                }
+            } else if (v == run) {
+                if (!duel) {
+                    val a = Random().nextInt(100)
+                    if (a >= 50) {
+                        val fragmentTransaction = fragmentManager.beginTransaction()
+                        fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
+                        fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+                        fragmentTransaction.add(R.id.status, StatusBarFragment())
+                        fragmentTransaction.add(R.id.menu, MenuFragment())
+                        fragmentTransaction.commit()
+                    } else {
+                        player.regenerate()
+                        player.enemy!!.regenerate()
+                        player.enemy!!.fight()
+                        updateStatus()
+                    }
+                }else{
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
+                    fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+                    fragmentTransaction.add(R.id.status, StatusBarFragment())
+                    fragmentTransaction.add(R.id.menu, MenuFragment())
+                    fragmentTransaction.commit()
+                }
+            } else if (v == castSpell) {
+                updateStatus()
+                spells.adapter = SpellsAdapter(player.spells)
             }
-        } else if(v==castSpell){
+        } else{
+            if (v==attack) {
+                player.regenerate()
+                player.attack()
+                
+                if (player.enemy!!.health <= 0) {
+
+                }
+                if (player.health <= 0) {
+
+                }
+            } else if (v == run) {
+                if (!duel) {
+                    val a = Random().nextInt(100)
+                    if (a >= 50) {
+                        val fragmentTransaction = fragmentManager.beginTransaction()
+                        fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
+                        fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+                        fragmentTransaction.add(R.id.status, StatusBarFragment())
+                        fragmentTransaction.add(R.id.menu, MenuFragment())
+                        fragmentTransaction.commit()
+                    } else {
+                        player.regenerate()
+                        player.enemy!!.regenerate()
+                        player.enemy!!.fight()
+                        updateStatus()
+                    }
+                }else{
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
+                    fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+                    fragmentTransaction.add(R.id.status, StatusBarFragment())
+                    fragmentTransaction.add(R.id.menu, MenuFragment())
+                    fragmentTransaction.commit()
+                }
+            } else if (v == castSpell) {
+                updateStatus()
+                spells.adapter = SpellsAdapter(player.spells)
+            }
+        }
+    }
+
+    override fun onDataChange(snapshot: DataSnapshot) {
+        if (snapshot==playerReference){
+            player.health = snapshot.child("health").value as Double
+            player.mana = snapshot.child("mana").value as Double
             updateStatus()
-            spells.adapter = SpellsAdapter(player.spells)
+            if (player.health <= 0) {
+                snapshot.ref.child("dead").setValue(true)
+                player.gold = 0.0
+                player.experience = 0.0
+                run.callOnClick()
+            }
+        }
+    }
+
+    override fun onCancelled(error: DatabaseError) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onComplete(task: Task<DataSnapshot>) {
+        if (taskId=="Duel".toInt()){
+            task.result.child("Players").child(player.user.uID)
         }
     }
 }

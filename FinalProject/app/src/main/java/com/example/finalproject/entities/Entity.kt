@@ -1,11 +1,8 @@
 package com.example.finalproject.entities
 
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
-import android.util.Log
-import com.example.finalproject.fragments.MainActivity
 import com.example.finalproject.service.spell.Spell
 import kotlin.math.max
 import kotlin.math.min
@@ -43,7 +40,8 @@ open class Entity():Parcelable{
                 maxMana:Double,
                 healthRegen:Double,
                 manaRegen:Double,
-                name:String,resistances:HashMap<Spell, Double>) : this(){
+                name:String,
+                resistances:HashMap<Spell, Double>) : this(){
         this.level=level
         this.experience=experience
         this.powerLevel=powerLevel

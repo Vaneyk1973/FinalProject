@@ -9,44 +9,55 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.finalproject.R
 
-class SettingsMenuFragment: Fragment() {
+class SettingsMenuFragment : Fragment(), View.OnClickListener {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    private lateinit var settings: TextView
+    private lateinit var help: TextView
+    private lateinit var tasks: TextView
+    private lateinit var back: Button
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_settings_menu, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val settings:TextView=requireView().findViewById(R.id.settings_button)
-        val help:TextView=requireView().findViewById(R.id.help_button)
-        val tasks:TextView=requireView().findViewById(R.id.tasks_button)
-        val back:Button=requireView().findViewById(R.id.settings_menu_back_button)
-        settings.setOnClickListener {
-            val fr = parentFragmentManager.beginTransaction()
-            fr.remove(parentFragmentManager.findFragmentById(R.id.settings_menu)!!)
-            fr.add(R.id.settings, SettingsFragment())
-            fr.commit()
+        settings= requireView().findViewById(R.id.settings_button)
+        tasks= requireView().findViewById(R.id.tasks_button)
+        help= requireView().findViewById(R.id.help_button)
+        back= requireView().findViewById(R.id.settings_menu_back_button)
+        settings.setOnClickListener(this)
+        help.setOnClickListener(this)
+        tasks.setOnClickListener(this)
+        back.setOnClickListener(this)
+    }
+
+    override fun onClick(p0: View?) {
+        val fragmentManager=parentFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        when (p0) {
+            back -> {
+                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.settings_menu)!!)
+                fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+                fragmentTransaction.add(R.id.menu, MenuFragment())
+                fragmentTransaction.add(R.id.status, StatusBarFragment())
+            }
+            settings -> {
+                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.settings_menu)!!)
+                fragmentTransaction.add(R.id.settings, SettingsFragment())
+            }
+            help -> {
+                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.settings_menu)!!)
+                fragmentTransaction.add(R.id.tutorial, TutorialFragment())
+            }
+            tasks -> {
+                fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.settings_menu)!!)
+                fragmentTransaction.add(R.id.tasks, TaskManagerFragment())
+            }
         }
-        help.setOnClickListener {
-            val fr = parentFragmentManager.beginTransaction()
-            fr.remove(parentFragmentManager.findFragmentById(R.id.settings_menu)!!)
-            fr.add(R.id.tutorial, TutorialFragment())
-            fr.commit()
-        }
-        tasks.setOnClickListener {
-            val fr = parentFragmentManager.beginTransaction()
-            fr.remove(parentFragmentManager.findFragmentById(R.id.settings_menu)!!)
-            fr.add(R.id.tasks, TaskManagerFragment())
-            fr.commit()
-        }
-        back.setOnClickListener {
-            val fr = parentFragmentManager.beginTransaction()
-            fr.remove(parentFragmentManager.findFragmentById(R.id.settings_menu)!!)
-            fr.add(R.id.map, MapFragment(MainActivity.player.mapNum))
-            fr.add(R.id.menu, MenuFragment())
-            fr.add(R.id.status, StatusBarFragment())
-            fr.commit()
-        }
+        fragmentTransaction.commit()
     }
 }

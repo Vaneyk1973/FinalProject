@@ -11,25 +11,43 @@ import com.example.finalproject.R
 import com.example.finalproject.service.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
+import kotlin.math.log
 
-class SignInFragment : Fragment() {
+class SignInFragment : Fragment(), View.OnClickListener {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    private lateinit var email: EditText
+    private lateinit var password: EditText
+    private lateinit var progressBar: ProgressBar
+    private lateinit var back: Button
+    private lateinit var logIn: Button
+    private lateinit var register: TextView
+    private lateinit var restorePassword: TextView
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_log_in, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val back:Button = requireView().findViewById(R.id.log_in_back_button)
-        val logIn:Button = requireView().findViewById(R.id.sign_in)
-        val email:EditText = requireView().findViewById(R.id.email)
-        val password:EditText = requireView().findViewById(R.id.password)
-        val restorePassword:TextView = requireView().findViewById(R.id.restore_password_link)
-        val register:TextView = requireView().findViewById(R.id.register_link)
-        val progressBar:ProgressBar = requireView().findViewById(R.id.sign_in_loading)
-        val fm=parentFragmentManager
-        val clickListener =View.OnClickListener {
+        back= requireView().findViewById(R.id.log_in_back_button)
+        logIn= requireView().findViewById(R.id.sign_in)
+        email = requireView().findViewById(R.id.email)
+        password = requireView().findViewById(R.id.password)
+        restorePassword = requireView().findViewById(R.id.restore_password_link)
+        register = requireView().findViewById(R.id.register_link)
+        progressBar = requireView().findViewById(R.id.sign_in_loading)
+        logIn.setOnClickListener(this)
+        register.setOnClickListener(this)
+        restorePassword.setOnClickListener(this)
+        back.setOnClickListener(this)
+    }
+
+    override fun onClick(p0: View?) {
+        val fragmentManager = parentFragmentManager
+        if (p0 == logIn) {
             if (!Patterns.EMAIL_ADDRESS.matcher(email.text.toString()).matches())
                 email.error = "Enter a valid email address"
             else if (password.text.toString().isEmpty())
@@ -37,10 +55,12 @@ class SignInFragment : Fragment() {
             else {
                 progressBar.visibility = View.VISIBLE
                 progressBar.animate()
-                logIn.visibility=View.GONE
+                logIn.visibility = View.GONE
                 FirebaseAuth.getInstance()
-                    .signInWithEmailAndPassword(email.text.toString(),
-                        password.text.toString().hashCode().toString())
+                    .signInWithEmailAndPassword(
+                        email.text.toString(),
+                        password.text.toString().hashCode().toString()
+                    )
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             MainActivity.player.setUser(User("", email.text.toString()))
@@ -51,9 +71,9 @@ class SignInFragment : Fragment() {
                                     if (task1.isSuccessful) {
                                         MainActivity.player.user.login =
                                             task1.result.value.toString()
-                                        val fr = fm.beginTransaction()
+                                        val fr = fragmentManager.beginTransaction()
                                         fr.add(R.id.chat, ChatFragment())
-                                        fr.remove(fm.findFragmentById(R.id.log_in)!!)
+                                        fr.remove(fragmentManager.findFragmentById(R.id.log_in)!!)
                                         fr.commit()
                                     }
                                 }
@@ -66,35 +86,33 @@ class SignInFragment : Fragment() {
                                     }
                                 }
                         } else {
-                            Toast.makeText(context,
-                                "Wrong email and/or password", Toast.LENGTH_SHORT).show()
-                            logIn.visibility=View.VISIBLE
+                            Toast.makeText(
+                                context,
+                                "Wrong email and/or password", Toast.LENGTH_SHORT
+                            ).show()
+                            logIn.visibility = View.VISIBLE
                         }
                         progressBar.clearAnimation()
                         progressBar.visibility = View.GONE
                     }
             }
-        }
-        logIn.setOnClickListener(clickListener)
-        register.setOnClickListener {
-            val fr = fm.beginTransaction()
-            fr.remove(fm.findFragmentById(R.id.log_in)!!)
-            fr.add(R.id.register, RegisterFragment())
-            fr.commit()
-        }
-        restorePassword.setOnClickListener {
-            val fr = fm.beginTransaction()
-            fr.remove(fm.findFragmentById(R.id.log_in)!!)
-            fr.add(R.id.restore_password, RestorePasswordFragment())
-            fr.commit()
-        }
-        back.setOnClickListener {
-            val fr = fm.beginTransaction()
-            fr.remove(fm.findFragmentById(R.id.log_in)!!)
-            fr.add(R.id.map, MapFragment(MainActivity.player.mapNum))
-            fr.add(R.id.status, StatusBarFragment())
-            fr.add(R.id.menu, MenuFragment())
-            fr.commit()
+        } else if (p0 == register) {
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.log_in)!!)
+            fragmentTransaction.add(R.id.register, RegisterFragment())
+            fragmentTransaction.commit()
+        } else if (p0 == restorePassword) {
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.log_in)!!)
+            fragmentTransaction.add(R.id.restore_password, RestorePasswordFragment())
+            fragmentTransaction.commit()
+        } else if (p0 == back) {
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.log_in)!!)
+            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+            fragmentTransaction.add(R.id.status, StatusBarFragment())
+            fragmentTransaction.add(R.id.menu, MenuFragment())
+            fragmentTransaction.commit()
         }
     }
 }

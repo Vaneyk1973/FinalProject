@@ -15,53 +15,49 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
 import com.example.finalproject.items.Item
 
-class InventoryFragment : Fragment() {
-    private var noItems: TextView? = null
+class InventoryFragment : Fragment(), View.OnClickListener {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    private var noItems: TextView? = null
+    private val categories = ArrayList<ImageView>()
+
+    private lateinit var back: Button
+    private lateinit var inventory: RecyclerView
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_inventory, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         noItems = requireView().findViewById(R.id.textView12)
-        val inventory:RecyclerView = requireView().findViewById(R.id.list)
-        val categories = ArrayList<ImageView>()
-        val back:Button = requireView().findViewById(R.id.inventory_back_button)
-        val clickListener = View.OnClickListener { v->
-            inventory.adapter = InventoryAdapter(MainActivity.player.inventory, categories.indexOf(v))
-        }
-        var bm:Bitmap
+        inventory = requireView().findViewById(R.id.list)
+        back = requireView().findViewById(R.id.inventory_back_button)
         categories.add(requireView().findViewById(R.id.armor_weapons))
         categories.add(requireView().findViewById(R.id.potions_food))
         categories.add(requireView().findViewById(R.id.recourses))
         categories.add(requireView().findViewById(R.id.other))
-        for (i in 0..3){
-            bm = Bitmap.createScaledBitmap(
+        for (i in 0..3) {
+            val bm: Bitmap = Bitmap.createScaledBitmap(
                 MainActivity.textures[6][i],
                 MainActivity.categoryImageWidth,
                 MainActivity.categoryImageWidth,
                 false
             )
             categories[i].setImageBitmap(Bitmap.createBitmap(bm))
-            categories[i].setOnClickListener(clickListener)
+            categories[i].setOnClickListener(this)
         }
         inventory.adapter = InventoryAdapter(MainActivity.player.inventory)
         inventory.layoutManager = LinearLayoutManager(context)
-        back.setOnClickListener {
-            val fm = parentFragmentManager
-            val fragmentTransaction = fm.beginTransaction()
-            fm.findFragmentById(R.id.inventory)?.let { it1 -> fragmentTransaction.remove(it1) }
-            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
-            fragmentTransaction.add(R.id.status, StatusBarFragment())
-            fragmentTransaction.add(R.id.menu, MenuFragment())
-            fragmentTransaction.commit()
-        }
+        back.setOnClickListener(this)
     }
 
-    private inner class InventoryAdapter(val data: ArrayList<Pair<Item, Int>>, val category:Int=0)
-        :RecyclerView.Adapter<InventoryAdapter.ViewHolder>() {
+    private inner class InventoryAdapter(
+        val data: ArrayList<Pair<Item, Int>>,
+        val category: Int = 0
+    ) : RecyclerView.Adapter<InventoryAdapter.ViewHolder>() {
 
         private inner class ViewHolder(itemView: View) :
             RecyclerView.ViewHolder(itemView) {
@@ -105,6 +101,22 @@ class InventoryFragment : Fragment() {
                     View.GONE
                 data1.size
             }
+        }
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0 is ImageView) {
+            inventory.adapter =
+                InventoryAdapter(MainActivity.player.inventory, categories.indexOf(p0))
+        } else if (p0 == back) {
+            val fragmentManager = parentFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentManager.findFragmentById(R.id.inventory)
+                ?.let { it1 -> fragmentTransaction.remove(it1) }
+            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+            fragmentTransaction.add(R.id.status, StatusBarFragment())
+            fragmentTransaction.add(R.id.menu, MenuFragment())
+            fragmentTransaction.commit()
         }
     }
 }

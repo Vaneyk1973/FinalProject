@@ -1,16 +1,16 @@
 package com.example.finalproject.entities
 
-import android.graphics.Bitmap
-import android.graphics.Color
 import android.util.Log
 import com.example.finalproject.fragments.MainActivity
 import com.example.finalproject.items.*
 import com.example.finalproject.service.Research
 import com.example.finalproject.service.User
 import com.example.finalproject.service.spell.Spell
+import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
 import java.lang.Math.cbrt
-import kotlin.math.*
+import kotlin.math.min
+import kotlin.math.pow
 import kotlin.random.Random
 
 class Player():Entity() {
@@ -127,7 +127,7 @@ class Player():Entity() {
 
     private fun inventoryContainsItem(item:Item):Boolean{
         for (i in inventory){
-            if (i.first.equals(item))
+            if (i.first == item)
                 return true
         }
         return false
@@ -135,7 +135,7 @@ class Player():Entity() {
 
     private fun getItemIndex(item:Item):Int{
         for (i in 0 until inventory.size){
-            if (inventory[i].first.equals(item))
+            if (inventory[i].first == item)
                 return i
         }
         return -1
@@ -182,7 +182,7 @@ class Player():Entity() {
     private fun equip(weapon: Weapon){equipment[0]=Weapon(weapon)}
 
     fun craft(recipe: Recipe):Boolean{
-        val ingredients:ArrayList<kotlin.Pair<Item, Int>> =recipe.getIngredients()
+        val ingredients:ArrayList<Pair<Item, Int>> =recipe.getIngredients()
         for (i in ingredients){
             if (!inventoryContainsItem(i.first)||
                     inventory[getItemIndex(i.first)].second<i.second)
@@ -204,8 +204,13 @@ class Player():Entity() {
         //TODO duel
     }
 
-    fun addToDuel(){
+    fun addToDuel(ref:DatabaseReference){
 
+    }
+
+    fun getAmountOfItems(item:Item):Int{
+        val ind=getItemIndex(item)
+        return if (ind==-1) 0 else inventory[ind].second
     }
 
     //TODO auction

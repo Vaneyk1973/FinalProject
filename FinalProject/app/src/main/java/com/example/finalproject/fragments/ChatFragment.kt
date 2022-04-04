@@ -19,31 +19,33 @@ import com.google.firebase.database.ValueEventListener
 import com.google.gson.Gson
 import java.util.*
 
-class ChatFragment : Fragment() {
+class ChatFragment : Fragment(), View.OnClickListener {
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_chat, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val progressBar:ProgressBar = requireView().findViewById(R.id.progressBar)
+        val progressBar: ProgressBar = requireView().findViewById(R.id.progressBar)
         progressBar.animate()
         val ref = FirebaseDatabase.getInstance().getReference("Messages")
-        val logOut:Button = requireView().findViewById(R.id.log_out)
+        val logOut: Button = requireView().findViewById(R.id.log_out)
         val chat: RecyclerView = requireView().findViewById(R.id.chat_list)
-        val enterMessage:EditText = requireView().findViewById(R.id.message)
-        val back:Button = requireView().findViewById(R.id.chat_back_button)
-        val messages:ArrayList<Message> = ArrayList<Message>()
+        val enterMessage: EditText = requireView().findViewById(R.id.message)
+        val back: Button = requireView().findViewById(R.id.chat_back_button)
+        val messages: ArrayList<Message> = ArrayList<Message>()
         val fm = parentFragmentManager
-        ref.addValueEventListener(object: ValueEventListener {
+        ref.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 messages.clear()
                 for (i in snapshot.children)
                     messages.add(i.getValue(Message::class.java)!!)
                 chat.adapter = ChatAdapter(messages)
-                chat.scrollToPosition(messages.size-1)
+                chat.scrollToPosition(messages.size - 1)
                 progressBar.visibility = View.GONE
                 Log.d("Messages", messages.toString())
             }
@@ -67,7 +69,8 @@ class ChatFragment : Fragment() {
                 val m = Message(
                     v.text.toString(),
                     Gson().toJson(MainActivity.player.user),
-                    Date().time - Calendar.getInstance().timeZone.getOffset(Date().time) * 60L * 1000)
+                    Date().time - Calendar.getInstance().timeZone.getOffset(Date().time) * 60L * 1000
+                )
                 ref.child(messages.size.toString()).setValue(m)
                 v.text = ""
             }
@@ -101,13 +104,14 @@ class ChatFragment : Fragment() {
 
         override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
             holder.message.text = data[position].message
-            var time = data[position].date/1000 + Calendar.getInstance().timeZone.getOffset(
-                Date().time)
-            val seconds:String=if (time%60>=10) (time%60).toString() else "0${time%60}"
-            time/=60
-            val minutes: String = if (time % 60 >= 10) (time%60).toString() else "0${time%60}"
+            var time = data[position].date / 1000 + Calendar.getInstance().timeZone.getOffset(
+                Date().time
+            )
+            val seconds: String = if (time % 60 >= 10) (time % 60).toString() else "0${time % 60}"
             time /= 60
-            val hours: String=(time % 24).toString()
+            val minutes: String = if (time % 60 >= 10) (time % 60).toString() else "0${time % 60}"
+            time /= 60
+            val hours: String = (time % 24).toString()
             val date = "$hours:$minutes:$seconds"
             holder.time.text = date
             holder.user.text = Gson().fromJson(
@@ -116,6 +120,10 @@ class ChatFragment : Fragment() {
             ).login
         }
 
-        override fun getItemCount(): Int=data.size
+        override fun getItemCount(): Int = data.size
+    }
+
+    override fun onClick(p0: View?) {
+        TODO("Not yet implemented")
     }
 }

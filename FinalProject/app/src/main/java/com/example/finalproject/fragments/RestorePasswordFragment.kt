@@ -13,7 +13,10 @@ import androidx.fragment.app.Fragment
 import com.example.finalproject.R
 import com.google.firebase.auth.FirebaseAuth
 
-class RestorePasswordFragment : Fragment() {
+class RestorePasswordFragment : Fragment(), View.OnClickListener {
+
+    private lateinit var resetPassword:Button
+    private lateinit var back:Button
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
@@ -22,12 +25,17 @@ class RestorePasswordFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val back:Button = requireView().findViewById(R.id.reset_password_back_button)
-        val resetPassword: Button = requireView().findViewById(R.id.reset_password_button)
-        val email:EditText = requireView().findViewById(R.id.restore_password_email)
-        val progressBar:ProgressBar = requireView().findViewById(R.id.progressBar2)
-        progressBar.visibility = View.GONE
-        resetPassword.setOnClickListener {
+        back= requireView().findViewById(R.id.reset_password_back_button)
+        resetPassword= requireView().findViewById(R.id.reset_password_button)
+        resetPassword.setOnClickListener(this)
+        back.setOnClickListener(this)
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0==resetPassword){
+            val email:EditText = requireView().findViewById(R.id.restore_password_email)
+            val progressBar:ProgressBar = requireView().findViewById(R.id.progressBar2)
+            progressBar.visibility = View.GONE
             progressBar.visibility = View.VISIBLE
             progressBar.animate()
             val emailTxt:String= email.text.toString()
@@ -43,12 +51,12 @@ class RestorePasswordFragment : Fragment() {
                         }
                     }
             }
-        }
-        back.setOnClickListener {
-            val fr = parentFragmentManager.beginTransaction()
-            fr.add(R.id.log_in, SignInFragment())
-            fr.remove(parentFragmentManager.findFragmentById(R.id.restore_password)!!)
-            fr.commit()
+        } else if (p0==back) {
+            val fragmentManager=parentFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.add(R.id.log_in, SignInFragment())
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.restore_password)!!)
+            fragmentTransaction.commit()
         }
     }
 }

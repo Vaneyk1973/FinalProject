@@ -14,7 +14,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
 import com.example.finalproject.service.Task
 
-class TaskManagerFragment(val inVillage: Boolean=false):Fragment() {
+class TaskManagerFragment(private val inVillage: Boolean=false):Fragment(), View.OnClickListener {
+
+    private lateinit var back:Button
+    private lateinit var takeTask:Button
+    private lateinit var tasks: RecyclerView
     private var chosenTask: Task? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -24,31 +28,14 @@ class TaskManagerFragment(val inVillage: Boolean=false):Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val back:Button = requireView().findViewById(R.id.task_manager_back_button)
-        val takeTask:Button = requireView().findViewById(R.id.take_task_button)
+        back = requireView().findViewById(R.id.task_manager_back_button)
+        takeTask = requireView().findViewById(R.id.take_task_button)
         if (!inVillage) takeTask.visibility = View.GONE
-        val tasks: RecyclerView = requireView().findViewById(R.id.tasks_list)
+        tasks = requireView().findViewById(R.id.tasks_list)
         tasks.layoutManager = LinearLayoutManager(context)
         tasks.adapter = TasksAdapter(MainActivity.tasks)
-        takeTask.setOnClickListener {
-            if (chosenTask == null) Toast.makeText(context, "Take task first", Toast.LENGTH_SHORT).show()
-            else {
-                MainActivity.tasks[MainActivity.tasks.indexOf(chosenTask)].taken = true
-                MainActivity.player.checkTasks()
-                tasks.adapter = TasksAdapter(MainActivity.tasks)
-            }
-        }
-        back.setOnClickListener {
-            val fm = parentFragmentManager
-            val fr = fm.beginTransaction()
-            fr.remove(fm.findFragmentById(R.id.tasks)!!)
-            if (inVillage) {
-                fr.add(R.id.menu, MenuFragment())
-                fr.add(R.id.map, MapFragment(MainActivity.player.mapNum))
-                fr.add(R.id.status, StatusBarFragment())
-            } else fr.add(R.id.settings_menu, SettingsMenuFragment())
-            fr.commit()
-        }
+        takeTask.setOnClickListener(this)
+        back.setOnClickListener(this)
     }
 
     private inner class TasksAdapter(private val data: ArrayList<Task>) : RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
@@ -79,6 +66,27 @@ class TaskManagerFragment(val inVillage: Boolean=false):Fragment() {
         private inner class ViewHolder(itemView: View) :
             RecyclerView.ViewHolder(itemView) {
             val name: TextView = itemView.findViewById(R.id.textView15)
+        }
+    }
+
+    override fun onClick(p0: View?) {
+        if (p0==takeTask){
+            if (chosenTask == null) Toast.makeText(context, "Take task first", Toast.LENGTH_SHORT).show()
+            else {
+                MainActivity.tasks[MainActivity.tasks.indexOf(chosenTask)].taken = true
+                MainActivity.player.checkTasks()
+                tasks.adapter = TasksAdapter(MainActivity.tasks)
+            }
+        } else if (p0==back){
+            val fragmentManager = parentFragmentManager
+            val fragmentTransaction = fragmentManager.beginTransaction()
+            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.tasks)!!)
+            if (inVillage) {
+                fragmentTransaction.add(R.id.menu, MenuFragment())
+                fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+                fragmentTransaction.add(R.id.status, StatusBarFragment())
+            } else fragmentTransaction.add(R.id.settings_menu, SettingsMenuFragment())
+            fragmentTransaction.commit()
         }
     }
 }
