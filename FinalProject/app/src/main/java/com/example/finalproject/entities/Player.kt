@@ -201,10 +201,9 @@ class Player():Entity() {
 
     fun attack(){
         enemy?.takeDamage(damage)
-        //TODO duel
     }
 
-    fun addToDuel(ref:DatabaseReference){
+    fun duel(){
 
     }
 

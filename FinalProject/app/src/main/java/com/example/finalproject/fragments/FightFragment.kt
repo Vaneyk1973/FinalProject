@@ -17,9 +17,10 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.database.*
 import java.util.*
 import kotlin.math.roundToInt
+import kotlin.math.min
 
 class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClickListener,
-    ValueEventListener, OnCompleteListener<DataSnapshot> {
+    OnCompleteListener<DataSnapshot> {
 
     private lateinit var run: Button
     private lateinit var attack: Button
@@ -27,7 +28,11 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
     private lateinit var spells: RecyclerView
     private lateinit var playerReference:DatabaseReference
     private lateinit var enemyReference:DatabaseReference
+    private lateinit var dbReference:DatabaseReference
     private var taskId:Int=0
+    private var duelNum:Int=0
+    private var playerNum:Int=0
+    private var enemyNum:Int=0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,22 +54,21 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
         spells.layoutManager = LinearLayoutManager(context)
         val playerImage: ImageView = requireView().findViewById(R.id.player)
         val enemyImage: ImageView = requireView().findViewById(R.id.enemy)
+        dbReference=FirebaseDatabase.getInstance().getReference("Duel")
         if (duel) {
             duelProgressBar.visibility = View.VISIBLE
             duelProgressBar.animate()
-            taskId="Duel".toInt()
-            FirebaseDatabase.getInstance().getReference("Duel")
-                .get().addOnCompleteListener(this)
-            playerImage.setImageBitmap(MainActivity.textures[5][5])
+            taskId="Duel".hashCode()
+            dbReference.get().addOnCompleteListener(this)
             enemyImage.setImageBitmap(MainActivity.textures[5][6])
         } else {
-            playerImage.setImageBitmap(MainActivity.getAvatar())
             enemyImage.setImageBitmap(player.enemy!!.getTexture())
             updateStatus()
-            attack.setOnClickListener(this)
-            run.setOnClickListener(this)
-            castSpell.setOnClickListener(this)
         }
+        playerImage.setImageBitmap(MainActivity.getAvatar())
+        attack.setOnClickListener(this)
+        run.setOnClickListener(this)
+        castSpell.setOnClickListener(this)
     }
 
     private fun updateStatus() {
@@ -80,6 +84,14 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
         enemyHealth.text = text
         text = "${player.enemy!!.mana.roundToInt()}/${player.enemy!!.maxMana.roundToInt()}"
         enemyMana.text = text
+    }
+
+    private fun addPlayerToDuel(){
+        val duelReference=dbReference.child(duelNum.toString()).child(playerNum.toString())
+        duelReference.child("uId").setValue(player.user.uID)
+        duelReference.child("health").setValue(player.health)
+        duelReference.child("mana").setValue(player.mana)
+        duelReference.child("dead").setValue(0)
     }
 
     private inner class SpellsAdapter(val data: ArrayList<Spell> = ArrayList()) :
@@ -201,7 +213,6 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
             if (v==attack) {
                 player.regenerate()
                 player.attack()
-                
                 if (player.enemy!!.health <= 0) {
 
                 }
@@ -239,27 +250,22 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
         }
     }
 
-    override fun onDataChange(snapshot: DataSnapshot) {
-        if (snapshot==playerReference){
-            player.health = snapshot.child("health").value as Double
-            player.mana = snapshot.child("mana").value as Double
-            updateStatus()
-            if (player.health <= 0) {
-                snapshot.ref.child("dead").setValue(true)
-                player.gold = 0.0
-                player.experience = 0.0
-                run.callOnClick()
-            }
-        }
-    }
-
-    override fun onCancelled(error: DatabaseError) {
-        TODO("Not yet implemented")
-    }
-
     override fun onComplete(task: Task<DataSnapshot>) {
-        if (taskId=="Duel".toInt()){
-            task.result.child("Players").child(player.user.uID)
+        if (taskId=="Duel".hashCode()){
+            when (task.result.child((min(task.result.childrenCount - 1, 0)).toString()).childrenCount){
+                2L or 0L->{
+                    duelNum=task.result.childrenCount.toInt()
+                    playerNum=0
+                    enemyNum=1
+                    addPlayerToDuel()
+                }
+                1L->{
+                    duelNum=(task.result.childrenCount-1).toInt()
+                    playerNum=1
+                    enemyNum=0
+                    addPlayerToDuel()
+                }
+            }
         }
     }
 }
