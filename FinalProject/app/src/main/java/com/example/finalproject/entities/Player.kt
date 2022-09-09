@@ -6,7 +6,6 @@ import com.example.finalproject.items.*
 import com.example.finalproject.service.Research
 import com.example.finalproject.service.User
 import com.example.finalproject.service.spell.Spell
-import com.google.firebase.database.DatabaseReference
 import com.google.gson.Gson
 import java.lang.Math.cbrt
 import kotlin.math.min

@@ -66,7 +66,7 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener, T
         }
 
         override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
-            holder.message.text = data[position].message
+            holder.message.text = data[position].messageText
             var time = data[position].date / 1000 + Calendar.getInstance().timeZone.getOffset(
                 Date().time
             )
@@ -78,7 +78,7 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener, T
             val date = "$hours:$minutes:$seconds"
             holder.time.text = date
             holder.user.text = Gson().fromJson(
-                data[position].user,
+                data[position].userLogin,
                 User::class.java
             ).login
         }
