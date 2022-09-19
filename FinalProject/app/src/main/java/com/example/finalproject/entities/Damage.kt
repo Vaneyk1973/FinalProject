@@ -6,7 +6,7 @@ class Damage(private val dmg:ArrayList<Double>) {
 
     private fun applyResistances(resistances:ArrayList<Double>): ArrayList<Double> {
         val newDmg=dmg.clone() as ArrayList<Double>
-        for (i in 0..newDmg.size)
+        for (i in 0 until newDmg.size)
             newDmg[i]*=resistances[i]
         return newDmg
     }

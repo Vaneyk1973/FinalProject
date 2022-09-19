@@ -28,6 +28,7 @@ android {
         sourceCompatibility "1.8"
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    namespace 'com.example.finalproject'
 }
 
 dependencies {
