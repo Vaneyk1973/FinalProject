@@ -50,8 +50,4 @@ class Player(
     override fun removeItemsFromInventory(item: Pair<Int, Item>) {
         TODO("Not yet implemented")
     }
-
-    override fun getItemIndex(item: Item) {
-        TODO("Not yet implemented")
-    }
 }

@@ -13,6 +13,7 @@ open class Entity(
     name: String,
     id: Int,
     override var health: Double,
+    override var healthRegen: Double,
     override var resistances: ArrayList<Double>,
     override val loot: Loot
 ) :
@@ -28,11 +29,19 @@ open class Entity(
         name: String,
         id: Int,
         health: Double,
+        healthRegen: Double,
         resistances: ArrayList<Double>,
         loot: Loot,
         texture: Bitmap
-    ) : this(name = name, id = id, health = health, resistances = resistances, loot = loot){
-        this.texture=texture
+    ) : this(
+        name = name,
+        id = id,
+        health = health,
+        healthRegen = healthRegen,
+        resistances = resistances,
+        loot = loot
+    ) {
+        this.texture = texture
     }
 
     override fun takeDamage(damage: Damage) {

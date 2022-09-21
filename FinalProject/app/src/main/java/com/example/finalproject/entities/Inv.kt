@@ -8,6 +8,4 @@ interface Inv {
     fun addItemsToInventory(item:Pair<Int, Item>)
 
     fun removeItemsFromInventory(item:Pair<Int, Item>)
-
-    fun getItemIndex(item:Item)
 }

@@ -11,4 +11,8 @@ class Inventory {
     fun index(item:Item){
 
     }
+
+    fun quantity(item: Item){
+
+    }
 }
