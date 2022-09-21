@@ -1,95 +1,44 @@
 package com.example.finalproject.entities
 
-import android.graphics.Bitmap
-import android.os.Parcel
-import android.os.Parcelable
-import com.example.finalproject.fragments.MainActivity
-import com.example.finalproject.items.Item
+import com.google.firebase.database.DatabaseReference
 
-class Enemy() : Entity(), Parcelable {
-    val drop:ArrayList<Triple<Item, Int, Int>> =ArrayList(0) //item, chance, number
-    private lateinit var texture:Bitmap
-    var defence:Double=0.0
-    var duel:Boolean=false
-    private var fightTick:Int=0
+class Enemy(
+    name: String,
+    id: Int,
+    health: Double,
+    resistances: ArrayList<Double>,
+    loot: Loot,
+    override var damage: Damage
+) :
+    Entity(name = name, id = id, health = health, resistances = resistances, loot=loot), Dmg {
 
-    constructor(health: Double, mana:Double, damage:Double, armor:Double, givenGold:Double, givenExp:Double,
-                name:String,
-                drop:ArrayList<Triple<Item, Int, Int>>,
-                texture: Bitmap): this() {
-        healthRegen=1.0
-        this.armor=armor
-        this.health=health
-        this.mana=mana
-        this.maxMana=mana
-        this.maxHealth=health
-        this.damage=damage
-        this.givenGold=givenGold
-        this.givenExp=givenExp
-        this.name=name
-        this.drop.addAll(drop)
-        this.texture= Bitmap.createBitmap(texture)
+    var tick=0
+    var def=false
+
+    override fun doDamage(target: Health) {
+        target.takeDamage(damage)
     }
 
-    constructor(enemy: Enemy):this(){
-        healthRegen=1.0
-        armor=enemy.armor
-        health=enemy.health
-        mana=enemy.mana
-        damage=enemy.damage
-        givenGold=enemy.givenGold
-        givenExp=enemy.givenExp
-        name=enemy.name
-        maxHealth=enemy.maxHealth
-        maxMana=enemy.maxMana
-        drop.addAll(enemy.drop)
-        texture= Bitmap.createBitmap(enemy.texture)
+    override fun doDamage(target: Health, ref: DatabaseReference) {
+        target.takeDamage(damage, ref)
     }
 
-    constructor(parcel: Parcel) : this() {
-        texture = parcel.readParcelable(Bitmap::class.java.classLoader)!!
-        defence = parcel.readDouble()
-        duel = parcel.readByte() != 0.toByte()
-        fightTick = parcel.readInt()
-    }
+    override fun startFight(){tick=0}
 
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        super.writeToParcel(parcel, flags)
-        parcel.writeParcelable(texture, flags)
-        parcel.writeDouble(defence)
-        parcel.writeByte(if (duel) 1 else 0)
-        parcel.writeInt(fightTick)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<Enemy> {
-        override fun createFromParcel(parcel: Parcel): Enemy {
-            return Enemy(parcel)
+    override fun attack(target: Health){
+        if (tick%2==0){
+            defend()
+            doDamage(target)
+        } else {
+            defend()
         }
-
-        override fun newArray(size: Int): Array<Enemy?> {
-            return arrayOfNulls(size)
-        }
+        tick++
     }
 
-
-    private fun attack(){
-        MainActivity.player.takeDamage(damage)
+    override fun defend(){
+        if (def)
+            resistances[0]/=1.1
+        else
+            resistances[0]*=1.1
     }
-
-    private fun defend(){
-
-    }
-
-    fun fight(){
-        if (fightTick%2==0)
-            attack()
-        else defend()
-        fightTick++
-    }
-
-    fun getTexture():Bitmap=Bitmap.createBitmap(texture)
 }
