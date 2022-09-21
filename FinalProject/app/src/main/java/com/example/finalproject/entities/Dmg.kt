@@ -1,5 +1,17 @@
 package com.example.finalproject.entities
 
+import com.google.firebase.database.DatabaseReference
+
 interface Dmg {
-    fun doDamage(dmg:Damage, target:Health)
+    var damage: Damage
+
+    fun doDamage(target: Health)
+
+    fun doDamage(target: Health, ref: DatabaseReference)
+
+    fun attack(target: Health)
+
+    fun defend()
+
+    fun startFight()
 }

@@ -21,7 +21,8 @@ import java.lang.Integer.min
 import java.util.*
 import kotlin.collections.ArrayList
 
-class ChatFragment : Fragment(), View.OnClickListener, ValueEventListener, TextView.OnEditorActionListener {
+class ChatFragment : Fragment(), View.OnClickListener, ValueEventListener,
+    TextView.OnEditorActionListener {
 
     private lateinit var backButton: Button
     private lateinit var logOutButton: Button
@@ -90,13 +91,13 @@ class ChatFragment : Fragment(), View.OnClickListener, ValueEventListener, TextV
     }
 
     override fun onClick(p0: View?) {
-        if (p0==logOutButton){
+        if (p0 == logOutButton) {
             MainActivity.player.user.logOut()
             val chatFragmentTransaction = parentFragmentManager.beginTransaction()
             chatFragmentTransaction.remove(parentFragmentManager.findFragmentById(R.id.chat)!!)
             chatFragmentTransaction.add(R.id.log_in, SignInFragment())
             chatFragmentTransaction.commit()
-        } else if (p0==backButton){
+        } else if (p0 == backButton) {
             val chatFragmentTransaction = parentFragmentManager.beginTransaction()
             chatFragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
             chatFragmentTransaction.add(R.id.menu, MenuFragment())

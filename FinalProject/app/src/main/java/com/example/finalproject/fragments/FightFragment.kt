@@ -19,20 +19,20 @@ import java.util.*
 import kotlin.math.roundToInt
 import kotlin.math.min
 
-class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClickListener,
+class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClickListener,
     OnCompleteListener<DataSnapshot> {
 
     private lateinit var run: Button
     private lateinit var attack: Button
     private lateinit var castSpell: Button
     private lateinit var spells: RecyclerView
-    private lateinit var playerReference:DatabaseReference
-    private lateinit var enemyReference:DatabaseReference
-    private lateinit var dbReference:DatabaseReference
-    private var taskId:Int=0
-    private var duelNum:Int=0
-    private var playerNum:Int=0
-    private var enemyNum:Int=0
+    private lateinit var playerReference: DatabaseReference
+    private lateinit var enemyReference: DatabaseReference
+    private lateinit var dbReference: DatabaseReference
+    private var taskId: Int = 0
+    private var duelNum: Int = 0
+    private var playerNum: Int = 0
+    private var enemyNum: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,11 +54,11 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
         spells.layoutManager = LinearLayoutManager(context)
         val playerImage: ImageView = requireView().findViewById(R.id.player)
         val enemyImage: ImageView = requireView().findViewById(R.id.enemy)
-        dbReference=FirebaseDatabase.getInstance().getReference("Duel")
+        dbReference = FirebaseDatabase.getInstance().getReference("Duel")
         if (duel) {
             duelProgressBar.visibility = View.VISIBLE
             duelProgressBar.animate()
-            taskId="Duel".hashCode()
+            taskId = "Duel".hashCode()
             dbReference.get().addOnCompleteListener(this)
             enemyImage.setImageBitmap(MainActivity.textures[5][6])
         } else {
@@ -86,8 +86,8 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
         enemyMana.text = text
     }
 
-    private fun addPlayerToDuel(){
-        val duelReference=dbReference.child(duelNum.toString()).child(playerNum.toString())
+    private fun addPlayerToDuel() {
+        val duelReference = dbReference.child(duelNum.toString()).child(playerNum.toString())
         duelReference.child("uId").setValue(player.user.uID)
         duelReference.child("health").setValue(player.health)
         duelReference.child("mana").setValue(player.mana)
@@ -142,8 +142,8 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
 
     override fun onClick(v: View?) {
         val fragmentManager = parentFragmentManager
-        if (!duel){
-            if (v==attack) {
+        if (!duel) {
+            if (v == attack) {
                 player.regenerate()
                 player.enemy!!.regenerate()
                 player.attack()
@@ -197,7 +197,7 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
                         player.enemy!!.fight()
                         updateStatus()
                     }
-                }else{
+                } else {
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
                     fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
@@ -209,8 +209,8 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
                 updateStatus()
                 spells.adapter = SpellsAdapter(player.spells)
             }
-        } else{
-            if (v==attack) {
+        } else {
+            if (v == attack) {
                 player.regenerate()
                 player.attack()
                 if (player.enemy!!.health <= 0) {
@@ -235,7 +235,7 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
                         player.enemy!!.fight()
                         updateStatus()
                     }
-                }else{
+                } else {
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
                     fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
@@ -251,18 +251,23 @@ class FightFragment(private var duel: Boolean = false): Fragment(), View.OnClick
     }
 
     override fun onComplete(task: Task<DataSnapshot>) {
-        if (taskId=="Duel".hashCode()){
-            when (task.result.child((min(task.result.childrenCount - 1, 0)).toString()).childrenCount){
-                2L or 0L->{
-                    duelNum=task.result.childrenCount.toInt()
-                    playerNum=0
-                    enemyNum=1
+        if (taskId == "Duel".hashCode()) {
+            when (task.result.child(
+                (min(
+                    task.result.childrenCount - 1,
+                    0
+                )).toString()
+            ).childrenCount) {
+                2L or 0L -> {
+                    duelNum = task.result.childrenCount.toInt()
+                    playerNum = 0
+                    enemyNum = 1
                     addPlayerToDuel()
                 }
-                1L->{
-                    duelNum=(task.result.childrenCount-1).toInt()
-                    playerNum=1
-                    enemyNum=0
+                1L -> {
+                    duelNum = (task.result.childrenCount - 1).toInt()
+                    playerNum = 1
+                    enemyNum = 0
                     addPlayerToDuel()
                 }
             }
