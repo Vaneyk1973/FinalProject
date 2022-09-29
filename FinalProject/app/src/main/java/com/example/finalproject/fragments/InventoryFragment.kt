@@ -49,13 +49,13 @@ class InventoryFragment : Fragment(), View.OnClickListener {
             categories[i].setImageBitmap(Bitmap.createBitmap(bm))
             categories[i].setOnClickListener(this)
         }
-        inventory.adapter = InventoryAdapter(MainActivity.player.inventory)
+        inventory.adapter = InventoryAdapter(MainActivity.player.inventory.inventory)
         inventory.layoutManager = LinearLayoutManager(context)
         back.setOnClickListener(this)
     }
 
     private inner class InventoryAdapter(
-        val data: ArrayList<Pair<Item, Int>>,
+        val data: ArrayList<Pair<Int, Item>>,
         val category: Int = 0
     ) : RecyclerView.Adapter<InventoryAdapter.ViewHolder>() {
 
@@ -72,15 +72,15 @@ class InventoryFragment : Fragment(), View.OnClickListener {
 
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.name.text = ">${data[position].first.name}:${data[position].second}"
+            holder.name.text = ">${data[position].second.name}:${data[position].first}"
             holder.name.setOnClickListener {
-                if (data[position].first.category == 0) {
-                    MainActivity.player.equip(data[position].first)
+                if (data[position].second.category == 0) {
+                    MainActivity.player.equipItem(data[position].second)
                 }
                 val fm = childFragmentManager
                 val fr = fm.beginTransaction()
                 fm.findFragmentById(R.id.characteristics)?.let { it1 -> fr.remove(it1) }
-                fr.add(R.id.characteristics, ItemCharacteristicsFragment(data[position].first))
+                fr.add(R.id.characteristics, ItemCharacteristicsFragment(data[position].second))
                 fr.commit()
             }
         }
@@ -91,9 +91,9 @@ class InventoryFragment : Fragment(), View.OnClickListener {
                     View.GONE
                 data.size
             } else {
-                val data1 = ArrayList<Pair<Item, Int>>()
+                val data1 = ArrayList<Pair<Int, Item>>()
                 for (i in data.indices) {
-                    if (data[i].first.category == category) data1.add(data[i])
+                    if (data[i].second.category == category) data1.add(data[i])
                 }
                 data.clear()
                 data.addAll(data1)
@@ -107,7 +107,7 @@ class InventoryFragment : Fragment(), View.OnClickListener {
     override fun onClick(p0: View?) {
         if (p0 is ImageView) {
             inventory.adapter =
-                InventoryAdapter(MainActivity.player.inventory, categories.indexOf(p0))
+                InventoryAdapter(MainActivity.player.inventory.inventory, categories.indexOf(p0))
         } else if (p0 == back) {
             val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()

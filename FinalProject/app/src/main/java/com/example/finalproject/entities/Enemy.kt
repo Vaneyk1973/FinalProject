@@ -1,12 +1,18 @@
 package com.example.finalproject.entities
 
+import com.example.finalproject.service.spell.Spell
 import com.google.firebase.database.DatabaseReference
+import kotlin.math.max
 
 class Enemy(
     name: String,
     id: Int,
     health: Double,
+    maxHealth: Double,
     healthRegen: Double,
+    mana:Double,
+    maxMana:Double,
+    manaRegen:Double,
     resistances: ArrayList<Double>,
     loot: Loot,
     override var damage: Damage
@@ -15,10 +21,28 @@ class Enemy(
         name = name,
         id = id,
         health = health,
+        maxHealth = maxHealth,
         healthRegen = healthRegen,
+        mana=mana,
+        maxMana=maxMana,
+        manaRegen=manaRegen,
         resistances = resistances,
         loot = loot
     ), Dmg {
+
+    constructor(enemy:Enemy):this(
+        enemy.name,
+        enemy.id,
+        enemy.health,
+        enemy.maxHealth,
+        enemy.healthRegen,
+        enemy.mana,
+        enemy.maxMana,
+        enemy.manaRegen,
+        enemy.resistances,
+        enemy.loot,
+        enemy.damage
+    )
 
     var tick = 0
     var def = false

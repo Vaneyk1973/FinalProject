@@ -28,6 +28,8 @@ import kotlin.collections.HashMap
 import kotlin.collections.indices
 import kotlin.collections.set
 
+
+//TODO
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -80,12 +82,9 @@ class MainActivity : AppCompatActivity() {
             sh.getString("Player", Gson().toJson(Player(2, 2))),
             Player::class.java
         )
-        player.setUser(
-            Gson().fromJson(
+        player.user = Gson().fromJson(
                 sh.getString("User", Gson().toJson(User())),
-                User::class.java
-            )
-        )
+                User::class.java)
         showTutorial = sh.getBoolean("Tutorial", true)
         researchesJson = ArrayList(
             Gson().fromJson(
@@ -198,12 +197,12 @@ class MainActivity : AppCompatActivity() {
         private val categories = HashMap<Int, String>()
         private val ids = HashMap<Int, Int>()
         private val names = HashMap<Int, String>()
-        private lateinit var avatar:Bitmap
+        private lateinit var avatar: Bitmap
         lateinit var textures: Array<Array<Bitmap>>
         var music: Music? = null
         private lateinit var sh: SharedPreferences
 
-        fun getAvatar():Bitmap= Bitmap.createBitmap(avatar)
+        fun getAvatar(): Bitmap = Bitmap.createBitmap(avatar)
 
         private fun setTasks() {
             tasks.add(Task("Earn 100 gold to get 50 exp and 50 gold", "First money"))
@@ -247,7 +246,7 @@ class MainActivity : AppCompatActivity() {
                 mapTitleWidth * m, mapTitleWidth * n, false
             )
             textures = Array(n) {
-                Array(m){
+                Array(m) {
                     Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
                 }
             }
@@ -285,7 +284,7 @@ class MainActivity : AppCompatActivity() {
                             )
                             map[i].map[j][k].getTexture().eraseColor(Color.BLACK)
                         }
-            avatar=Bitmap.createScaledBitmap(textures[5][5], mapTitleWidth, mapTitleWidth, false)
+            avatar = Bitmap.createScaledBitmap(textures[5][5], mapTitleWidth, mapTitleWidth, false)
         }
 
         private fun setResearches() {
@@ -639,7 +638,8 @@ class MainActivity : AppCompatActivity() {
         fun setInitialData(
             items: XmlPullParser, names: XmlPullParser,
             recipes: XmlPullParser, enemies: XmlPullParser,
-            locations: XmlPullParser) {
+            locations: XmlPullParser
+        ) {
             researchesJson = Gson().fromJson(
                 sh.getString("Researches", Gson().toJson(ArrayList<String>())),
                 ArrayList::class.java

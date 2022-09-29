@@ -62,7 +62,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val ref = FirebaseDatabase.getInstance().getReference("Users")
-                            MainActivity.player.setUser(User(login, email))
+                            MainActivity.player.user=User(login, email)
                             MainActivity.player.user.uID = FirebaseAuth.getInstance().uid.toString()
                             ref.child(FirebaseAuth.getInstance().uid!!)
                                 .setValue(MainActivity.player.user)

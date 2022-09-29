@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
+import com.example.finalproject.entities.Enemy
 import com.example.finalproject.entities.Player
 import com.example.finalproject.fragments.MainActivity.Companion.player
 import com.example.finalproject.service.spell.Spell
@@ -19,7 +20,8 @@ import java.util.*
 import kotlin.math.roundToInt
 import kotlin.math.min
 
-class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClickListener,
+class FightFragment(private var duel: Boolean = false, private val enemy: Enemy) : Fragment(),
+    View.OnClickListener,
     OnCompleteListener<DataSnapshot> {
 
     private lateinit var run: Button
@@ -29,6 +31,7 @@ class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClic
     private lateinit var playerReference: DatabaseReference
     private lateinit var enemyReference: DatabaseReference
     private lateinit var dbReference: DatabaseReference
+    private lateinit var chosenSpell:Spell
     private var taskId: Int = 0
     private var duelNum: Int = 0
     private var playerNum: Int = 0
@@ -62,7 +65,7 @@ class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClic
             dbReference.get().addOnCompleteListener(this)
             enemyImage.setImageBitmap(MainActivity.textures[5][6])
         } else {
-            enemyImage.setImageBitmap(player.enemy!!.getTexture())
+            enemyImage.setImageBitmap(enemy.texture)
             updateStatus()
         }
         playerImage.setImageBitmap(MainActivity.getAvatar())
@@ -80,9 +83,9 @@ class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClic
         yourHealth.text = text
         text = "${player.mana.roundToInt()}/${player.maxMana.roundToInt()}"
         yourMana.text = text
-        text = "${player.enemy!!.health.roundToInt()}/${player.enemy!!.maxHealth.roundToInt()}"
+        text = "${enemy.health.roundToInt()}/${enemy.maxHealth.roundToInt()}"
         enemyHealth.text = text
-        text = "${player.enemy!!.mana.roundToInt()}/${player.enemy!!.maxMana.roundToInt()}"
+        text = "${enemy.mana.roundToInt()}/${enemy.maxMana.roundToInt()}"
         enemyMana.text = text
     }
 
@@ -106,7 +109,7 @@ class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClic
         override fun onBindViewHolder(holder: SpellViewHolder, position: Int) {
             holder.name.text = data[position].name
             holder.name.setOnClickListener {
-                player.chooseSpell(data[position])
+                chosenSpell=data[position]
                 (view!!.findViewById<View>(R.id.avaliable_spells) as RecyclerView).adapter =
                     SpellsAdapter()
                 if (player.mana < data[position].manaConsumption)
@@ -114,13 +117,13 @@ class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClic
                         context,
                         "Not enough mana", Toast.LENGTH_SHORT
                     ).show()
-                player.castSpell()
+                player.castSpell(enemy, chosenSpell)
                 player.regenerate()
-                player.enemy!!.regenerate()
-                player.enemy!!.fight()
+                enemy.regenerate()
+                enemy.attack(player)
                 updateStatus()
-                if (player.enemy!!.health <= 0) {
-                    player.takeDrop()
+                if (enemy.health <= 0) {
+                    player.takeDrop(enemy)
                     val fragmentManager = parentFragmentManager
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
@@ -145,12 +148,12 @@ class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClic
         if (!duel) {
             if (v == attack) {
                 player.regenerate()
-                player.enemy!!.regenerate()
-                player.attack()
-                player.enemy!!.fight()
+                enemy.regenerate()
+                player.attack(enemy)
+                enemy.attack(player)
                 updateStatus()
-                if (player.enemy!!.health <= 0) {
-                    player.takeDrop()
+                if (enemy.health <= 0) {
+                    player.takeDrop(enemy)
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
                     fragmentTransaction.add(R.id.map, MapFragment())
@@ -193,8 +196,8 @@ class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClic
                         fragmentTransaction.commit()
                     } else {
                         player.regenerate()
-                        player.enemy!!.regenerate()
-                        player.enemy!!.fight()
+                        enemy.regenerate()
+                        enemy.attack(player)
                         updateStatus()
                     }
                 } else {
@@ -212,8 +215,8 @@ class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClic
         } else {
             if (v == attack) {
                 player.regenerate()
-                player.attack()
-                if (player.enemy!!.health <= 0) {
+                player.attack(enemy)
+                if (enemy.health <= 0) {
 
                 }
                 if (player.health <= 0) {
@@ -231,8 +234,8 @@ class FightFragment(private var duel: Boolean = false) : Fragment(), View.OnClic
                         fragmentTransaction.commit()
                     } else {
                         player.regenerate()
-                        player.enemy!!.regenerate()
-                        player.enemy!!.fight()
+                        enemy.regenerate()
+                        enemy.attack(player)
                         updateStatus()
                     }
                 } else {

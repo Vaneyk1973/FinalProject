@@ -1,5 +1,6 @@
 package com.example.finalproject.fragments
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,7 +30,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
     private var user: String? = null
     private var amount = 1
     private var buyMode = false
-    private val data = ArrayList<Pair<Item, Int>>()
+    private val data = ArrayList<Pair<Int, Item>>()
     private lateinit var amountText: TextView
     private lateinit var modeText: TextView
     private lateinit var sellBuyButton: Button
@@ -60,8 +61,8 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
         shopList = requireView().findViewById(R.id.items_to_sell)
         shopList.layoutManager = LinearLayoutManager(context)
         for (i in MainActivity.shopList)
-            data.add(Pair(i, inf))
-        shopList.adapter = ShopAdapter(player.inventory)
+            data.add(Pair(inf, i))
+        shopList.adapter = ShopAdapter(player.inventory.inventory)
         if (!auction) {
             sellBuy.setOnCheckedChangeListener(this)
             sellBuy.isChecked = true
@@ -73,7 +74,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
             sellBuyButton.text = text
             text="Place/Buy"
             sellBuy.text = text
-            shopList.adapter = ShopAdapter(player.inventory)
+            shopList.adapter = ShopAdapter(player.inventory.inventory)
             sellBuy.setOnCheckedChangeListener(this)
             sellBuyButton.setOnClickListener(this)
         }
@@ -83,11 +84,11 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
     }
 
     private inner class ShopAdapter : RecyclerView.Adapter<ShopAdapter.ViewHolder> {
-        private val data = ArrayList<Pair<Item, Int>>()
+        private val data = ArrayList<Pair<Int, Item>>()
         private val dataA = ArrayList<Triple<Item, Int, String>>()
         private var auction: Boolean
 
-        constructor(data: ArrayList<Pair<Item, Int>>) {
+        constructor(data: ArrayList<Pair<Int, Item>>) {
             auction = false
             this.data.addAll(data)
         }
@@ -108,6 +109,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
             return ViewHolder(view)
         }
 
+        @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             if (!auction) {
                 if (data.size == 0) {
@@ -117,10 +119,10 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                     fr.commit()
                 } else {
                     if (!buyMode)
-                        holder.name.text = ">${data[position].first.name}:${data[position].second}"
-                    else holder.name.text = ">${data[position].first.name}"
+                        holder.name.text = ">${data[position].second.name}:${data[position].first}"
+                    else holder.name.text = ">${data[position].second.name}"
                     holder.name.setOnClickListener {
-                        chosenItem = data[position].first
+                        chosenItem = data[position].second
                         amount = 1
                         amountText.text = amount.toString()
                         val fr = _childFragmentManager.beginTransaction()
@@ -128,7 +130,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                             ?.let { it1 -> fr.remove(it1) }
                         fr.add(
                             R.id.characteristics3,
-                            ItemCharacteristicsFragment(data[position].first, !buyMode)
+                            ItemCharacteristicsFragment(data[position].second, !buyMode)
                         )
                         fr.commit()
                     }
@@ -156,17 +158,17 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                         fr.commit()
                     }
                 } else {
-                    holder.name.text =">${data[position].first.name}:${data[position].second}"
+                    holder.name.text =">${data[position].second.name}:${data[position].first}"
                     holder.name.setOnClickListener {
                         chosenItem =
-                            data[position].first
+                            data[position].second
                         amount = 1
                         amountText.text = amount.toString()
                         val fr = _childFragmentManager.beginTransaction()
                         _childFragmentManager.findFragmentById(R.id.characteristics3)
                             ?.let { it1 -> fr.remove(it1) }
                         fr.add(R.id.characteristics3,
-                            ItemCharacteristicsFragment(data[position].first, buyMode))
+                            ItemCharacteristicsFragment(data[position].second, buyMode))
                         fr.commit()
                     }
                 }
@@ -208,17 +210,16 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                 if (p0==sellBuyButton){
                     if (chosenItem != null) {
                         if (!buyMode)
-                            if (amount > player.getAmountOfItems(chosenItem!!))
+                            if (amount > player.inventory.quantity(chosenItem!!))
                                 Toast.makeText(context, "You don't have enough items", Toast.LENGTH_SHORT).show()
                             else {
-                                player.placeItemOnAuction()
                                 val fragmentTransaction = _childFragmentManager.beginTransaction()
                                 _childFragmentManager.findFragmentById(R.id.characteristics3)
                                     ?.let { fragmentTransaction.remove(it) }
                                 fragmentTransaction.commit()
                             }
                         else {
-                            player.buyItemOnAuction()
+                            //player.buyItemOnAuction()
                             amountText.text = amount.toString()
                             val fragmentTransaction = _childFragmentManager.beginTransaction()
                             _childFragmentManager.findFragmentById(R.id.characteristics3)
@@ -240,7 +241,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                             ).show()
                         else {
                             Toast.makeText(context, "Sold successfully", Toast.LENGTH_SHORT).show()
-                            shopList.adapter = ShopAdapter(player.inventory)
+                            shopList.adapter = ShopAdapter(player.inventory.inventory)
                             val fr = _childFragmentManager.beginTransaction()
                             _childFragmentManager.findFragmentById(R.id.characteristics3)?.let { it1 -> fr.remove(it1) }
                             fr.commit()
@@ -278,7 +279,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                     val text="Place"
                     modeText.text = text
                     sellBuyButton.text = text
-                    shopList.adapter = ShopAdapter(player.inventory)
+                    shopList.adapter = ShopAdapter(player.inventory.inventory)
                 }
                 amountText.text = amount.toString()
             }
@@ -294,7 +295,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                     val text="Sell"
                     modeText.text = text
                     sellBuyButton.text = text
-                    shopList.adapter = ShopAdapter(player.inventory)
+                    shopList.adapter = ShopAdapter(player.inventory.inventory)
                 }
                 amount=1
                 amountText.text = amount.toString()

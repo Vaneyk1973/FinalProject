@@ -63,7 +63,7 @@ class SignInFragment : Fragment(), View.OnClickListener {
                     )
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            MainActivity.player.setUser(User("", email.text.toString()))
+                            MainActivity.player.user=User("", email.text.toString())
                             MainActivity.player.user.uID = FirebaseAuth.getInstance().uid.toString()
                             FirebaseDatabase.getInstance().getReference("Users")
                                 .child(MainActivity.player.user.uID).child("login")

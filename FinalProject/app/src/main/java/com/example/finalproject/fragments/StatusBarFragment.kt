@@ -68,7 +68,7 @@ class StatusBarFragment:Fragment(), View.OnClickListener {
         health.text=txt
         txt="${round(MainActivity.player.mana)}/${round(MainActivity.player.maxMana)}"
         mana.text=txt
-        txt="${round(MainActivity.player.experience)}/${round(MainActivity.player.experienceToNextLevelRequired)}"
+        txt="${MainActivity.player.experience}/${MainActivity.player.experienceToTheNextLevelRequired}"
         exp.text=txt
     }
 
