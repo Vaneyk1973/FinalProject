@@ -2,17 +2,25 @@ package com.example.finalproject.service
 
 import android.content.Context
 import android.media.MediaPlayer
+import java.security.KeyStore.TrustedCertificateEntry
 
-class Music(var mPlayer:MediaPlayer?) {
+class Music() {
+
+    private lateinit var mPlayer: MediaPlayer
+    private var p = false
+
     fun stop() {
-        mPlayer?.release()
-        mPlayer=null
+        if (p)
+            mPlayer.release()
+        p = false
     }
 
-    fun start(context:Context, track:Int) {
-        stop();
+    fun start(context: Context, track: Int) {
+        stop()
         mPlayer = MediaPlayer.create(context, track)
-        mPlayer?.setOnCompletionListener {start(context, track)}
-        mPlayer?.start()
+        mPlayer.setOnCompletionListener { start(context, track) }
+        mPlayer.start()
+        p = true
     }
+
 }

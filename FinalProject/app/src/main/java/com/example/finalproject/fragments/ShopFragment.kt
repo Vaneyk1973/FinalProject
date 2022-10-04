@@ -234,7 +234,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                     if (chosenItem == null)
                         Toast.makeText(context, "Choose item first", Toast.LENGTH_SHORT).show()
                     else if (!buyMode) {
-                        if (!player.sellItem(Pair(chosenItem!!, amount)))
+                        if (!player.sellItem(Pair(amount, chosenItem!!)))
                             Toast.makeText(
                                 context,
                                 "You don't have enough items", Toast.LENGTH_SHORT
@@ -246,7 +246,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                             _childFragmentManager.findFragmentById(R.id.characteristics3)?.let { it1 -> fr.remove(it1) }
                             fr.commit()
                         }
-                    } else if (!player.buyItem(Pair(chosenItem!!, amount)))
+                    } else if (player.buyItem(Pair(amount, chosenItem!!)))
                         Toast.makeText(context, "You don't have enough gold", Toast.LENGTH_SHORT).show()
                     else
                         Toast.makeText(context, "Bought successfully", Toast.LENGTH_SHORT).show()

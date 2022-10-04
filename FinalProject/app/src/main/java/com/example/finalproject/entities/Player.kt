@@ -45,6 +45,7 @@ class Player(
     var chatMode:Boolean=false
     var gold:Int=0
 
+    @Suppress("UNCHECKED_CAST")
     constructor(player: Player) : this(
         player.name,
         player.id,
@@ -151,9 +152,13 @@ class Player(
         TODO("Not yet implemented")
     }
 
-    fun sellItem(){}
+    fun sellItem(item:Pair<Int, Item>):Boolean {
+        return false
+    }
 
-    fun buyItem(){}
+    fun buyItem(item:Pair<Int, Item>):Boolean {
+        return false
+    }
 
     override fun buyItemOnAuction(item: Pair<Int, Item>, ref: DatabaseReference) {
         TODO("Not yet implemented")

@@ -6,8 +6,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
-import android.util.Log
+import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.finalproject.R
@@ -35,11 +36,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_FULLSCREEN,
-            WindowManager.LayoutParams.FLAG_FULLSCREEN
-        )
-        supportActionBar?.hide()
+        goFullscreen()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         var mapParser: XmlPullParser = resources.getXml(R.xml.start_map)
         val itemsParser: XmlPullParser = resources.getXml(R.xml.items)
@@ -50,14 +47,13 @@ class MainActivity : AppCompatActivity() {
         map.add(Map(mapParser))
         mapParser = resources.getXml(R.xml.first_village_map)
         map.add(Map(mapParser))
-        val size = Point()
-        windowManager.defaultDisplay!!.getSize(size)
-        width = size.x
-        height = size.y
+        val bounds=getBounds()
+        width = bounds.first
+        height = bounds.second
         sh = getPreferences(MODE_PRIVATE)
         res = resources
-        music = Music(null)
-        music!!.start(this, R.raw.main)
+        music = Music()
+        music.start(this, R.raw.main)
         showTutorial = sh.getBoolean("Tutorial", true)
         player = Gson().fromJson(
             sh.getString("Player", Gson().toJson(Player(2, 2))),
@@ -76,7 +72,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        music?.start(this, R.raw.main)
+        music.start(this, R.raw.main)
         sh = getPreferences(MODE_PRIVATE)
         player = Gson().fromJson(
             sh.getString("Player", Gson().toJson(Player(2, 2))),
@@ -125,7 +121,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onStop() {
-        music!!.stop()
+        music.stop()
         sh = getPreferences(MODE_PRIVATE)
         val ed = sh.edit()
         ed.clear()
@@ -143,7 +139,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        music!!.stop()
+        music.stop()
         sh = getPreferences(MODE_PRIVATE)
         val ed = sh.edit()
         ed.clear()
@@ -199,7 +195,7 @@ class MainActivity : AppCompatActivity() {
         private val names = HashMap<Int, String>()
         private lateinit var avatar: Bitmap
         lateinit var textures: Array<Array<Bitmap>>
-        var music: Music? = null
+        lateinit var music: Music
         private lateinit var sh: SharedPreferences
 
         fun getAvatar(): Bitmap = Bitmap.createBitmap(avatar)
@@ -460,7 +456,7 @@ class MainActivity : AppCompatActivity() {
                         val name = names[id]
                         val drop = ArrayList<Triple<Item, Int, Int>>()
                         assert(name != null)
-                        enemies[id] =
+                        /*enemies[id] =
                             Enemy(
                                 health.toDouble(),
                                 mana.toDouble(),
@@ -470,7 +466,7 @@ class MainActivity : AppCompatActivity() {
                                 givenExp.toDouble(),
                                 name!!, drop,
                                 textures[5][texture]
-                            )
+                            )*/
                         enemiesXml.next()
                         while (enemiesXml.name != "enemy") {
                             if (enemiesXml.eventType == XmlPullParser.START_TAG
@@ -677,5 +673,44 @@ class MainActivity : AppCompatActivity() {
             setMagic()
             setTasks()
         }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun goFullscreen(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.hide(WindowInsets.Type.statusBars())
+        } else {
+            window.setFlags(
+                WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN
+            )
+        }
+    }
+
+    @Suppress("DEPRECATION")
+    private fun getBounds(): Pair<Int, Int>{
+        val wm = windowManager
+        val width: Int
+        val height: Int
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val windowMetrics = wm.currentWindowMetrics
+            val windowInsets: WindowInsets = windowMetrics.windowInsets
+
+            val insets = windowInsets.getInsetsIgnoringVisibility(
+                WindowInsets.Type.navigationBars() or WindowInsets.Type.displayCutout())
+            val insetsWidth = insets.right + insets.left
+            val insetsHeight = insets.top + insets.bottom
+
+            val bounds = windowMetrics.bounds
+            width = bounds.width() - insetsWidth
+            height = bounds.height() - insetsHeight
+        } else {
+            val size = Point()
+            val display = wm.defaultDisplay
+            display?.getSize(size)
+            width = size.x
+            height = size.y
+        }
+        return Pair(width, height);
     }
 }
