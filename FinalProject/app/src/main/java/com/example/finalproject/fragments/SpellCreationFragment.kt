@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.service.spell.*
+import com.example.finalproject.service.classes.spell.*
 
 class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEditorActionListener {
 

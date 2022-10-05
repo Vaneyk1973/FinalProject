@@ -12,7 +12,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.service.spell.Spell
+import com.example.finalproject.service.classes.spell.Spell
 
 class SpellsFragment:Fragment(), View.OnClickListener {
 

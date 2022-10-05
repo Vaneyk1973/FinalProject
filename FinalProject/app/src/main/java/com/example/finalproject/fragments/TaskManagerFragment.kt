@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.service.Task
+import com.example.finalproject.service.classes.Task
 
 class TaskManagerFragment(private val inVillage: Boolean=false):Fragment(), View.OnClickListener {
 

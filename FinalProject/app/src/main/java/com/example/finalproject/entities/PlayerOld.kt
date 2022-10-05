@@ -4,8 +4,8 @@ package com.example.finalproject.entities
 import android.util.Log
 import com.example.finalproject.fragments.MainActivity
 import com.example.finalproject.items.*
-import com.example.finalproject.service.Research
-import com.example.finalproject.service.User
+import com.example.finalproject.service.classes.Research
+import com.example.finalproject.service.classes.User
 import com.example.finalproject.service.spell.Spell
 import com.google.gson.Gson
 import java.lang.Math.cbrt

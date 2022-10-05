@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.items.Item
+import com.example.finalproject.service.classes.items.Item
 
 class InventoryFragment : Fragment(), View.OnClickListener {
 

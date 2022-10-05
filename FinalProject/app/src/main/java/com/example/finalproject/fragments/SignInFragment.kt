@@ -8,10 +8,9 @@ import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
 import com.example.finalproject.R
-import com.example.finalproject.service.User
+import com.example.finalproject.service.classes.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
-import kotlin.math.log
 
 class SignInFragment : Fragment(), View.OnClickListener {
 
@@ -63,7 +62,7 @@ class SignInFragment : Fragment(), View.OnClickListener {
                     )
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            MainActivity.player.user=User("", email.text.toString())
+                            MainActivity.player.user= User("", email.text.toString())
                             MainActivity.player.user.uID = FirebaseAuth.getInstance().uid.toString()
                             FirebaseDatabase.getInstance().getReference("Users")
                                 .child(MainActivity.player.user.uID).child("login")

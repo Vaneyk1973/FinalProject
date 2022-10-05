@@ -12,7 +12,7 @@ import com.example.finalproject.R
 import com.example.finalproject.entities.Enemy
 import com.example.finalproject.entities.Player
 import com.example.finalproject.fragments.MainActivity.Companion.player
-import com.example.finalproject.service.spell.Spell
+import com.example.finalproject.service.classes.spell.Spell
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
 import com.google.firebase.database.*

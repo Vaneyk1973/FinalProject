@@ -13,8 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.service.Message
-import com.example.finalproject.service.User
+import com.example.finalproject.service.classes.Message
+import com.example.finalproject.service.classes.User
 import com.google.firebase.database.*
 import com.google.gson.Gson
 import java.util.*

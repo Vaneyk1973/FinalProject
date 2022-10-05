@@ -1,14 +1,15 @@
 package com.example.finalproject.entities
 
 import android.graphics.Bitmap
-import com.example.finalproject.items.Item
-import com.example.finalproject.service.spell.Spell
+import com.example.finalproject.service.classes.Damage
+import com.example.finalproject.service.classes.Loot
+import com.example.finalproject.service.classes.Unit
+import com.example.finalproject.service.interfaces.Health
+import com.example.finalproject.service.interfaces.Lootable
+import com.example.finalproject.service.interfaces.Mana
+import com.example.finalproject.service.classes.spell.Spell
 import com.google.firebase.database.DatabaseReference
-import java.util.Calendar
 import kotlin.math.max
-import kotlin.random.Random
-
-@Suppress("UNCHECKED_CAST")
 
 open class Entity(
     name: String,
@@ -22,7 +23,7 @@ open class Entity(
     override var resistances: ArrayList<Double>,
     override val loot: Loot
 ) :
-    Unit(name = name, id = id), Health, Drop, Mana {
+    Unit(name = name, id = id), Health, Mana, Lootable {
 
     var texture: Bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
         get() = Bitmap.createBitmap(field)
@@ -81,16 +82,6 @@ open class Entity(
 
     override fun regenerateHealth() {
         health = max(maxHealth, health + healthRegen)
-    }
-
-    override fun dropLoot(): ArrayList<Pair<Int, Item>> {
-        val droppedLoot: ArrayList<Pair<Int, Item>> = ArrayList()
-        for (i in loot.loot) {
-            val a = Random(Calendar.getInstance().timeInMillis).nextDouble()
-            if (a < i.first)
-                droppedLoot.add(Pair(i.second, i.third.clone()))
-        }
-        return droppedLoot.clone() as ArrayList<Pair<Int, Item>>
     }
 
     override fun castSpell(target: Health, spell: Spell) {

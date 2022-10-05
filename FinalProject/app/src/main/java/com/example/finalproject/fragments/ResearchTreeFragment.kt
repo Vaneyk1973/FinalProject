@@ -9,7 +9,7 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.finalproject.R
-import com.example.finalproject.service.Research
+import com.example.finalproject.service.classes.Research
 import com.google.common.collect.HashBiMap
 import com.google.gson.Gson
 

@@ -9,8 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.finalproject.R
-import com.example.finalproject.items.Item
-import kotlin.math.cos
+import com.example.finalproject.service.classes.items.Item
 
 class ItemCharacteristicsFragment(val item: Item, private val mode: Boolean = true) : Fragment() {
 

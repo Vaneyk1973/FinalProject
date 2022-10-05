@@ -10,7 +10,7 @@ import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.fragment.app.Fragment
 import com.example.finalproject.R
-import com.example.finalproject.service.User
+import com.example.finalproject.service.classes.User
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 
@@ -62,7 +62,7 @@ class RegisterFragment : Fragment(), View.OnClickListener {
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val ref = FirebaseDatabase.getInstance().getReference("Users")
-                            MainActivity.player.user=User(login, email)
+                            MainActivity.player.user= User(login, email)
                             MainActivity.player.user.uID = FirebaseAuth.getInstance().uid.toString()
                             ref.child(FirebaseAuth.getInstance().uid!!)
                                 .setValue(MainActivity.player.user)

@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.finalproject.R
-import com.example.finalproject.service.spell.Spell
+import com.example.finalproject.service.classes.spell.Spell
 
 class SpellCharacteristicsFragment(val spell: Spell):Fragment() {
 

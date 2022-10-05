@@ -1,8 +1,10 @@
 package com.example.finalproject.entities
 
-import com.example.finalproject.service.spell.Spell
+import com.example.finalproject.service.classes.Damage
+import com.example.finalproject.service.classes.Loot
+import com.example.finalproject.service.interfaces.Dmg
+import com.example.finalproject.service.interfaces.Health
 import com.google.firebase.database.DatabaseReference
-import kotlin.math.max
 
 class Enemy(
     name: String,
@@ -10,9 +12,9 @@ class Enemy(
     health: Double,
     maxHealth: Double,
     healthRegen: Double,
-    mana:Double,
-    maxMana:Double,
-    manaRegen:Double,
+    mana: Double,
+    maxMana: Double,
+    manaRegen: Double,
     resistances: ArrayList<Double>,
     loot: Loot,
     override var damage: Damage
@@ -23,14 +25,14 @@ class Enemy(
         health = health,
         maxHealth = maxHealth,
         healthRegen = healthRegen,
-        mana=mana,
-        maxMana=maxMana,
-        manaRegen=manaRegen,
+        mana = mana,
+        maxMana = maxMana,
+        manaRegen = manaRegen,
         resistances = resistances,
         loot = loot
     ), Dmg {
 
-    constructor(enemy:Enemy):this(
+    constructor(enemy: Enemy) : this(
         enemy.name,
         enemy.id,
         enemy.health,
@@ -44,8 +46,8 @@ class Enemy(
         enemy.damage
     )
 
-    var tick = 0
-    var def = false
+    private var tick = 1
+    private val defCoefficient = 1.05
 
     override fun doDamage(target: Health) {
         target.takeDamage(damage)
@@ -56,23 +58,25 @@ class Enemy(
     }
 
     fun startFight() {
-        tick = 0
+        tick = 1
     }
 
     fun attack(target: Health) {
         if (tick % 2 == 0) {
-            defend()
+            defend(false)
             doDamage(target)
         } else {
-            defend()
+            defend(true)
         }
         tick++
     }
 
-    override fun defend() {
+    override fun defend(def: Boolean) {
         if (def)
-            resistances[0] /= 1.1
+            for (i in 0 until resistances.size)
+                resistances[i] *= defCoefficient
         else
-            resistances[0] *= 1.1
+            for (i in 0 until resistances.size)
+                resistances[i] /= defCoefficient
     }
 }
