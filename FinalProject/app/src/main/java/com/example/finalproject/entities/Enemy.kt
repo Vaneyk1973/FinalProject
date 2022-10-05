@@ -55,11 +55,11 @@ class Enemy(
         target.takeDamage(damage, ref)
     }
 
-    override fun startFight() {
+    fun startFight() {
         tick = 0
     }
 
-    override fun attack(target: Health) {
+    fun attack(target: Health) {
         if (tick % 2 == 0) {
             defend()
             doDamage(target)

@@ -97,22 +97,14 @@ class Player(
     )
 
     override fun doDamage(target: Health) {
-        TODO("Not yet implemented")
+        target.takeDamage(damage)
     }
 
     override fun doDamage(target: Health, ref: DatabaseReference) {
-        TODO("Not yet implemented")
-    }
-
-    override fun attack(target: Health) {
-        TODO("Not yet implemented")
+        target.takeDamage(damage, ref)
     }
 
     override fun defend() {
-        TODO("Not yet implemented")
-    }
-
-    override fun startFight() {
         TODO("Not yet implemented")
     }
 

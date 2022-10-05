@@ -9,9 +9,5 @@ interface Dmg {
 
     fun doDamage(target: Health, ref: DatabaseReference)
 
-    fun attack(target: Health)
-
     fun defend()
-
-    fun startFight()
 }

@@ -1,15 +1,13 @@
 package com.example.finalproject.service.spell
 
-import android.os.Parcel
-import android.os.Parcelable
 import com.example.finalproject.entities.Damage
-import com.example.finalproject.entities.Enemy
+import com.example.finalproject.entities.Health
 import com.example.finalproject.fragments.MainActivity
 
 class Spell() {
     //TODO("Implement new damage")
     var manaConsumption:Double=0.0
-    var damage: Damage =Damage(ArrayList())
+    lateinit var damage: Damage
     var lastingTime:Double=0.0
     var name:String=""
     private val components:ArrayList<Component> = ArrayList()
@@ -22,7 +20,9 @@ class Spell() {
         components.add(ManaReservoir(manaReservoir))
         this.name=name
         manaConsumption=manaReservoir.volume
-        //damage=manaReservoir.volume*element.baseDamage
+        val a=ArrayList<Double>(10)
+        a[element.element]=manaReservoir.volume*element.baseDamage
+        damage=Damage(a)
         lastingTime=manaReservoir.volume/manaChannel.mps
     }
 
@@ -39,10 +39,10 @@ class Spell() {
         MainActivity.player.mana-=manaConsumption
     }
 
-    fun affect(enemy: Enemy){
+    fun affect(target: Health){
         if (MainActivity.player.mana>=manaConsumption){
             consumeMana()
-            enemy.takeDamage(damage)
+            target.takeDamage(damage)
         }
     }
 

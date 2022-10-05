@@ -94,7 +94,7 @@ open class Entity(
     }
 
     override fun castSpell(target: Health, spell: Spell) {
-        TODO("Not yet implemented")
+        spell.affect(target)
     }
 
     override fun regenerateMana() {
