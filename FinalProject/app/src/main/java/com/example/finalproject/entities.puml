@@ -1,0 +1,114 @@
+@startuml
+class Unit{
+ id: Int
+ name: String
+}
+
+class Entity extends Unit implements Health, Mana, Lootable {
+    texture: Bitmap
+
+    regenerate()
+}
+
+class Enemy extends Entity implements Dmg{
+    private tick: Int
+    private defCoefficient: Double
+
+    startFight()
+
+    attack(target: Health)
+}
+
+class Player extends Entity implements Dmg, Level, Inv, Equipment, Auction {
+    user: User
+    mapNum: Int
+    coordinates: ArrayList<Pair<Int, Int>>
+    spells: ArrayList<Spell>
+    researchPoints: Int
+    chatMode: Boolean
+    gold: Int
+    private defCoefficient: Double
+
+    craft(recipe: Recipe): Boolean
+
+    takeDrop(loot: Lootable)
+
+    research(research: Research): Boolean
+
+    checkTasks()
+
+    sellItem(item: Pair<Int, Item>): Boolean
+
+    buyItem(item: Pair<Int, Item>): Boolean
+}
+
+interface Health {
+    health: Double
+    healthRegen: Double
+    maxHealth: Double
+    resistances: ArrayList<Double>
+
+    takeDamage(damage: Damage)
+
+    takeDamage(damage: Damage, ref:DatabaseReference)
+
+    regenerateHealth()
+}
+
+interface Mana {
+    mana: Double
+    maxMana: Double
+    manaRegen: Double
+
+    castSpell(target: Health, spell: Spell)
+
+    regenerateMana()
+}
+
+interface Lootable {
+    loot: Loot
+}
+
+interface Dmg {
+    damage: Damage
+
+    doDamage(target: Health)
+
+    doDamage(target: Health, ref: DatabaseReference)
+
+    defend(def: Boolean)
+}
+
+interface Equipment {
+    equipment: ArrayList<Item>
+
+    equipItem(item: Item): Boolean
+
+    unequipItem(item: Item): Boolean
+}
+
+interface Auction {
+
+    buyItemOnAuction(item: Pair<Int, Item>, ref:DatabaseReference)
+
+    putItemOnAuction(item: Pair<Int, Item>, ref: DatabaseReference)
+
+    removeItemFromAuction(item: Pair<Int, Item>, ref: DatabaseReference)
+}
+
+interface Inv {
+    inventory: Inventory
+
+    addItemsToInventory(item: Pair<Int, Item>)
+
+    removeItemsFromInventory(item: Pair<Int, Item>): Boolean
+}
+
+interface Level {
+    level: Int
+    experience: Int
+    experienceToTheNextLevelRequired: Int
+
+    levelUp()
+}
+@enduml
