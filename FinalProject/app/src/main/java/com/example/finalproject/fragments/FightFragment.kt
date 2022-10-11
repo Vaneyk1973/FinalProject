@@ -149,7 +149,7 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
             if (v == attack) {
                 player.regenerate()
                 enemy.regenerate()
-                player.attack(enemy)
+                player.doDamage(enemy)
                 enemy.attack(player)
                 updateStatus()
                 if (enemy.health <= 0) {
@@ -215,9 +215,9 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
         } else {
             if (v == attack) {
                 player.regenerate()
-                player.attack(enemy)
+                player.doDamage(enemy)
                 if (enemy.health <= 0) {
-
+                    //TODO
                 }
                 if (player.health <= 0) {
 

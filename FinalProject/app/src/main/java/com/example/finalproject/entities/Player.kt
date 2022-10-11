@@ -3,7 +3,7 @@ package com.example.finalproject.entities
 import com.example.finalproject.service.classes.*
 import com.example.finalproject.service.classes.items.Armor
 import com.example.finalproject.service.classes.items.Item
-import com.example.finalproject.service.classes.items.Recipe
+import com.example.finalproject.service.classes.Recipe
 import com.example.finalproject.service.classes.items.Weapon
 import com.example.finalproject.service.classes.spell.Spell
 import com.example.finalproject.service.interfaces.*

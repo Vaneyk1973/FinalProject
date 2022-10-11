@@ -8,7 +8,7 @@ class Enemy extends Entity implements Parcelable {
 
     public Enemy(String name, int health, int mana, int damage, int armor, int given_gold, int given_exp, ArrayList<Pair<Item, Integer>> drop, Bitmap b) {}
 
-    public Enemy(Enemy enemy) {}
+    public Enemy(Enemy enemy)
 
     public void attack(Player player) {}
 

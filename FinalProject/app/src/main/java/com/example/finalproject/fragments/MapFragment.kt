@@ -50,7 +50,8 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
                 else
                     visibleMap[i][j]!!.setImageBitmap(
                         Bitmap.createBitmap(
-                            map[player.coordinates[mapNum].first - 2 + i][player.coordinates[mapNum].second - 2 + j].getTexture()
+                            map[player.coordinates[mapNum].first - 2 + i]
+                                    [player.coordinates[mapNum].second - 2 + j].getTexture()
                         )
                     )
 

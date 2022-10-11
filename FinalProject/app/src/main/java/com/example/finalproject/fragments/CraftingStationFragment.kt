@@ -12,7 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.service.classes.items.Recipe
+import com.example.finalproject.service.classes.Recipe
 
 class CraftingStationFragment : Fragment(), View.OnClickListener {
 
@@ -50,12 +50,12 @@ class CraftingStationFragment : Fragment(), View.OnClickListener {
 
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.name.text = ">${data[position].product.first.name}"
+            holder.name.text = ">${data[position].product.second.name}"
             var a = ""
-            val size = data[position].getIngredients().size
+            val size = data[position].ingredients.size
             for (i in 0 until size - 1)
-                a += "${data[position].getIngredients()[i].first.name} ${data[position].getIngredients()[i].second},"
-            a += "${data[position].getIngredients()[size - 1].first.name} ${data[position].getIngredients()[size - 1].second}"
+                a += "${data[position].ingredients[i].second.name} ${data[position].ingredients[i].first},"
+            a += "${data[position].ingredients[size - 1].second.name} ${data[position].ingredients[size - 1].first}"
             holder.ingredients.text = a
             holder.name.setOnClickListener {
                 val fm = childFragmentManager
@@ -63,7 +63,7 @@ class CraftingStationFragment : Fragment(), View.OnClickListener {
                 fm.findFragmentById(R.id.characteristics1)?.let { it1 -> fr.remove(it1) }
                 fr.add(
                     R.id.characteristics1,
-                    ItemCharacteristicsFragment(data[position].product.first)
+                    ItemCharacteristicsFragment(data[position].product.second)
                 )
                 fr.commit()
                 chosenRecipe = data[position]

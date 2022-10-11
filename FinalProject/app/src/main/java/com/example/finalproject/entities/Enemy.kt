@@ -57,10 +57,6 @@ class Enemy(
         target.takeDamage(damage, ref)
     }
 
-    fun startFight() {
-        tick = 1
-    }
-
     fun attack(target: Health) {
         if (tick % 2 == 0) {
             defend(false)

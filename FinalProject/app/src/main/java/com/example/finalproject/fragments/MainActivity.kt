@@ -16,12 +16,9 @@ import com.example.finalproject.entities.Enemy
 import com.example.finalproject.entities.Player
 import com.example.finalproject.service.classes.items.Armor
 import com.example.finalproject.service.classes.items.Item
-import com.example.finalproject.service.classes.items.Recipe
 import com.example.finalproject.service.*
-import com.example.finalproject.service.classes.Music
-import com.example.finalproject.service.classes.Research
-import com.example.finalproject.service.classes.Task
-import com.example.finalproject.service.classes.User
+import com.example.finalproject.service.classes.*
+import com.example.finalproject.service.classes.Map
 import com.example.finalproject.service.classes.spell.*
 import com.google.gson.Gson
 import org.xmlpull.v1.XmlPullParser
@@ -31,6 +28,7 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.collections.indices
 import kotlin.collections.set
+import kotlin.math.cos
 
 
 //TODO
@@ -50,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         map.add(Map(mapParser))
         mapParser = resources.getXml(R.xml.first_village_map)
         map.add(Map(mapParser))
-        val bounds=getBounds()
+        val bounds = getBounds()
         width = bounds.first
         height = bounds.second
         sh = getPreferences(MODE_PRIVATE)
@@ -82,8 +80,9 @@ class MainActivity : AppCompatActivity() {
             Player::class.java
         )
         player.user = Gson().fromJson(
-                sh.getString("User", Gson().toJson(User())),
-                User::class.java)
+            sh.getString("User", Gson().toJson(User())),
+            User::class.java
+        )
         showTutorial = sh.getBoolean("Tutorial", true)
         researchesJson = ArrayList(
             Gson().fromJson(
@@ -344,7 +343,7 @@ class MainActivity : AppCompatActivity() {
                         when (itemsXml.name) {
                             "item" -> {
                                 val id = itemsXml.getAttributeValue(3).toInt()
-                                val name = names[id]
+                                val name = names[id]!!
                                 val costSell = itemsXml.getAttributeValue(2).toInt()
                                 val costBuy = itemsXml.getAttributeValue(1).toInt()
                                 val rarity = itemsXml.getAttributeValue(4).toInt()
@@ -352,32 +351,32 @@ class MainActivity : AppCompatActivity() {
                                 ids[id] = items.size
                                 items.add(
                                     Item(
-                                        costSell.toDouble(),
-                                        costBuy.toDouble(),
-                                        rarity,
-                                        category,
-                                        name!!
+                                        name, id, costSell, costBuy, rarity, category
                                     )
                                 )
                             }
                             "armor" -> {
                                 val id = itemsXml.getAttributeValue(4).toInt()
-                                val name = names[id]
+                                val name = names[id]!!
                                 val costSell = itemsXml.getAttributeValue(3).toInt()
                                 val costBuy = itemsXml.getAttributeValue(2).toInt()
                                 val rarity = itemsXml.getAttributeValue(5).toInt()
                                 val category = itemsXml.getAttributeValue(1).toInt()
-                                val armor = itemsXml.getAttributeValue(0).toInt()
-                                val weight = itemsXml.getAttributeValue(7).toInt()
+                                val armor = itemsXml.getAttributeValue(0).toDouble()
+                                val weight = itemsXml.getAttributeValue(7).toDouble()
                                 val typeOfArmor = itemsXml.getAttributeValue(6).toInt()
                                 ids[id] = items.size
                                 items.add(
                                     Armor(
-                                        name!!,
-                                        costSell.toDouble(),
-                                        costBuy.toDouble(),
-                                        armor.toDouble(),
-                                        weight.toDouble(), typeOfArmor, category, rarity
+                                        name,
+                                        id,
+                                        costSell,
+                                        costBuy,
+                                        rarity,
+                                        category,
+                                        armor,
+                                        weight,
+                                        typeOfArmor
                                     )
                                 )
                             }
@@ -391,7 +390,7 @@ class MainActivity : AppCompatActivity() {
                     ) {
                         val productId = recipesXml.getAttributeValue(0).toInt()
                         val productsNumber = recipesXml.getAttributeValue(1).toInt()
-                        val ingredients = ArrayList<Pair<Item, Int>>()
+                        val ingredients = ArrayList<Pair<Int, Item>>()
                         recipesXml.next()
                         while (recipesXml.name != "recipe") {
                             if (recipesXml.eventType == XmlPullParser.START_TAG
@@ -401,8 +400,8 @@ class MainActivity : AppCompatActivity() {
                                 val ingredientsNumber = recipesXml.getAttributeValue(1).toInt()
                                 ingredients.add(
                                     Pair(
-                                        items[ids[ingredientId]!!],
-                                        ingredientsNumber
+                                        ingredientsNumber,
+                                        items[ids[ingredientId]!!]
                                     )
                                 )
                             }
@@ -410,7 +409,7 @@ class MainActivity : AppCompatActivity() {
                         }
                         recipes.add(
                             Recipe(
-                                Pair(items[ids[productId]!!], productsNumber), ingredients
+                                Pair(productsNumber, items[ids[productId]!!]), ingredients
                             )
                         )
                         continue
@@ -448,28 +447,31 @@ class MainActivity : AppCompatActivity() {
                     if (enemiesXml.eventType == XmlPullParser.START_TAG
                         && enemiesXml.name == "enemy"
                     ) {
-                        val armor = enemiesXml.getAttributeValue(0).toInt()
-                        val health = enemiesXml.getAttributeValue(4).toInt()
-                        val damage = enemiesXml.getAttributeValue(1).toInt()
-                        val mana = enemiesXml.getAttributeValue(6).toInt()
+                        val armor = enemiesXml.getAttributeValue(0).toDouble()
+                        val health = enemiesXml.getAttributeValue(4).toDouble()
+                        val healthRegen = 0.0
+                        val damage = enemiesXml.getAttributeValue(1).toDouble()
+                        val mana = enemiesXml.getAttributeValue(6).toDouble()
                         val givenGold = enemiesXml.getAttributeValue(3).toInt()
                         val givenExp = enemiesXml.getAttributeValue(2).toInt()
                         val texture = enemiesXml.getAttributeValue(7).toInt()
                         val id = enemiesXml.getAttributeValue(5).toInt()
-                        val name = names[id]
+                        val name = names[id]!!
                         val drop = ArrayList<Triple<Item, Int, Int>>()
-                        assert(name != null)
-                        /*enemies[id] =
+                        enemies[id] =
                             Enemy(
-                                health.toDouble(),
-                                mana.toDouble(),
-                                damage.toDouble(),
-                                armor.toDouble(),
-                                givenGold.toDouble(),
-                                givenExp.toDouble(),
-                                name!!, drop,
-                                textures[5][texture]
-                            )*/
+                                name,
+                                id,
+                                health,
+                                health,
+                                1.0,
+                                mana,
+                                mana,
+                                1.0,
+                                ArrayList(),
+                                Loot(),
+                                Damage()
+                            )
                         enemiesXml.next()
                         while (enemiesXml.name != "enemy") {
                             if (enemiesXml.eventType == XmlPullParser.START_TAG
@@ -679,7 +681,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Suppress("DEPRECATION")
-    private fun goFullscreen(){
+    private fun goFullscreen() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
         } else {
@@ -691,7 +693,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Suppress("DEPRECATION")
-    private fun getBounds(): Pair<Int, Int>{
+    private fun getBounds(): Pair<Int, Int> {
         val wm = windowManager
         val width: Int
         val height: Int
@@ -700,7 +702,8 @@ class MainActivity : AppCompatActivity() {
             val windowInsets: WindowInsets = windowMetrics.windowInsets
 
             val insets = windowInsets.getInsetsIgnoringVisibility(
-                WindowInsets.Type.navigationBars() or WindowInsets.Type.displayCutout())
+                WindowInsets.Type.navigationBars() or WindowInsets.Type.displayCutout()
+            )
             val insetsWidth = insets.right + insets.left
             val insetsHeight = insets.top + insets.bottom
 
