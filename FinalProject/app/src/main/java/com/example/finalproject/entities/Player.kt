@@ -30,7 +30,7 @@ class Player(
     override var experienceToTheNextLevelRequired: Int,
     var user: User,
     var mapNum: Int = 0,
-    val coordinates: ArrayList<Pair<Int, Int>> = ArrayList(2)
+    val coordinates: ArrayList<Pair<Int, Int>> = ArrayList()
 ) : Entity(
     name = name,
     id = id,
