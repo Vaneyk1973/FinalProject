@@ -113,7 +113,7 @@ class InventoryFragment : Fragment(), View.OnClickListener {
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentManager.findFragmentById(R.id.inventory)
                 ?.let { it1 -> fragmentTransaction.remove(it1) }
-            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNumber))
             fragmentTransaction.add(R.id.status, StatusBarFragment())
             fragmentTransaction.add(R.id.menu, MenuFragment())
             fragmentTransaction.commit()

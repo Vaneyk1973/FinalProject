@@ -201,7 +201,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentManager.findFragmentById(R.id.shop)?.let { fragmentTransaction.remove(it) }
             fragmentManager.findFragmentById(R.id.map)?.let { fragmentTransaction.remove(it) }
-            fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+            fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
             fragmentTransaction.add(R.id.status, StatusBarFragment())
             fragmentTransaction.add(R.id.menu, MenuFragment())
             fragmentTransaction.commit()

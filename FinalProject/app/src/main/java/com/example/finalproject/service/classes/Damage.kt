@@ -1,5 +1,8 @@
 package com.example.finalproject.service.classes
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 class Damage(private val dmg:ArrayList<Double>) {
 
     init {

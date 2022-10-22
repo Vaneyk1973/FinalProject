@@ -125,7 +125,7 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
             val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.spell_creation)!!)
-            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNumber))
             fragmentTransaction.add(R.id.status, StatusBarFragment())
             fragmentTransaction.add(R.id.menu, MenuFragment())
             fragmentTransaction.commit()

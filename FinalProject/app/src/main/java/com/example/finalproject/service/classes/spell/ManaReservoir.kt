@@ -1,5 +1,22 @@
 package com.example.finalproject.service.classes.spell
 
-class ManaReservoir(val volume:Double, name: String, available: Boolean): Component(name, available) {
-    constructor(manaReservoir: ManaReservoir) : this(manaReservoir.volume, manaReservoir.name, manaReservoir.available)
+import com.example.finalproject.service.serializers.ManaReservoirSerializer
+import kotlinx.serialization.Serializable
+
+@Serializable(with = ManaReservoirSerializer::class)
+class ManaReservoir(name: String, id: Int, available: Boolean, val volume: Double) :
+    Component(name = name, id = id, available = available) {
+    constructor(manaReservoir: ManaReservoir) : this(
+        manaReservoir.name,
+        manaReservoir.id,
+        manaReservoir.available,
+        manaReservoir.volume
+    )
+
+    constructor(component: Component, volume: Double) : this(
+        component.name,
+        component.id,
+        component.available,
+        volume
+    )
 }

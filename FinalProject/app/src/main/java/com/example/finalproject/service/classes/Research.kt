@@ -1,7 +1,9 @@
 package com.example.finalproject.service.classes
 
 import com.example.finalproject.fragments.MainActivity.Companion.elements
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Research(
     val requiredResearches: ArrayList<Research>,
     val name: String,

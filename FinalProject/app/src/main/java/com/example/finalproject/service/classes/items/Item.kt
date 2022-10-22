@@ -1,7 +1,10 @@
 package com.example.finalproject.service.classes.items
 
 import com.example.finalproject.service.classes.Unit
+import com.example.finalproject.service.serializers.ItemSerializer
+import kotlinx.serialization.Serializable
 
+@Serializable(with= ItemSerializer::class)
 open class Item(
     name: String,
     id: Int,
@@ -11,7 +14,7 @@ open class Item(
     val category: Int
 ) : Unit(name = name, id = id) {
 
-    constructor() : this("", -1, 0, 0, 0, -1)
+    constructor() : this("", -1, -1, -1, -1, -1)
 
     constructor(item: Item) : this(
         item.name,

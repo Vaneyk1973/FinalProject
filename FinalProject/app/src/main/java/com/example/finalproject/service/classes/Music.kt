@@ -3,7 +3,7 @@ package com.example.finalproject.service.classes
 import android.content.Context
 import android.media.MediaPlayer
 
-class Music() {
+class Music{
 
     private lateinit var mPlayer: MediaPlayer
     private var p = false

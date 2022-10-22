@@ -9,8 +9,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.R
-import com.example.finalproject.entities.Enemy
-import com.example.finalproject.entities.Player
+import com.example.finalproject.service.classes.entities.Enemy
+import com.example.finalproject.service.classes.entities.Player
 import com.example.finalproject.fragments.MainActivity.Companion.player
 import com.example.finalproject.service.classes.spell.Spell
 import com.google.android.gms.tasks.OnCompleteListener
@@ -127,7 +127,7 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
                     val fragmentManager = parentFragmentManager
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
-                    fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+                    fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
                     fragmentTransaction.add(R.id.status, StatusBarFragment())
                     fragmentTransaction.add(R.id.menu, MenuFragment())
                     fragmentTransaction.commit()
@@ -190,7 +190,7 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
                     if (a >= 50) {
                         val fragmentTransaction = fragmentManager.beginTransaction()
                         fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
-                        fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+                        fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
                         fragmentTransaction.add(R.id.status, StatusBarFragment())
                         fragmentTransaction.add(R.id.menu, MenuFragment())
                         fragmentTransaction.commit()
@@ -203,7 +203,7 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
                 } else {
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
-                    fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+                    fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
                     fragmentTransaction.add(R.id.status, StatusBarFragment())
                     fragmentTransaction.add(R.id.menu, MenuFragment())
                     fragmentTransaction.commit()
@@ -228,7 +228,7 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
                     if (a >= 50) {
                         val fragmentTransaction = fragmentManager.beginTransaction()
                         fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
-                        fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+                        fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
                         fragmentTransaction.add(R.id.status, StatusBarFragment())
                         fragmentTransaction.add(R.id.menu, MenuFragment())
                         fragmentTransaction.commit()
@@ -241,7 +241,7 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
                 } else {
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
-                    fragmentTransaction.add(R.id.map, MapFragment(player.mapNum))
+                    fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
                     fragmentTransaction.add(R.id.status, StatusBarFragment())
                     fragmentTransaction.add(R.id.menu, MenuFragment())
                     fragmentTransaction.commit()

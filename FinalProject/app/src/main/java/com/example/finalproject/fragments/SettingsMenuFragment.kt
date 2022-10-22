@@ -41,7 +41,7 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
         when (p0) {
             back -> {
                 fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.settings_menu)!!)
-                fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+                fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNumber))
                 fragmentTransaction.add(R.id.menu, MenuFragment())
                 fragmentTransaction.add(R.id.status, StatusBarFragment())
             }

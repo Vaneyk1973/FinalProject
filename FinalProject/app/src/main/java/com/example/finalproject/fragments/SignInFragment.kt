@@ -108,7 +108,7 @@ class SignInFragment : Fragment(), View.OnClickListener {
         } else if (p0 == back) {
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.log_in)!!)
-            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNumber))
             fragmentTransaction.add(R.id.status, StatusBarFragment())
             fragmentTransaction.add(R.id.menu, MenuFragment())
             fragmentTransaction.commit()

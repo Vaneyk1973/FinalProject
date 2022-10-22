@@ -13,7 +13,7 @@ import android.widget.TableRow
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.finalproject.R
-import com.example.finalproject.entities.Enemy
+import com.example.finalproject.service.classes.entities.Enemy
 import kotlin.math.abs
 import com.example.finalproject.fragments.MainActivity.Companion.player
 import java.util.*
@@ -23,10 +23,10 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
 
     private val visibleMap: Array<Array<ImageView?>> = Array(5) { arrayOfNulls(5) }
     private val map = MainActivity.map[mapNum].map
-    private lateinit var enemy:Enemy
+    private lateinit var enemy: Enemy
 
     constructor() : this(0) {
-        player.mapNum = 0
+        player.mapNumber = 0
     }
 
     override fun onCreateView(
@@ -177,7 +177,7 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
                     } else {
                         when (tileId) {
                             3 + idLocation -> {
-                                player.mapNum = 1
+                                player.mapNumber = 1
                                 player.coordinates[1] = Pair(6, 3)
                                 val fm = parentFragmentManager
                                 val fragmentTransaction = fm.beginTransaction()

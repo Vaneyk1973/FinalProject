@@ -98,7 +98,7 @@ class ChatFragment : Fragment(), View.OnClickListener, ValueEventListener,
             chatFragmentTransaction.commit()
         } else if (p0 == backButton) {
             val chatFragmentTransaction = parentFragmentManager.beginTransaction()
-            chatFragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+            chatFragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNumber))
             chatFragmentTransaction.add(R.id.menu, MenuFragment())
             chatFragmentTransaction.add(R.id.status, StatusBarFragment())
             chatFragmentTransaction.remove(parentFragmentManager.findFragmentById(R.id.chat)!!)

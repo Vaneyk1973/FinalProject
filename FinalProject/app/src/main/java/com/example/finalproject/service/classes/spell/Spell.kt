@@ -3,7 +3,9 @@ package com.example.finalproject.service.classes.spell
 import com.example.finalproject.service.classes.Damage
 import com.example.finalproject.service.interfaces.Health
 import com.example.finalproject.fragments.MainActivity
+import kotlinx.serialization.Serializable
 
+@Serializable
 class Spell() {
     //TODO("Implement new damage")
     var manaConsumption:Double=0.0
@@ -23,7 +25,7 @@ class Spell() {
         val a=ArrayList<Double>(10)
         a[element.element]=manaReservoir.volume*element.baseDamage
         damage= Damage(a)
-        lastingTime=manaReservoir.volume/manaChannel.mps
+        lastingTime=manaReservoir.volume/manaChannel.bandwidth
     }
 
     constructor(spell: Spell):this(){

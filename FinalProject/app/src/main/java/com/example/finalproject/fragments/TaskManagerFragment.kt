@@ -83,7 +83,7 @@ class TaskManagerFragment(private val inVillage: Boolean=false):Fragment(), View
             fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.tasks)!!)
             if (inVillage) {
                 fragmentTransaction.add(R.id.menu, MenuFragment())
-                fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNum))
+                fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNumber))
                 fragmentTransaction.add(R.id.status, StatusBarFragment())
             } else fragmentTransaction.add(R.id.settings_menu, SettingsMenuFragment())
             fragmentTransaction.commit()

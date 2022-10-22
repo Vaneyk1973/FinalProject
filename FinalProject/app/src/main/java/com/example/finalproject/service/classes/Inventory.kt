@@ -1,9 +1,11 @@
 package com.example.finalproject.service.classes
 
 import com.example.finalproject.service.classes.items.Item
+import kotlinx.serialization.Serializable
 
 @Suppress("UNCHECKED_CAST")
 
+@Serializable
 class Inventory() {
 
     val inventory: ArrayList<Pair<Int, Item>>

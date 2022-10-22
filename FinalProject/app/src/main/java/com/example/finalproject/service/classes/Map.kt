@@ -1,17 +1,19 @@
 package com.example.finalproject.service.classes
 
 import android.graphics.Bitmap
+import kotlinx.serialization.Contextual
+import kotlinx.serialization.Serializable
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import java.io.IOException
 
-class Map(mapXml:XmlPullParser) {
-
-    val map=ArrayList<ArrayList<MapTile>>()
+@Serializable
+class Map{
+    val map:ArrayList<ArrayList<MapTile>> =ArrayList<ArrayList<MapTile>>()
     var length:Int=0
     var width:Int=0
 
-    init{
+    constructor(mapXml:XmlPullParser){
         try {
             while (mapXml.eventType != XmlPullParser.END_DOCUMENT) {
                 if (mapXml.eventType == XmlPullParser.START_TAG && mapXml.name == "row")
@@ -32,7 +34,9 @@ class Map(mapXml:XmlPullParser) {
         width=map[0].size
     }
 
+    @Serializable
     class MapTile(val id:Int){
+        @Contextual
         private lateinit var texture: Bitmap
 
         fun getTexture():Bitmap=Bitmap.createBitmap(texture)
