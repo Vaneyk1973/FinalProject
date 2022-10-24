@@ -23,6 +23,7 @@ import com.example.finalproject.service.classes.entities.Player
 import com.example.finalproject.service.classes.items.Item
 import com.example.finalproject.service.classes.spell.*
 import com.google.gson.Gson
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.xmlpull.v1.XmlPullParser
@@ -98,7 +99,7 @@ class MainActivity : AppCompatActivity() {
         private lateinit var sh: SharedPreferences
         lateinit var assets: Assets
 
-        @kotlinx.serialization.Serializable
+        @Serializable
         class Assets {
             val chancesOfFight =
                 HashMap<Int, Int>() //<id of location (field, forest etc.), chance of getting into a fight>
