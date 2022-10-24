@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
 import com.example.finalproject.R
-import com.example.finalproject.service.Statistics.recipes
+import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.service.classes.Recipe
 
 class CraftingStationFragment : Fragment(), View.OnClickListener {
@@ -38,7 +38,7 @@ class CraftingStationFragment : Fragment(), View.OnClickListener {
         craft.setOnClickListener(this)
         val crafts: RecyclerView = requireView().findViewById(R.id.crafts)
         crafts.layoutManager = LinearLayoutManager(context)
-        crafts.adapter = CraftingAdapter(recipes)
+        crafts.adapter = CraftingAdapter(assets.recipes)
     }
 
     private inner class CraftingAdapter(val data: ArrayList<Recipe>) :

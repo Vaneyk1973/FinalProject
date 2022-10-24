@@ -9,8 +9,8 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.finalproject.MainActivity
+import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.R
-import com.example.finalproject.service.Statistics.researches
 import com.example.finalproject.service.classes.Research
 import com.google.common.collect.HashBiMap
 
@@ -28,7 +28,7 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         initializeResearches(researchHashMap)
         back= requireView().findViewById(R.id.research_tree_back_button)
-        for (i in researches) {
+        for (i in assets.researches) {
             val text="${i.name} : ${i.cost}"
             researchHashMap[i]!!.text = text
             researchHashMap[i]!!.setOnClickListener(this)
@@ -39,15 +39,15 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initializeResearches(researchHashMap:HashBiMap<Research, TextView>){
-        researchHashMap[researches[0]] =
+        researchHashMap[assets.researches[0]] =
             requireView().findViewById(R.id.basic_spell_creation) as TextView
-        researchHashMap[researches[1]] =
+        researchHashMap[assets.researches[1]] =
             requireView().findViewById(R.id.fire_mage) as TextView
-        researchHashMap[researches[2]] =
+        researchHashMap[assets.researches[2]] =
             requireView().findViewById(R.id.water_mage) as TextView
-        researchHashMap[researches[3]] =
+        researchHashMap[assets.researches[3]] =
             requireView().findViewById(R.id.earth_mage) as TextView
-        researchHashMap[researches[4]] =
+        researchHashMap[assets.researches[4]] =
             requireView().findViewById(R.id.air_mage) as TextView
     }
 

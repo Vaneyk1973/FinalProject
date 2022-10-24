@@ -14,21 +14,17 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
+import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.R
-import com.example.finalproject.service.Statistics.elements
-import com.example.finalproject.service.Statistics.forms
-import com.example.finalproject.service.Statistics.manaChannels
-import com.example.finalproject.service.Statistics.manaReservoirs
-import com.example.finalproject.service.Statistics.types
 import com.example.finalproject.service.classes.spell.*
 
 class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEditorActionListener {
 
-    private var element = elements[0]
-    private var type = types[0]
-    private var form = forms[0]
-    private var manaChannel = manaChannels[0]
-    private var manaReservoir = manaReservoirs[0]
+    private var element = assets.elements[0]
+    private var type = assets.types[0]
+    private var form = assets.forms[0]
+    private var manaChannel = assets.manaChannels[0]
+    private var manaReservoir = assets.manaReservoirs[0]
     private lateinit var nameView: EditText
     private lateinit var confirmSpell: Button
     private lateinit var back: Button
@@ -136,15 +132,15 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
             fragmentTransaction.add(R.id.menu, MenuFragment())
             fragmentTransaction.commit()
         } else if (p0==formView){
-            comps.adapter = SpellAdapter(forms)
+            comps.adapter = SpellAdapter(assets.forms)
         } else if (p0==typeView) {
-            comps.adapter = SpellAdapter(types)
+            comps.adapter = SpellAdapter(assets.types)
         } else if (p0==manaChannelView) {
-            comps.adapter = SpellAdapter(manaChannels)
+            comps.adapter = SpellAdapter(assets.manaChannels)
         } else if (p0==manaReservoirView) {
-            comps.adapter = SpellAdapter(manaReservoirs)
+            comps.adapter = SpellAdapter(assets.manaReservoirs)
         } else if (p0==elementView) {
-            comps.adapter = SpellAdapter(elements)
+            comps.adapter = SpellAdapter(assets.elements)
         }
     }
 

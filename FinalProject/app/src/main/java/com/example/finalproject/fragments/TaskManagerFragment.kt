@@ -13,7 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
 import com.example.finalproject.R
-import com.example.finalproject.service.Statistics
 import com.example.finalproject.service.classes.Task
 
 class TaskManagerFragment(private val inVillage: Boolean=false):Fragment(), View.OnClickListener {
@@ -35,7 +34,7 @@ class TaskManagerFragment(private val inVillage: Boolean=false):Fragment(), View
         if (!inVillage) takeTask.visibility = View.GONE
         tasks = requireView().findViewById(R.id.tasks_list)
         tasks.layoutManager = LinearLayoutManager(context)
-        tasks.adapter = TasksAdapter(Statistics.tasks)
+        tasks.adapter = TasksAdapter(MainActivity.assets.tasks)
         takeTask.setOnClickListener(this)
         back.setOnClickListener(this)
     }
@@ -75,9 +74,9 @@ class TaskManagerFragment(private val inVillage: Boolean=false):Fragment(), View
         if (p0==takeTask){
             if (chosenTask == null) Toast.makeText(context, "Take task first", Toast.LENGTH_SHORT).show()
             else {
-                Statistics.tasks[Statistics.tasks.indexOf(chosenTask)].taken = true
+                MainActivity.assets.tasks[MainActivity.assets.tasks.indexOf(chosenTask)].taken = true
                 MainActivity.player.checkTasks()
-                tasks.adapter = TasksAdapter(Statistics.tasks)
+                tasks.adapter = TasksAdapter(MainActivity.assets.tasks)
             }
         } else if (p0==back){
             val fragmentManager = parentFragmentManager

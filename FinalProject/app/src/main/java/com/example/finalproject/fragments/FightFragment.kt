@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
 import com.example.finalproject.MainActivity.Companion.player
+import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.R
-import com.example.finalproject.service.Statistics.enemies
 import com.example.finalproject.service.classes.entities.Enemy
 import com.example.finalproject.service.classes.entities.Player
 import com.example.finalproject.service.classes.spell.Spell
@@ -52,7 +52,7 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        enemy=Enemy(enemies[enemyId]!!)
+        enemy=Enemy(assets.enemies[enemyId]!!)
         val duelProgressBar = requireView().findViewById<ProgressBar>(R.id.fight_progress_bar)
         run = requireView().findViewById(R.id.run)
         attack = requireView().findViewById(R.id.attack)
@@ -170,13 +170,7 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
                 }
                 if (player.health <= 0) {
                     player = Player(2, 2)
-                    MainActivity.setInitialData(
-                        resources.getXml(R.xml.items),
-                        resources.getXml(R.xml.names),
-                        resources.getXml(R.xml.recipes),
-                        resources.getXml(R.xml.enemies),
-                        resources.getXml(R.xml.locations)
-                    )
+                    MainActivity.setInitialData()
                     Toast.makeText(
                         context,
                         "You died \n All of your progress will be reset \n Better luck this time",

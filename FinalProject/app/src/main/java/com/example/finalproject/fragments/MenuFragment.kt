@@ -8,8 +8,8 @@ import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.finalproject.MainActivity
+import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.R
-import com.example.finalproject.service.Statistics.researches
 
 class MenuFragment : Fragment(), View.OnClickListener {
 
@@ -50,7 +50,7 @@ class MenuFragment : Fragment(), View.OnClickListener {
             fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.menu)!!)
             fragmentTransaction.commit()
         } else if (p0 == controlPanel[1]) {
-            if (researches[0].researched) {
+            if (assets.researches[0].researched) {
                 fragmentTransaction.add(R.id.spell_creation, SpellCreationFragment())
                 fragmentManager.findFragmentById(R.id.map)
                     ?.let { it1 -> fragmentTransaction.remove(it1) }
@@ -63,7 +63,7 @@ class MenuFragment : Fragment(), View.OnClickListener {
                 Toast.makeText(context, "You don't know how to make spells yet", Toast.LENGTH_SHORT)
                     .show()
         } else if (p0 == controlPanel[2]) {
-            if (researches[0].researched) {
+            if (assets.researches[0].researched) {
                 if (MainActivity.player.spells.isEmpty())
                     Toast.makeText(context, "You don't have any spells yet", Toast.LENGTH_SHORT)
                         .show()

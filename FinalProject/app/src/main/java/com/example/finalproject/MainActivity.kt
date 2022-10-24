@@ -18,13 +18,15 @@ import com.example.finalproject.fragments.TutorialFragment
 import com.example.finalproject.service.*
 import com.example.finalproject.service.classes.*
 import com.example.finalproject.service.classes.Map
+import com.example.finalproject.service.classes.entities.Enemy
 import com.example.finalproject.service.classes.entities.Player
+import com.example.finalproject.service.classes.items.Item
 import com.example.finalproject.service.classes.spell.*
 import com.google.gson.Gson
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.xmlpull.v1.XmlPullParser
 
-
-//TODO
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,11 +35,6 @@ class MainActivity : AppCompatActivity() {
         goFullscreen()
         val fragmentTransaction = supportFragmentManager.beginTransaction()
         var mapParser: XmlPullParser = resources.getXml(R.xml.start_map)
-        val itemsParser: XmlPullParser = resources.getXml(R.xml.items)
-        val namesParser: XmlPullParser = resources.getXml(R.xml.names)
-        val recipesParser: XmlPullParser = resources.getXml(R.xml.recipes)
-        val enemiesParser: XmlPullParser = resources.getXml(R.xml.enemies)
-        val locationsParser: XmlPullParser = resources.getXml(R.xml.locations)
         map.add(Map(mapParser))
         mapParser = resources.getXml(R.xml.first_village_map)
         map.add(Map(mapParser))
@@ -53,7 +50,7 @@ class MainActivity : AppCompatActivity() {
             sh.getString("Player", Gson().toJson(Player(2, 2))),
             Player::class.java
         )
-        setInitialData(itemsParser, namesParser, recipesParser, enemiesParser, locationsParser)
+        setInitialData()
         if (showTutorial) {
             fragmentTransaction.add(R.id.tutorial, TutorialFragment())
         } else {
@@ -94,21 +91,33 @@ class MainActivity : AppCompatActivity() {
         var showTutorial = true
         val map = ArrayList<Map>()
         val menu = arrayOfNulls<Bitmap>(4)
-        val assets=Statistics
         private val mapTextures = ArrayList<Bitmap>()
         private lateinit var avatar: Bitmap
         lateinit var textures: Array<Array<Bitmap>>
         lateinit var music: Music
         private lateinit var sh: SharedPreferences
+        lateinit var assets: Assets
 
-        fun getAvatar(): Bitmap =Bitmap.createBitmap(avatar)
-
-        private fun setTasks() {
-
+        @kotlinx.serialization.Serializable
+        class Assets {
+            val chancesOfFight =
+                HashMap<Int, Int>() //<id of location (field, forest etc.), chance of getting into a fight>
+            val chancesOfEnemy =
+                HashMap<Int, ArrayList<Pair<Int, Int>>>() //<id of location, <chance of getting into a fight with that enemy, id of an enemy>
+            val enemies = HashMap<Int, Enemy>() //<id of an enemy, object template>
+            val elements = ArrayList<Element>()
+            val manaChannels = ArrayList<ManaChannel>()
+            val types = ArrayList<Type>()
+            val forms = ArrayList<Form>()
+            val manaReservoirs = ArrayList<ManaReservoir>()
+            val researches = ArrayList<Research>()
+            val recipes = ArrayList<Recipe>()
+            val items = HashMap<Int, Item>() //<id of an item, object template>
+            val shopList = ArrayList<Item>() //<items available in the shop>
+            val tasks = ArrayList<Task>()
         }
 
-        private fun setNames(namesXml: XmlPullParser) {
-        }
+        fun getAvatar(): Bitmap = Bitmap.createBitmap(avatar)
 
         private fun setTextures() {
             val texturesSource: Bitmap
@@ -172,37 +181,21 @@ class MainActivity : AppCompatActivity() {
             avatar = Bitmap.createScaledBitmap(textures[5][5], mapTitleWidth, mapTitleWidth, false)
         }
 
-        private fun setResearches() {
-        }
-
-        private fun setItems(itemsXml: XmlPullParser, recipesXml: XmlPullParser) {
-        }
-
-        private fun setDrop() {
-        }
-
-        private fun setEnemies(enemiesXml: XmlPullParser, locationXml: XmlPullParser) {
-        }
-
-        private fun setMagic() {
-
-        }
-
-        fun setInitialData(
-            items: XmlPullParser,
-            names: XmlPullParser,
-            recipes: XmlPullParser,
-            enemies: XmlPullParser,
-            locations: XmlPullParser
-        ) {
-            setNames(names)
-            setItems(items, recipes)
+        fun setInitialData() {
             setTextures()
-            setResearches()
-            setDrop()
-            setEnemies(enemies, locations)
-            setMagic()
-            setTasks()
+
+            var data = ""
+            val parser = res.getXml(R.xml.initial_data)
+            while (parser.next() != XmlPullParser.END_TAG) {
+                if (parser.eventType != XmlPullParser.START_TAG) {
+                    continue
+                }
+                if (parser.name == "data") {
+                    data = parser.text
+                }
+                parser.next()
+            }
+            assets = Json.decodeFromString(data)
         }
     }
 

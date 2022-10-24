@@ -13,10 +13,9 @@ import android.widget.TableRow
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.finalproject.MainActivity
+import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.MainActivity.Companion.player
 import com.example.finalproject.R
-import com.example.finalproject.service.Statistics.chancesOfEnemy
-import com.example.finalproject.service.Statistics.chancesOfFight
 import java.util.*
 import kotlin.math.abs
 import kotlin.random.Random
@@ -97,10 +96,10 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                     player.regenerate()
                     var chance = Random(Date().time).nextInt(101)
                     val tileId = map[clickCoordinates.first][clickCoordinates.second].id
-                    if (tileId != MIN_LOCATION_ID && mapNum != 1 && chance < chancesOfFight[tileId]!!) {
+                    if (tileId != MIN_LOCATION_ID && mapNum != 1 && chance < assets.chancesOfFight[tileId]!!) {
                         chance = Random(Date().time).nextInt(101)
                         var prevChance = 0
-                        for (enemyChance in chancesOfEnemy[tileId]!!) {
+                        for (enemyChance in assets.chancesOfEnemy[tileId]!!) {
                             if (prevChance <= chance && chance < prevChance+enemyChance.first) {
                                 enemyId = enemyChance.second
                                 break
