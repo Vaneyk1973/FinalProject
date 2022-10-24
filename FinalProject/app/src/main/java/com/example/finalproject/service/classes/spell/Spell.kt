@@ -2,7 +2,7 @@ package com.example.finalproject.service.classes.spell
 
 import com.example.finalproject.service.classes.Damage
 import com.example.finalproject.service.interfaces.Health
-import com.example.finalproject.fragments.MainActivity
+import com.example.finalproject.MainActivity
 import kotlinx.serialization.Serializable
 
 @Serializable

@@ -1,4 +1,4 @@
-package com.example.finalproject.fragments
+package com.example.finalproject
 
 import android.content.SharedPreferences
 import android.content.res.Resources
@@ -11,13 +11,14 @@ import android.os.Bundle
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import com.example.finalproject.R
-import com.example.finalproject.service.classes.entities.Enemy
-import com.example.finalproject.service.classes.entities.Player
+import com.example.finalproject.fragments.MapFragment
+import com.example.finalproject.fragments.MenuFragment
+import com.example.finalproject.fragments.StatusBarFragment
+import com.example.finalproject.fragments.TutorialFragment
 import com.example.finalproject.service.*
 import com.example.finalproject.service.classes.*
 import com.example.finalproject.service.classes.Map
-import com.example.finalproject.service.classes.items.Item
+import com.example.finalproject.service.classes.entities.Player
 import com.example.finalproject.service.classes.spell.*
 import com.google.gson.Gson
 import org.xmlpull.v1.XmlPullParser
@@ -91,32 +92,10 @@ class MainActivity : AppCompatActivity() {
         var statusImagesWidth = 0
         var categoryImageWidth = 0
         var showTutorial = true
-        val chancesOfFight = HashMap<Int, Int>()
         val map = ArrayList<Map>()
         val menu = arrayOfNulls<Bitmap>(4)
-        val chancesOfEnemy = HashMap<Int, HashMap<Int, Enemy>>()
-        private val enemies = HashMap<Int, Enemy>()
-        val drop = HashMap<Int, ArrayList<Loot>>()
-        val elements = ArrayList<Element>()
-        val manaChannels = ArrayList<ManaChannel>()
-        val types = ArrayList<Type>()
-        val forms = ArrayList<Form>()
-        val manaReservoirs = ArrayList<ManaReservoir>()
-        val researches = ArrayList<Research>()
-        val recipes = ArrayList<Recipe>()
-        private val items = ArrayList<Item>()
-        val shopList = ArrayList<Item>()
-        val tasks = ArrayList<Task>()
-        var researchesJson: ArrayList<String> = ArrayList()
-        var elementsJson: ArrayList<String> = ArrayList()
-        var manaChannelsJson: ArrayList<String> = ArrayList()
-        var typesJson: ArrayList<String> = ArrayList()
-        var formsJson: ArrayList<String> = ArrayList()
-        var manaReservoirsJson: ArrayList<String> = ArrayList()
+        val assets=Statistics
         private val mapTextures = ArrayList<Bitmap>()
-        private val categories = HashMap<Int, String>()
-        private val ids = HashMap<Int, Int>()
-        private val names = HashMap<Int, String>()
         private lateinit var avatar: Bitmap
         lateinit var textures: Array<Array<Bitmap>>
         lateinit var music: Music
@@ -125,8 +104,7 @@ class MainActivity : AppCompatActivity() {
         fun getAvatar(): Bitmap =Bitmap.createBitmap(avatar)
 
         private fun setTasks() {
-            tasks.add(Task("Earn 100 gold to get 50 exp and 50 gold", "First money"))
-            tasks.add(Task("Achieve level 5 to get 500 gold and 100 exp", "Getting power"))
+
         }
 
         private fun setNames(namesXml: XmlPullParser) {

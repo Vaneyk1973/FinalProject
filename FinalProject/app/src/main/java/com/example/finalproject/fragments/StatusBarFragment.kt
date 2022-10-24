@@ -14,6 +14,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 import kotlin.math.round
 
@@ -46,15 +47,20 @@ class StatusBarFragment:Fragment(), View.OnClickListener {
         mana=requireView().findViewById(R.id.mana)
         chat=requireView().findViewById(R.id.chat_button)
         chat.visibility=View.VISIBLE
-        avatar.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.textures[5][5],
+        avatar.setImageBitmap(Bitmap.createScaledBitmap(
+            MainActivity.textures[5][5],
             MainActivity.avatarWidth, MainActivity.avatarWidth, false))
-        goldImg.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.textures[3][5],
+        goldImg.setImageBitmap(Bitmap.createScaledBitmap(
+            MainActivity.textures[3][5],
             MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false))
-        healthImg.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.textures[2][5],
+        healthImg.setImageBitmap(Bitmap.createScaledBitmap(
+            MainActivity.textures[2][5],
             MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false))
-        manaImg.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.textures[3][1],
+        manaImg.setImageBitmap(Bitmap.createScaledBitmap(
+            MainActivity.textures[3][1],
             MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false))
-        expImg.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.textures[3][4],
+        expImg.setImageBitmap(Bitmap.createScaledBitmap(
+            MainActivity.textures[3][4],
             MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false))
         chat.setOnClickListener(this)
         avatar.setOnClickListener(this)
@@ -62,8 +68,8 @@ class StatusBarFragment:Fragment(), View.OnClickListener {
     }
 
     fun update(){
-        lvl.text=MainActivity.player.level.toString()
-        gold.text=MainActivity.player.gold.toString()
+        lvl.text= MainActivity.player.level.toString()
+        gold.text= MainActivity.player.gold.toString()
         var txt="${round(MainActivity.player.health)}/${round(MainActivity.player.maxHealth)}"
         health.text=txt
         txt="${round(MainActivity.player.mana)}/${round(MainActivity.player.maxMana)}"

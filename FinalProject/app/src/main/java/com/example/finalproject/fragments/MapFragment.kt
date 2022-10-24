@@ -12,18 +12,22 @@ import android.widget.TableLayout
 import android.widget.TableRow
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.finalproject.MainActivity
+import com.example.finalproject.MainActivity.Companion.player
 import com.example.finalproject.R
-import com.example.finalproject.service.classes.entities.Enemy
-import kotlin.math.abs
-import com.example.finalproject.fragments.MainActivity.Companion.player
+import com.example.finalproject.service.Statistics.chancesOfEnemy
+import com.example.finalproject.service.Statistics.chancesOfFight
 import java.util.*
+import kotlin.math.abs
 import kotlin.random.Random
 
-class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
+class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListener {
 
     private val visibleMap: Array<Array<ImageView?>> = Array(5) { arrayOfNulls(5) }
+    private val MIN_LOCATION_ID = 512
+    private val MAX_LOCATION_ID = MIN_LOCATION_ID + 255
     private val map = MainActivity.map[mapNum].map
-    private lateinit var enemy: Enemy
+    private var enemyId: Int = -1
 
     constructor() : this(0) {
         player.mapNumber = 0
@@ -81,12 +85,11 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         if (v is ImageView) {
-            val idLocation = 512
             val clickCoordinates = findTitleCoordinates(v, visibleMap)
             var playerCoordinates: Pair<Int, Int> = player.coordinates[mapNum]
             if (player.coordinates[mapNum] != clickCoordinates
-                && map[clickCoordinates.first][clickCoordinates.second].id != idLocation
-                && map[clickCoordinates.first][clickCoordinates.second].id != 255 + idLocation
+                && map[clickCoordinates.first][clickCoordinates.second].id != MIN_LOCATION_ID
+                && map[clickCoordinates.first][clickCoordinates.second].id != MAX_LOCATION_ID
             ) {
                 val dx = clickCoordinates.first - playerCoordinates.first
                 val dy = clickCoordinates.second - playerCoordinates.second
@@ -94,89 +97,26 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
                     player.regenerate()
                     var chance = Random(Date().time).nextInt(101)
                     val tileId = map[clickCoordinates.first][clickCoordinates.second].id
-                    if (tileId != 512 && mapNum != 1 && chance < MainActivity.chancesOfFight[tileId]!!) {
+                    if (tileId != MIN_LOCATION_ID && mapNum != 1 && chance < chancesOfFight[tileId]!!) {
                         chance = Random(Date().time).nextInt(101)
-                        when (tileId) {
-                            1 + idLocation -> {
-                                enemy = if (chance < 30) Enemy(
-                                    MainActivity.chancesOfEnemy[1 + idLocation]!![30]!!
-                                )
-                                else Enemy(
-                                    MainActivity.chancesOfEnemy[1 + idLocation]!![70]!!
-                                )
+                        var prevChance = 0
+                        for (enemyChance in chancesOfEnemy[tileId]!!) {
+                            if (prevChance <= chance && chance < prevChance+enemyChance.first) {
+                                enemyId = enemyChance.second
+                                break
                             }
-                            2 + idLocation -> {
-                                enemy = when {
-                                    chance < 60 -> Enemy(
-                                        MainActivity.chancesOfEnemy[2 + idLocation]!![60]!!
-                                    )
-                                    chance < 95 -> Enemy(
-                                        MainActivity.chancesOfEnemy[2 + idLocation]!![35]!!
-                                    )
-                                    else -> Enemy(
-                                        MainActivity.chancesOfEnemy[2 + idLocation]!![5]!!
-                                    )
-                                }
-                            }
-                            4 + idLocation -> {
-                                enemy = when {
-                                    chance < 75 -> Enemy(
-                                        MainActivity.chancesOfEnemy[4 + idLocation]!![75]!!
-                                    )
-                                    chance < 95 -> Enemy(
-                                        MainActivity.chancesOfEnemy[4 + idLocation]!![20]!!
-                                    )
-                                    chance < 99 -> Enemy(
-                                        MainActivity.chancesOfEnemy[4 + idLocation]!![4]!!
-                                    )
-                                    else -> Enemy(
-                                        MainActivity.chancesOfEnemy[4 + idLocation]!![1]!!
-                                    )
-                                }
-                            }
-                            5 + idLocation -> {
-                                enemy = when {
-                                    chance < 75 -> Enemy(
-                                        MainActivity.chancesOfEnemy[5 + idLocation]!![75]!!
-                                    )
-                                    chance < 95 -> Enemy(
-                                        MainActivity.chancesOfEnemy[5 + idLocation]!![20]!!
-                                    )
-                                    chance < 99 -> Enemy(
-                                        MainActivity.chancesOfEnemy[5 + idLocation]!![4]!!
-                                    )
-                                    else -> Enemy(
-                                        MainActivity.chancesOfEnemy[5 + idLocation]!![1]!!
-                                    )
-                                }
-                            }
-                            6 + idLocation -> {
-                                enemy = if (chance < 60) Enemy(
-                                    MainActivity.chancesOfEnemy[6 + idLocation]!![60]!!
-                                )
-                                else Enemy(
-                                    MainActivity.chancesOfEnemy[6 + idLocation]!![40]!!
-                                )
-                            }
-                            7 + idLocation -> {
-                                enemy = if (chance < 60) Enemy(
-                                    MainActivity.chancesOfEnemy[7 + idLocation]!![60]!!
-                                )
-                                else Enemy(
-                                    MainActivity.chancesOfEnemy[7 + idLocation]!![40]!!
-                                )
-                            }
+                            prevChance += enemyChance.first
                         }
                         val fragmentManager = parentFragmentManager
                         val fragmentTransaction = fragmentManager.beginTransaction()
                         fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.map)!!)
                         fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.menu)!!)
                         fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.status)!!)
-                        fragmentTransaction.add(R.id.fight, FightFragment(false, enemy))
+                        fragmentTransaction.add(R.id.fight, FightFragment(false, enemyId))
                         fragmentTransaction.commit()
                     } else {
                         when (tileId) {
-                            3 + idLocation -> {
+                            3 + MIN_LOCATION_ID -> {
                                 player.mapNumber = 1
                                 player.coordinates[1] = Pair(6, 3)
                                 val fm = parentFragmentManager
@@ -185,7 +125,7 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
                                 fragmentTransaction.add(R.id.map, MapFragment(1))
                                 fragmentTransaction.commit()
                             }
-                            9 + idLocation -> {
+                            9 + MIN_LOCATION_ID -> {
                                 val fm = parentFragmentManager
                                 val fragmentTransaction = fm.beginTransaction()
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.map)!!)
@@ -194,7 +134,7 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
                                 fragmentTransaction.add(R.id.tasks, TaskManagerFragment(true))
                                 fragmentTransaction.commit()
                             }
-                            10 + idLocation -> {
+                            10 + MIN_LOCATION_ID -> {
                                 if (isInternetAvailable()) {
                                     if (player.user.login.isEmpty())
                                         Toast.makeText(context, "Sign in first", Toast.LENGTH_SHORT)
@@ -205,7 +145,10 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
                                         fragmentTransaction.remove(fm.findFragmentById(R.id.map)!!)
                                         fragmentTransaction.remove(fm.findFragmentById(R.id.status)!!)
                                         fragmentTransaction.remove(fm.findFragmentById(R.id.menu)!!)
-                                        fragmentTransaction.add(R.id.fight, FightFragment(true, enemy))
+                                        fragmentTransaction.add(
+                                            R.id.fight,
+                                            FightFragment(true, enemyId)
+                                        )
                                         fragmentTransaction.commit()
                                     }
                                 } else
@@ -214,7 +157,7 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
                                         Toast.LENGTH_SHORT
                                     ).show()
                             }
-                            11 + idLocation -> {
+                            11 + MIN_LOCATION_ID -> {
                                 val fm = parentFragmentManager
                                 val fragmentTransaction = fm.beginTransaction()
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.map)!!)
@@ -226,7 +169,7 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
                                 )
                                 fragmentTransaction.commit()
                             }
-                            12 + idLocation -> {
+                            12 + MIN_LOCATION_ID -> {
                                 val fm = parentFragmentManager
                                 val fragmentTransaction = fm.beginTransaction()
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.map)!!)
@@ -235,14 +178,14 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
                                 fragmentTransaction.add(R.id.shop, ShopFragment())
                                 fragmentTransaction.commit()
                             }
-                            13 + idLocation -> {
+                            13 + MIN_LOCATION_ID -> {
                                 val fm = parentFragmentManager
                                 val fragmentTransaction = fm.beginTransaction()
                                 fragmentTransaction.remove(fm.findFragmentById(R.id.map)!!)
                                 fragmentTransaction.add(R.id.map, MapFragment())
                                 fragmentTransaction.commit()
                             }
-                            14 + idLocation -> {
+                            14 + MIN_LOCATION_ID -> {
                                 if (isInternetAvailable()) {
                                     if (player.user.login.isEmpty()) {
                                         Toast.makeText(
@@ -266,7 +209,7 @@ class MapFragment(val mapNum: Int = 0) : Fragment(), View.OnClickListener {
                             }
                         }
                     }
-                    if (tileId !in idLocation + 8..idLocation + 14) {
+                    if (tileId !in MIN_LOCATION_ID + 8..MIN_LOCATION_ID + 14) {
                         player.coordinates[mapNum] =
                             Pair(playerCoordinates.first + dx, playerCoordinates.second + dy)
                         playerCoordinates = player.coordinates[mapNum]

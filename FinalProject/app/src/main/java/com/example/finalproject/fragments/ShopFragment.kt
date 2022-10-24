@@ -14,12 +14,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.finalproject.MainActivity.Companion.player
 import com.example.finalproject.R
+import com.example.finalproject.service.Statistics
 import com.example.finalproject.service.classes.items.Item
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.GenericTypeIndicator
-import com.example.finalproject.fragments.MainActivity.Companion.player
 
 class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnClickListener,
     CompoundButton.OnCheckedChangeListener {
@@ -60,7 +61,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
         remove = requireView().findViewById(R.id.remove_button)
         shopList = requireView().findViewById(R.id.items_to_sell)
         shopList.layoutManager = LinearLayoutManager(context)
-        for (i in MainActivity.shopList)
+        for (i in Statistics.shopList)
             data.add(Pair(inf, i))
         shopList.adapter = ShopAdapter(player.inventory.inventory)
         if (!auction) {

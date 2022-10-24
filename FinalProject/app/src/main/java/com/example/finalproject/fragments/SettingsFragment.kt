@@ -8,6 +8,7 @@ import android.widget.Button
 import android.widget.CompoundButton
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
+import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 
 class SettingsFragment:Fragment(), View.OnClickListener, CompoundButton.OnCheckedChangeListener {

@@ -8,19 +8,23 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.finalproject.MainActivity
+import com.example.finalproject.MainActivity.Companion.player
 import com.example.finalproject.R
+import com.example.finalproject.service.Statistics.enemies
 import com.example.finalproject.service.classes.entities.Enemy
 import com.example.finalproject.service.classes.entities.Player
-import com.example.finalproject.fragments.MainActivity.Companion.player
 import com.example.finalproject.service.classes.spell.Spell
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Task
-import com.google.firebase.database.*
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseReference
+import com.google.firebase.database.FirebaseDatabase
 import java.util.*
-import kotlin.math.roundToInt
 import kotlin.math.min
+import kotlin.math.roundToInt
 
-class FightFragment(private var duel: Boolean = false, private val enemy: Enemy) : Fragment(),
+class FightFragment(private var duel: Boolean = false, private val enemyId: Int) : Fragment(),
     View.OnClickListener,
     OnCompleteListener<DataSnapshot> {
 
@@ -32,6 +36,7 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
     private lateinit var enemyReference: DatabaseReference
     private lateinit var dbReference: DatabaseReference
     private lateinit var chosenSpell:Spell
+    private lateinit var enemy:Enemy
     private var taskId: Int = 0
     private var duelNum: Int = 0
     private var playerNum: Int = 0
@@ -47,12 +52,13 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        enemy=Enemy(enemies[enemyId]!!)
         val duelProgressBar = requireView().findViewById<ProgressBar>(R.id.fight_progress_bar)
         run = requireView().findViewById(R.id.run)
         attack = requireView().findViewById(R.id.attack)
         castSpell = requireView().findViewById(R.id.cast_spell)
         duelProgressBar.visibility = View.GONE
-        MainActivity.music?.start(requireContext(), R.raw.fight)
+        MainActivity.music.start(requireContext(), R.raw.fight)
         spells = requireView().findViewById(R.id.avaliable_spells)
         spells.layoutManager = LinearLayoutManager(context)
         val playerImage: ImageView = requireView().findViewById(R.id.player)
@@ -160,7 +166,7 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
                     fragmentTransaction.add(R.id.status, StatusBarFragment())
                     fragmentTransaction.add(R.id.menu, MenuFragment())
                     fragmentTransaction.commit()
-                    MainActivity.music?.start(requireContext(), R.raw.main)
+                    MainActivity.music.start(requireContext(), R.raw.main)
                 }
                 if (player.health <= 0) {
                     player = Player(2, 2)
@@ -182,7 +188,7 @@ class FightFragment(private var duel: Boolean = false, private val enemy: Enemy)
                     fragmentTransaction.add(R.id.status, StatusBarFragment())
                     fragmentTransaction.add(R.id.menu, MenuFragment())
                     fragmentTransaction.commit()
-                    MainActivity.music?.start(requireContext(), R.raw.main)
+                    MainActivity.music.start(requireContext(), R.raw.main)
                 }
             } else if (v == run) {
                 if (!duel) {

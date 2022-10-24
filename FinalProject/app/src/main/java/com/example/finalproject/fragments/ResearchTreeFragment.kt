@@ -8,10 +8,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.finalproject.MainActivity
 import com.example.finalproject.R
+import com.example.finalproject.service.Statistics.researches
 import com.example.finalproject.service.classes.Research
 import com.google.common.collect.HashBiMap
-import com.google.gson.Gson
 
 class ResearchTreeFragment : Fragment(), View.OnClickListener {
 
@@ -27,7 +28,7 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
         super.onViewCreated(view, savedInstanceState)
         initializeResearches(researchHashMap)
         back= requireView().findViewById(R.id.research_tree_back_button)
-        for (i in MainActivity.researches) {
+        for (i in researches) {
             val text="${i.name} : ${i.cost}"
             researchHashMap[i]!!.text = text
             researchHashMap[i]!!.setOnClickListener(this)
@@ -38,43 +39,16 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun initializeResearches(researchHashMap:HashBiMap<Research, TextView>){
-        researchHashMap[MainActivity.researches[0]] =
+        researchHashMap[researches[0]] =
             requireView().findViewById(R.id.basic_spell_creation) as TextView
-        researchHashMap[MainActivity.researches[1]] =
+        researchHashMap[researches[1]] =
             requireView().findViewById(R.id.fire_mage) as TextView
-        researchHashMap[MainActivity.researches[2]] =
+        researchHashMap[researches[2]] =
             requireView().findViewById(R.id.water_mage) as TextView
-        researchHashMap[MainActivity.researches[3]] =
+        researchHashMap[researches[3]] =
             requireView().findViewById(R.id.earth_mage) as TextView
-        researchHashMap[MainActivity.researches[4]] =
+        researchHashMap[researches[4]] =
             requireView().findViewById(R.id.air_mage) as TextView
-    }
-
-    private fun updateJsons() {
-        MainActivity.researchesJson.clear()
-        for (i in MainActivity.researches)
-            MainActivity.researchesJson.add(
-                Gson().toJson(i))
-        MainActivity.elementsJson.clear()
-        for (i in MainActivity.elements)
-            MainActivity.elementsJson.add(
-                Gson().toJson(i))
-        MainActivity.formsJson.clear()
-        for (i in MainActivity.forms)
-            MainActivity.formsJson.add(
-                Gson().toJson(i))
-        MainActivity.typesJson.clear()
-        for (i in MainActivity.types)
-            MainActivity.typesJson.add(
-                Gson().toJson(i))
-        MainActivity.manaChannelsJson.clear()
-        for (i in MainActivity.manaChannels)
-            MainActivity.manaChannelsJson.add(
-                Gson().toJson(i))
-        MainActivity.manaReservoirsJson.clear()
-        for (i in MainActivity.manaReservoirs)
-            MainActivity.manaReservoirsJson.add(
-                Gson().toJson(i))
     }
 
     override fun onClick(p0: View?) {
@@ -84,7 +58,6 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
             researchPointsAmount.text = text
             if (MainActivity.player.research(researchHashMap.inverse()[p0]!!)) {
                 p0!!.setBackgroundColor(Color.GREEN)
-                updateJsons()
                 text="You have ${MainActivity.player.researchPoints} research points"
                 researchPointsAmount.text =text
             }

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 import com.example.finalproject.service.classes.items.Item
 

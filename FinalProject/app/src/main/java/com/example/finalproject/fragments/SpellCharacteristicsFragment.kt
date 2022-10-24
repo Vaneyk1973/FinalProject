@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 import com.example.finalproject.service.classes.spell.Spell
 
@@ -21,7 +22,8 @@ class SpellCharacteristicsFragment(val spell: Spell):Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val img:ImageView=requireView().findViewById(R.id.element_picture)
-        img.setImageBitmap(Bitmap.createScaledBitmap(MainActivity.textures[2][spell.getElement().element],
+        img.setImageBitmap(Bitmap.createScaledBitmap(
+            MainActivity.textures[2][spell.getElement().element],
             MainActivity.categoryImageWidth/3*2, MainActivity.categoryImageWidth/3*2, false))
         val name:TextView=requireView().findViewById(R.id.spell_name_char)
         val type:TextView=requireView().findViewById(R.id.spell_type_char)

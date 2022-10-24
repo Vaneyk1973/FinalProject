@@ -1,6 +1,6 @@
 package com.example.finalproject.service.classes
 
-import com.example.finalproject.fragments.MainActivity.Companion.elements
+import com.example.finalproject.service.Statistics.elements
 import kotlinx.serialization.Serializable
 
 @Serializable

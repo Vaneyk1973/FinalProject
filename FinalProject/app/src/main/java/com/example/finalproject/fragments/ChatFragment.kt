@@ -10,6 +10,7 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 import com.example.finalproject.service.classes.Message
 import com.google.firebase.database.DataSnapshot
@@ -18,7 +19,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.lang.Integer.min
 import java.util.*
-import kotlin.collections.ArrayList
 
 class ChatFragment : Fragment(), View.OnClickListener, ValueEventListener,
     TextView.OnEditorActionListener {

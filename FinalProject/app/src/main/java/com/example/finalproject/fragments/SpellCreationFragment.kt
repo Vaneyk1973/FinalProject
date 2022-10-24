@@ -13,16 +13,22 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.finalproject.MainActivity
 import com.example.finalproject.R
+import com.example.finalproject.service.Statistics.elements
+import com.example.finalproject.service.Statistics.forms
+import com.example.finalproject.service.Statistics.manaChannels
+import com.example.finalproject.service.Statistics.manaReservoirs
+import com.example.finalproject.service.Statistics.types
 import com.example.finalproject.service.classes.spell.*
 
 class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEditorActionListener {
 
-    private var element = MainActivity.elements[0]
-    private var type = MainActivity.types[0]
-    private var form = MainActivity.forms[0]
-    private var manaChannel = MainActivity.manaChannels[0]
-    private var manaReservoir = MainActivity.manaReservoirs[0]
+    private var element = elements[0]
+    private var type = types[0]
+    private var form = forms[0]
+    private var manaChannel = manaChannels[0]
+    private var manaReservoir = manaReservoirs[0]
     private lateinit var nameView: EditText
     private lateinit var confirmSpell: Button
     private lateinit var back: Button
@@ -130,15 +136,15 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
             fragmentTransaction.add(R.id.menu, MenuFragment())
             fragmentTransaction.commit()
         } else if (p0==formView){
-            comps.adapter = SpellAdapter(MainActivity.forms)
+            comps.adapter = SpellAdapter(forms)
         } else if (p0==typeView) {
-            comps.adapter = SpellAdapter(MainActivity.types)
+            comps.adapter = SpellAdapter(types)
         } else if (p0==manaChannelView) {
-            comps.adapter = SpellAdapter(MainActivity.manaChannels)
+            comps.adapter = SpellAdapter(manaChannels)
         } else if (p0==manaReservoirView) {
-            comps.adapter = SpellAdapter(MainActivity.manaReservoirs)
+            comps.adapter = SpellAdapter(manaReservoirs)
         } else if (p0==elementView) {
-            comps.adapter = SpellAdapter(MainActivity.elements)
+            comps.adapter = SpellAdapter(elements)
         }
     }
 

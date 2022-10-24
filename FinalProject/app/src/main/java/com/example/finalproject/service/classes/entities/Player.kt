@@ -1,6 +1,6 @@
 package com.example.finalproject.service.classes.entities
 
-import com.example.finalproject.fragments.MainActivity.Companion.player
+import com.example.finalproject.MainActivity.Companion.player
 import com.example.finalproject.service.classes.*
 import com.example.finalproject.service.classes.items.Armor
 import com.example.finalproject.service.classes.items.Item
