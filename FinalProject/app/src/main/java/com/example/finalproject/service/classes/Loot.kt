@@ -1,5 +1,6 @@
 package com.example.finalproject.service.classes
 
+import com.example.finalproject.MainActivity
 import com.example.finalproject.service.classes.items.Item
 import kotlinx.serialization.Serializable
 import java.util.*
@@ -10,7 +11,7 @@ import kotlin.random.Random
  *  @property loot a list of possible items in form of <the percent chance of dropping in range [0, 100] :[Int], the quantity of items :[Int], the given item :[Item]>
  */
 @Serializable
-data class Loot(val loot: ArrayList<Triple<Int, Int, Item>> = ArrayList()) {
+data class Loot(val loot: ArrayList<Triple<Int, Int, Int>> = ArrayList(), val gold:Int=0, val exp:Int=0) {
 
     /**
      * @return the items according to their chances
@@ -20,7 +21,7 @@ data class Loot(val loot: ArrayList<Triple<Int, Int, Item>> = ArrayList()) {
         val droppedLoot: ArrayList<Pair<Int, Item>> = ArrayList()
         for (item in loot) {
             if (random.nextInt(100) < item.first) {
-                droppedLoot.add(Pair(item.second, item.third))
+                droppedLoot.add(Pair(item.second, MainActivity.assets.items[item.third]!!))
             }
         }
         return droppedLoot

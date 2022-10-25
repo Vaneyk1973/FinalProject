@@ -4,13 +4,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
-import com.example.finalproject.MainActivity.Companion.player
 import com.example.finalproject.MainActivity.Companion.assets
+import com.example.finalproject.MainActivity.Companion.player
 import com.example.finalproject.R
 import com.example.finalproject.service.classes.entities.Enemy
 import com.example.finalproject.service.classes.entities.Player
@@ -20,7 +24,7 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import java.util.*
+import java.util.Random
 import kotlin.math.min
 import kotlin.math.roundToInt
 
@@ -31,12 +35,13 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
     private lateinit var run: Button
     private lateinit var attack: Button
     private lateinit var castSpell: Button
+    private lateinit var defend: Button
     private lateinit var spells: RecyclerView
     private lateinit var playerReference: DatabaseReference
     private lateinit var enemyReference: DatabaseReference
     private lateinit var dbReference: DatabaseReference
-    private lateinit var chosenSpell:Spell
-    private lateinit var enemy:Enemy
+    private lateinit var chosenSpell: Spell
+    private lateinit var enemy: Enemy
     private var taskId: Int = 0
     private var duelNum: Int = 0
     private var playerNum: Int = 0
@@ -52,11 +57,12 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        enemy=Enemy(assets.enemies[enemyId]!!)
+        enemy = Enemy(assets.enemies[enemyId]!!)
         val duelProgressBar = requireView().findViewById<ProgressBar>(R.id.fight_progress_bar)
         run = requireView().findViewById(R.id.run)
         attack = requireView().findViewById(R.id.attack)
         castSpell = requireView().findViewById(R.id.cast_spell)
+        defend = requireView().findViewById(R.id.defend)
         duelProgressBar.visibility = View.GONE
         MainActivity.music.start(requireContext(), R.raw.fight)
         spells = requireView().findViewById(R.id.avaliable_spells)
@@ -78,6 +84,7 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
         attack.setOnClickListener(this)
         run.setOnClickListener(this)
         castSpell.setOnClickListener(this)
+        defend.setOnClickListener(this)
     }
 
     private fun updateStatus() {
@@ -115,7 +122,7 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
         override fun onBindViewHolder(holder: SpellViewHolder, position: Int) {
             holder.name.text = data[position].name
             holder.name.setOnClickListener {
-                chosenSpell=data[position]
+                chosenSpell = data[position]
                 (view!!.findViewById<View>(R.id.avaliable_spells) as RecyclerView).adapter =
                     SpellsAdapter()
                 if (player.mana < data[position].manaConsumption)
@@ -156,8 +163,6 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
                 player.regenerate()
                 enemy.regenerate()
                 player.doDamage(enemy)
-                enemy.attack(player)
-                updateStatus()
                 if (enemy.health <= 0) {
                     player.takeDrop(enemy)
                     val fragmentTransaction = fragmentManager.beginTransaction()
@@ -168,6 +173,8 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
                     fragmentTransaction.commit()
                     MainActivity.music.start(requireContext(), R.raw.main)
                 }
+                enemy.attack(player)
+                updateStatus()
                 if (player.health <= 0) {
                     player = Player(2, 2)
                     MainActivity.setInitialData()
@@ -211,6 +218,29 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
             } else if (v == castSpell) {
                 updateStatus()
                 spells.adapter = SpellsAdapter(player.spells)
+            } else if (v == defend) {
+                player.regenerate()
+                enemy.regenerate()
+                player.defend()
+                enemy.attack(player)
+                player.defend()
+                updateStatus()
+                if (player.health <= 0) {
+                    player = Player(2, 2)
+                    MainActivity.setInitialData()
+                    Toast.makeText(
+                        context,
+                        "You died \n All of your progress will be reset \n Better luck this time",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
+                    fragmentTransaction.add(R.id.map, MapFragment())
+                    fragmentTransaction.add(R.id.status, StatusBarFragment())
+                    fragmentTransaction.add(R.id.menu, MenuFragment())
+                    fragmentTransaction.commit()
+                    MainActivity.music.start(requireContext(), R.raw.main)
+                }
             }
         } else {
             if (v == attack) {
@@ -267,6 +297,7 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
                     enemyNum = 1
                     addPlayerToDuel()
                 }
+
                 1L -> {
                     duelNum = (task.result.childrenCount - 1).toInt()
                     playerNum = 1

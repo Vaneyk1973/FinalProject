@@ -75,9 +75,9 @@ class TaskManagerFragment(private val inVillage: Boolean=false):Fragment(), View
             if (chosenTask == null) Toast.makeText(context, "Take task first", Toast.LENGTH_SHORT).show()
             else {
                 MainActivity.assets.tasks[MainActivity.assets.tasks.indexOf(chosenTask)].taken = true
-                MainActivity.player.checkTasks()
-                tasks.adapter = TasksAdapter(MainActivity.assets.tasks)
             }
+            MainActivity.player.checkTasks()
+            tasks.adapter = TasksAdapter(MainActivity.assets.tasks)
         } else if (p0==back){
             val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()

@@ -3,13 +3,10 @@ package com.example.finalproject.service.classes
 import com.example.finalproject.service.classes.items.Item
 import kotlinx.serialization.Serializable
 
-@Suppress("UNCHECKED_CAST")
-
 @Serializable
 class Inventory() {
 
-    val inventory: ArrayList<Pair<Int, Item>>
-        get() = inventory.clone() as ArrayList<Pair<Int, Item>>
+    val inventory: ArrayList<Pair<Int, Item>> = ArrayList()
 
     constructor(inventory: ArrayList<Pair<Int, Item>>) : this() {
         for (item in inventory)

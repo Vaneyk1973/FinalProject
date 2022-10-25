@@ -47,7 +47,7 @@ class SpellsFragment:Fragment(), View.OnClickListener {
             holder.name.setOnClickListener {
                 val fm:FragmentManager=childFragmentManager
                 val fr:FragmentTransaction=fm.beginTransaction()
-                fr.remove(fm.findFragmentById(R.id.spells_char)!!)
+                fm.findFragmentById(R.id.spells_char)?.let { it1 -> fr.remove(it1) }
                 fr.add(R.id.spells_char, SpellCharacteristicsFragment(spells[position]))
                 fr.commit()
             }

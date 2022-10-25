@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <data>
-
+    {"chancesOfFight":{"512":0,"513":50,"514":0,"515":0,"516":0,"517":0,"518":0,"519":0},
+    "chancesOfEnemy":{"513":[{"first":100,"second":1}]},
+    "enemies":{"1":{"entity":{"name":"Wolf","id":1,"health":10.0,"maxHealth":10.0,"healthRegen":1.0,"mana":0.0,"maxMana":0.0,"manaRegen":0.0,"resistances":[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"loot":{"loot":[{"first":100,"second":6,"third":10}],"gold":10,"exp":10}},"damage":{"dmg":[20.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]}}},
+    "elements":[{"componentPart":{"name":"Pure mana","id":0,"available":true},"element":0,"baseDamage":1.0}],
+    "manaChannels":[{"component":{"name":"Base","id":0,"available":true},"bandwidth":1.0}],
+    "types":[{"component":{"name":"On enemy","id":0,"available":true},"type":0}],
+    "forms":[{"component":{"name":"Sphere","id":0,"available":true},"form":0}],
+    "manaReservoirs":[{"component":{"name":"Base","id":0,"available":true},"volume":10.0}],
+    "researches":[{"name":"Spell usage","cost":1,"tier":0,"effect":0,"researched":false,"available":true,"requiredResearches":[]}],
+    "items":{"10":{"name":"Wolf pelt","id":10,"costSell":10,"costBuy":10,"rarity":0,"category":0}},
+    "tasks":[{"description":"Get level 3","name":"First level"}]}
 </data>

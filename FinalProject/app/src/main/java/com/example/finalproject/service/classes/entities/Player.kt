@@ -1,6 +1,7 @@
 package com.example.finalproject.service.classes.entities
 
-import com.example.finalproject.MainActivity.Companion.player
+import android.util.Log
+import com.example.finalproject.MainActivity
 import com.example.finalproject.service.classes.*
 import com.example.finalproject.service.classes.items.Armor
 import com.example.finalproject.service.classes.items.Item
@@ -51,6 +52,7 @@ class Player(
     var chatMode: Boolean = false
     var gold: Int = 0
     private val defCoefficient = 1.05
+    override var def: Boolean = false
 
     @Suppress("UNCHECKED_CAST")
     constructor(player: Player) : this(
@@ -118,10 +120,10 @@ class Player(
         coordinates
     ) {
         this.spells.clear()
-        this.spells.addAll(spells.clone() as Collection<Spell>)
-        this.researchPoints = player.researchPoints
-        this.chatMode = player.chatMode
-        this.gold = player.gold
+        this.spells.addAll(spells.clone() as ArrayList<Spell>)
+        this.researchPoints = researchPoints
+        this.chatMode = chatMode
+        this.gold = gold
     }
 
     constructor(x: Int, y: Int) : this(
@@ -133,17 +135,17 @@ class Player(
         10.0,
         10.0,
         0.1,
-        ArrayList(),
+        arrayListOf(0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
         Loot(),
         Inventory(),
-        Damage(),
+        Damage(arrayListOf(4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
         ArrayList(),
-        0,
+        1,
         0,
         10,
         User(),
         0,
-        ArrayList()
+        arrayListOf(Pair(x, y), Pair(6, 3))
     )
 
     override fun doDamage(target: Health) {
@@ -154,7 +156,8 @@ class Player(
         target.takeDamage(damage, ref)
     }
 
-    override fun defend(def: Boolean) {
+    override fun defend() {
+        def = !def
         if (def)
             for (i in 0 until resistances.size)
                 resistances[i] *= defCoefficient
@@ -166,6 +169,11 @@ class Player(
     override fun levelUp() {
         while (experience >= experienceToTheNextLevelRequired) {
             level++
+            researchPoints += 1
+            maxHealth += 10
+            maxMana += 2
+            health = maxHealth
+            mana = maxMana
             experience -= experienceToTheNextLevelRequired
             experienceToTheNextLevelRequired = experienceToTheNextLevelRequiredFormula(level + 1)
         }
@@ -180,7 +188,9 @@ class Player(
             inventory.inventory[itemIndex] =
                 Pair(item.first + inventory.inventory[itemIndex].first, item.second)
         } else {
+            Log.d("Inv", item.second.toString())
             inventory.inventory.add(item)
+            Log.d("Inv", inventory.inventory.toString())
         }
     }
 
@@ -188,10 +198,10 @@ class Player(
         return if (inventory.quantity(item.second) > item.first) {
             val itemIndex = inventory.index(item.second)
             inventory.inventory[itemIndex] =
-                Pair(item.first - inventory.inventory[itemIndex].first, item.second)
+                Pair(inventory.inventory[itemIndex].first-item.first, item.second)
             true
         } else if (inventory.quantity(item.second) == item.first) {
-            inventory.inventory.remove(item)
+            inventory.removeItem(item.second)
             return true
         } else {
             false
@@ -199,9 +209,11 @@ class Player(
     }
 
     fun craft(recipe: Recipe): Boolean {
-        for (i in recipe.ingredients)
-            if (inventory.quantity(i.second) == 0)
+        for (i in recipe.ingredients) {
+            Log.d("Items", "${i.first}, ${inventory.quantity(i.second)}")
+            if (inventory.quantity(i.second) < i.first)
                 return false
+        }
         for (i in recipe.ingredients)
             removeItemsFromInventory(i)
         addItemsToInventory(recipe.product)
@@ -209,6 +221,9 @@ class Player(
     }
 
     fun takeDrop(loot: Lootable) {
+        gold += loot.loot.gold
+        experience += loot.loot.exp
+        levelUp()
         for (i in loot.loot.dropLoot())
             addItemsToInventory(i)
     }
@@ -219,10 +234,12 @@ class Player(
                 equipment[0] = item
                 true
             }
+
             is Armor -> {
                 equipment[item.typeOfArmor] = item
                 true
             }
+
             else -> {
                 false
             }
@@ -241,10 +258,22 @@ class Player(
         }
     }
 
-    fun research(research: Research): Boolean = research.research()
+    fun research(research: Research): Boolean {
+        return if (research.cost > researchPoints)
+            false
+        else {
+            researchPoints -= research.cost
+            research.research()
+        }
+    }
 
     fun checkTasks() {
-        TODO("Not yet implemented")
+        if (level == 3) {
+            experience += 50
+            gold += 10
+            MainActivity.assets.tasks[0].completed = true
+            levelUp()
+        }
     }
 
     fun sellItem(item: Pair<Int, Item>): Boolean {

@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
@@ -22,9 +23,7 @@ import com.example.finalproject.service.classes.entities.Enemy
 import com.example.finalproject.service.classes.entities.Player
 import com.example.finalproject.service.classes.items.Item
 import com.example.finalproject.service.classes.spell.*
-import com.google.gson.Gson
 import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.xmlpull.v1.XmlPullParser
 
@@ -47,10 +46,7 @@ class MainActivity : AppCompatActivity() {
         music = Music()
         music.start(this, R.raw.main)
         showTutorial = sh.getBoolean("Tutorial", true)
-        player = Gson().fromJson(
-            sh.getString("Player", Gson().toJson(Player(2, 2))),
-            Player::class.java
-        )
+        player = Player(2, 2)
         setInitialData()
         if (showTutorial) {
             fragmentTransaction.add(R.id.tutorial, TutorialFragment())
@@ -184,19 +180,35 @@ class MainActivity : AppCompatActivity() {
 
         fun setInitialData() {
             setTextures()
-
             var data = ""
             val parser = res.getXml(R.xml.initial_data)
-            while (parser.next() != XmlPullParser.END_TAG) {
-                if (parser.eventType != XmlPullParser.START_TAG) {
-                    continue
-                }
-                if (parser.name == "data") {
+            while (parser.eventType != XmlPullParser.END_TAG) {
+                if (parser.eventType == XmlPullParser.START_TAG && parser.name == "data") {
+                    parser.next()
                     data = parser.text
                 }
                 parser.next()
             }
-            assets = Json.decodeFromString(data)
+            assets = Json.decodeFromString(Assets.serializer(), data)
+            assets.items[11] = Item("Wolf hat", 11, 30, 20, 0, 0)
+            assets.recipes.add(
+                Recipe(
+                    Pair(1, assets.items[11]!!),
+                    arrayListOf(Pair(3, assets.items[10]!!))
+                )
+            )
+            assets.researches.add(
+                Research(
+                    "Fire element",
+                    2,
+                    1,
+                    1,
+                    false,
+                    false,
+                    arrayListOf(assets.researches[0])
+                )
+            )
+            Log.d("Assets", Json.encodeToString(Assets.serializer(), assets))
         }
     }
 

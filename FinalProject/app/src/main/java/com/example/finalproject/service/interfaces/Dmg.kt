@@ -5,10 +5,11 @@ import com.google.firebase.database.DatabaseReference
 
 interface Dmg {
     var damage: Damage
+    var def:Boolean
 
     fun doDamage(target: Health)
 
     fun doDamage(target: Health, ref: DatabaseReference)
 
-    fun defend(def:Boolean)
+    fun defend()
 }

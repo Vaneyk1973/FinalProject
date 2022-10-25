@@ -16,7 +16,7 @@ import com.example.finalproject.MainActivity
 import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.MainActivity.Companion.player
 import com.example.finalproject.R
-import java.util.*
+import java.util.Date
 import kotlin.math.abs
 import kotlin.random.Random
 
@@ -96,7 +96,7 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                     player.regenerate()
                     var chance = Random(Date().time).nextInt(101)
                     val tileId = map[clickCoordinates.first][clickCoordinates.second].id
-                    if (tileId != MIN_LOCATION_ID && mapNum != 1 && chance < assets.chancesOfFight[tileId]!!) {
+                    if (mapNum != 1 && chance < assets.chancesOfFight[tileId]!!) {
                         chance = Random(Date().time).nextInt(101)
                         var prevChance = 0
                         for (enemyChance in assets.chancesOfEnemy[tileId]!!) {

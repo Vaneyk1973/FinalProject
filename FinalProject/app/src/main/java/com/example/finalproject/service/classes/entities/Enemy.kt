@@ -34,6 +34,7 @@ class Enemy(
         resistances = resistances,
         loot = loot
     ), Dmg {
+    override var def: Boolean = false
 
     constructor(enemy: Enemy) : this(
         enemy.name,
@@ -76,15 +77,16 @@ class Enemy(
 
     fun attack(target: Health) {
         if (tick % 2 == 0) {
-            defend(false)
+            defend()
             doDamage(target)
         } else {
-            defend(true)
+            defend()
         }
         tick++
     }
 
-    override fun defend(def: Boolean) {
+    override fun defend() {
+        def = !def
         if (def)
             for (i in 0 until resistances.size)
                 resistances[i] *= defCoefficient

@@ -12,6 +12,7 @@ import com.example.finalproject.service.serializers.EntitySerializer
 import com.google.firebase.database.DatabaseReference
 import kotlinx.serialization.Serializable
 import kotlin.math.max
+import kotlin.math.min
 
 @Serializable(with = EntitySerializer::class)
 open class Entity(
@@ -84,7 +85,7 @@ open class Entity(
     }
 
     override fun regenerateHealth() {
-        health = max(maxHealth, health + healthRegen)
+        health = min(maxHealth, health + healthRegen)
     }
 
     override fun castSpell(target: Health, spell: Spell) {
@@ -92,7 +93,7 @@ open class Entity(
     }
 
     override fun regenerateMana() {
-        mana = max(maxMana, mana + manaRegen)
+        mana = min(maxMana, mana + manaRegen)
     }
 
     fun regenerate() {

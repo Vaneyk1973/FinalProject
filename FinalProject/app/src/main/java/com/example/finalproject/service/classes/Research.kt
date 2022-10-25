@@ -5,13 +5,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Research(
-    val requiredResearches: ArrayList<Research>,
     val name: String,
     val cost: Int,
     val tier: Int,
     val effect: Int,
     var researched: Boolean,
-    var available: Boolean
+    var available: Boolean,
+    val requiredResearches: ArrayList<Research>
 ) {
 
     private fun affect() = MainActivity.assets.elements[effect].avail()

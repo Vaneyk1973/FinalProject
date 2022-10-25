@@ -26,10 +26,13 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val researchPointsAmount: TextView= requireView().findViewById(R.id.research_points_amount)
+        var text="You have ${MainActivity.player.researchPoints} research points"
+        researchPointsAmount.text=text
         initializeResearches(researchHashMap)
         back= requireView().findViewById(R.id.research_tree_back_button)
         for (i in assets.researches) {
-            val text="${i.name} : ${i.cost}"
+            text="${i.name} : ${i.cost}"
             researchHashMap[i]!!.text = text
             researchHashMap[i]!!.setOnClickListener(this)
             if (i.researched)
@@ -43,12 +46,12 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
             requireView().findViewById(R.id.basic_spell_creation) as TextView
         researchHashMap[assets.researches[1]] =
             requireView().findViewById(R.id.fire_mage) as TextView
-        researchHashMap[assets.researches[2]] =
+        /*researchHashMap[assets.researches[2]] =
             requireView().findViewById(R.id.water_mage) as TextView
         researchHashMap[assets.researches[3]] =
             requireView().findViewById(R.id.earth_mage) as TextView
         researchHashMap[assets.researches[4]] =
-            requireView().findViewById(R.id.air_mage) as TextView
+            requireView().findViewById(R.id.air_mage) as TextView*/
     }
 
     override fun onClick(p0: View?) {

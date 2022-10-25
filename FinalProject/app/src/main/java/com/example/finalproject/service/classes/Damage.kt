@@ -21,11 +21,13 @@ class Damage(private val dmg:ArrayList<Double>) {
     private fun applyResistances(resistances:ArrayList<Double>): ArrayList<Double> {
         val newDmg=dmg.clone() as ArrayList<Double>
         for (i in 0 until newDmg.size)
-            newDmg[i]*=resistances[i]
+            newDmg[i]*=(1-resistances[i])
         return newDmg
     }
 
     fun realDamage(resistances:ArrayList<Double>): Double {
         return applyResistances(resistances=resistances).sum()
     }
+
+    override fun toString(): String =dmg.sum().toString()
 }

@@ -1,8 +1,8 @@
 package com.example.finalproject.service.classes.spell
 
+import com.example.finalproject.MainActivity
 import com.example.finalproject.service.classes.Damage
 import com.example.finalproject.service.interfaces.Health
-import com.example.finalproject.MainActivity
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -22,7 +22,9 @@ class Spell() {
         components.add(ManaReservoir(manaReservoir))
         this.name=name
         manaConsumption=manaReservoir.volume
-        val a=ArrayList<Double>(10)
+        val a= ArrayList<Double>()
+        for (i in 0 until 10)
+            a.add(0.0)
         a[element.element]=manaReservoir.volume*element.baseDamage
         damage= Damage(a)
         lastingTime=manaReservoir.volume/manaChannel.bandwidth

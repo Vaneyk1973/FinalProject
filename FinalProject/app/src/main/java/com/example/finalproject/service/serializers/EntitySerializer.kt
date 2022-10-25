@@ -8,7 +8,11 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 object EntitySerializer : KSerializer<Entity> {
     override val descriptor: SerialDescriptor =
@@ -74,7 +78,7 @@ object EntitySerializer : KSerializer<Entity> {
     override fun serialize(encoder: Encoder, value: Entity) {
         encoder.encodeStructure(descriptor) {
             encodeStringElement(descriptor, 0, value.name)
-            encodeIntElement(descriptor, 0, value.id)
+            encodeIntElement(descriptor, 1, value.id)
             encodeDoubleElement(descriptor, 2, value.health)
             encodeDoubleElement(descriptor, 3, value.maxHealth)
             encodeDoubleElement(descriptor, 4, value.healthRegen)
