@@ -4,31 +4,17 @@ import com.example.finalproject.service.classes.items.Item
 import kotlinx.serialization.Serializable
 
 @Serializable
-class Inventory() {
+class Inventory {
 
-    val inventory: ArrayList<Pair<Int, Item>> = ArrayList()
+    val inventory: HashMap<Int, Int> = HashMap() //<is of an item, quantity>
 
-    constructor(inventory: ArrayList<Pair<Int, Item>>) : this() {
-        for (item in inventory)
-            this.inventory.add(item)
+    fun quantity(item: Int): Int {
+        return inventory[item] ?: -1
     }
 
+    fun contains(item: Int): Boolean = inventory[item] != null
 
-    fun index(item: Item): Int {
-        for (i in inventory.indices)
-            if (inventory[i].second == item)
-                return i
-        return -1
-    }
-
-    fun quantity(item: Item): Int {
-        for (i in inventory)
-            if (i.second == item)
-                return i.first
-        return 0
-    }
-
-    fun removeItem(item: Item) {
-        inventory.remove(inventory[index(item)])
+    fun removeItem(item: Int) {
+        inventory.keys.remove(item)
     }
 }

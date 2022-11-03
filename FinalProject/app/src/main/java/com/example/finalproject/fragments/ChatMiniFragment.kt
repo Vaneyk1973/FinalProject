@@ -1,33 +1,37 @@
 package com.example.finalproject.fragments
 
+import android.icu.util.Calendar
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 import com.example.finalproject.service.classes.Message
-import com.example.finalproject.service.classes.User
-import com.google.firebase.database.*
-import com.google.gson.Gson
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import java.lang.Integer.min
 import java.util.*
+import kotlin.math.log
 
-class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener, TextView.OnEditorActionListener {
+class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener,
+    TextView.OnEditorActionListener {
 
-    private lateinit var ref:DatabaseReference
-    private lateinit var back:Button
-    private lateinit var chat:RecyclerView
-    private lateinit var enterMessage: EditText
-    private val messages = ArrayList<Message>()
+    private lateinit var backButton: Button
+    private lateinit var chatMessagesRecyclerView: RecyclerView
+    private lateinit var progressBar: ProgressBar
+    private lateinit var enterMessageView: EditText
 
+    private var messagesList: ArrayList<Message> = ArrayList()
+
+    private val chatDatabaseReference = FirebaseDatabase.getInstance().getReference("Chat")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,26 +42,29 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener, T
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ref = FirebaseDatabase.getInstance().getReference("Message")
-        chat= requireView().findViewById(R.id.chat_list)
-        enterMessage = requireView().findViewById(R.id.message)
-        back = requireView().findViewById(R.id.chat_mini_back_button)
-        ref.addValueEventListener(this)
-        back.setOnClickListener(this)
-        chat.layoutManager = LinearLayoutManager(context)
-        enterMessage.setOnEditorActionListener(this)
-        chat.scrollToPosition(messages.size - 1)
+        progressBar = requireView().findViewById(R.id.progressBar)
+        progressBar.animate()
+        chatMessagesRecyclerView = requireView().findViewById(R.id.chat_list)
+        enterMessageView = requireView().findViewById(R.id.message)
+        backButton = requireView().findViewById(R.id.chat_mini_back_button)
+        backButton.setOnClickListener(this)
+        chatDatabaseReference.addValueEventListener(this)
+        enterMessageView.setOnEditorActionListener(this)
+        chatDatabaseReference.get().addOnCompleteListener {
+            onDataChange(it.result)
+        }
+        chatMessagesRecyclerView.layoutManager = LinearLayoutManager(context)
+        chatMessagesRecyclerView.scrollToPosition(min(messagesList.size - 1, 0))
     }
 
-    private inner class ChatAdapter(var data: ArrayList<Message>) :
+    private inner class ChatAdapter(val data: List<Message>) :
         RecyclerView.Adapter<ChatAdapter.ChatViewHolder>() {
 
         inner class ChatViewHolder(itemView: View) :
             RecyclerView.ViewHolder(itemView) {
-            var user: TextView = itemView.findViewById(R.id.user_list)
-            var message: TextView = itemView.findViewById(R.id.message_list)
-            var time: TextView = itemView.findViewById(R.id.time_list)
-
+            val userLogin: TextView = itemView.findViewById(R.id.user_list)
+            val messageText: TextView = itemView.findViewById(R.id.message_list)
+            val timeSent: TextView = itemView.findViewById(R.id.time_list)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
@@ -67,7 +74,7 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener, T
         }
 
         override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
-            holder.message.text = data[position].messageText
+            holder.messageText.text = data[position].messageText
             var time = data[position].date / 1000 + Calendar.getInstance().timeZone.getOffset(
                 Date().time
             )
@@ -77,51 +84,47 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener, T
             time /= 60
             val hours: String = (time % 24).toString()
             val date = "$hours:$minutes:$seconds"
-            holder.time.text = date
-            holder.user.text = Gson().fromJson(
-                data[position].userLogin,
-                User::class.java
-            ).login
+            holder.timeSent.text = date
+            holder.userLogin.text = data[position].userLogin
         }
 
         override fun getItemCount(): Int = data.size
     }
 
     override fun onClick(p0: View?) {
-        if (p0==back){
-            val fragmentManager = parentFragmentManager
-            var fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.status)!!)
-            fragmentTransaction.commit()
-            fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.add(R.id.status, StatusBarFragment())
-            fragmentTransaction.commit()
+        if (p0 == backButton) {
+            val chatFragmentTransaction = parentFragmentManager.beginTransaction()
+            chatFragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNumber))
+            chatFragmentTransaction.add(R.id.menu, MenuFragment())
+            chatFragmentTransaction.add(R.id.status, StatusBarFragment())
+            parentFragmentManager.findFragmentById(R.id.chat_mini)
+                ?.let { chatFragmentTransaction.remove(it) }
+            chatFragmentTransaction.commit()
         }
     }
 
     override fun onDataChange(snapshot: DataSnapshot) {
-        messages.clear()
+        messagesList.clear()
         for (i in snapshot.children)
-            messages.add(i.getValue(Message::class.java)!!)
-        chat.adapter = ChatAdapter(messages)
-        chat.scrollToPosition(messages.size - 1)
+            messagesList.add(i.getValue(Message::class.java)!!)
+        chatMessagesRecyclerView.adapter = ChatAdapter(messagesList)
+        chatMessagesRecyclerView.scrollToPosition(messagesList.size - 1)
+        progressBar.visibility = View.GONE
     }
 
     override fun onCancelled(error: DatabaseError) {
-        Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(context, "Ooops something went wrong", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
-        if (p0==enterMessage){
-            val m = Message(
-                p0.text.toString(),
-                Gson().toJson(MainActivity.player.user),
+    override fun onEditorAction(messageEnterView: TextView?, p1: Int, p2: KeyEvent?): Boolean =
+        if (messageEnterView!!.text.toString().isNotEmpty()) {
+            val message = Message(
+                messageEnterView.text.toString(),
+                MainActivity.player.user.login,
                 Date().time - Calendar.getInstance().timeZone.getOffset(Date().time) * 60L * 1000
             )
-            ref.child(messages.size.toString()).setValue(m)
-            p0.text = ""
-            return true
-        }
-        return false
-    }
+            chatDatabaseReference.child(messagesList.size.toString()).setValue(message)
+            messageEnterView.text = ""
+            true
+        } else false
 }

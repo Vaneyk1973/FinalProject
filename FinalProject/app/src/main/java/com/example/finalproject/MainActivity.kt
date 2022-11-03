@@ -1,6 +1,5 @@
 package com.example.finalproject
 
-import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -41,11 +40,9 @@ class MainActivity : AppCompatActivity() {
         val bounds = getBounds()
         width = bounds.first
         height = bounds.second
-        sh = getPreferences(MODE_PRIVATE)
         res = resources
         music = Music()
         music.start(this, R.raw.main)
-        showTutorial = sh.getBoolean("Tutorial", true)
         player = Player(2, 2)
         setInitialData()
         if (showTutorial) {
@@ -66,13 +63,11 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         music.stop()
-        sh = getPreferences(MODE_PRIVATE)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         music.stop()
-        sh = getPreferences(MODE_PRIVATE)
     }
 
     companion object {
@@ -85,22 +80,21 @@ class MainActivity : AppCompatActivity() {
         var avatarWidth = 0
         var statusImagesWidth = 0
         var categoryImageWidth = 0
-        var showTutorial = true
         val map = ArrayList<Map>()
         val menu = arrayOfNulls<Bitmap>(4)
         private val mapTextures = ArrayList<Bitmap>()
         private lateinit var avatar: Bitmap
         lateinit var textures: Array<Array<Bitmap>>
         lateinit var music: Music
-        private lateinit var sh: SharedPreferences
         lateinit var assets: Assets
+        var showTutorial = true
 
         @Serializable
         class Assets {
             val chancesOfFight =
-                HashMap<Int, Int>() //<id of location (field, forest etc.), chance of getting into a fight>
+                HashMap<Int, Int>() //<id of a location, chance of getting into a fight>
             val chancesOfEnemy =
-                HashMap<Int, ArrayList<Pair<Int, Int>>>() //<id of location, <chance of getting into a fight with that enemy, id of an enemy>
+                HashMap<Int, ArrayList<Pair<Int, Int>>>() //<id of a location, <chance of getting into a fight with that enemy, id of an enemy>
             val enemies = HashMap<Int, Enemy>() //<id of an enemy, object template>
             val elements = ArrayList<Element>()
             val manaChannels = ArrayList<ManaChannel>()
@@ -110,8 +104,10 @@ class MainActivity : AppCompatActivity() {
             val researches = ArrayList<Research>()
             val recipes = ArrayList<Recipe>()
             val items = HashMap<Int, Item>() //<id of an item, object template>
-            val shopList = ArrayList<Item>() //<items available in the shop>
+            val shopList = ArrayList<Item>()
             val tasks = ArrayList<Task>()
+            val itemsObtained:HashMap<Int, Int> =HashMap() //<id of an item, quantity>
+            val enemiesKilled:HashMap<Int, Int> = HashMap() //<id of an enemy, quantity>
         }
 
         fun getAvatar(): Bitmap = Bitmap.createBitmap(avatar)
@@ -190,16 +186,18 @@ class MainActivity : AppCompatActivity() {
                 parser.next()
             }
             assets = Json.decodeFromString(Assets.serializer(), data)
-            assets.items[11] = Item("Wolf hat", 11, 30, 20, 0, 0)
+            assets.items[1] = Item("Wolf tooth", 1, 12, 10, 0, 0)
+            assets.items[12] = Item("Leather", 12, 20, 17, 0, 0)
             assets.recipes.add(
                 Recipe(
-                    Pair(1, assets.items[11]!!),
-                    arrayListOf(Pair(3, assets.items[10]!!))
+                    Pair(5, assets.items[12]!!),
+                    arrayListOf(Pair(3, assets.items[0]!!))
                 )
             )
             assets.researches.add(
                 Research(
                     "Fire element",
+                    1,
                     2,
                     1,
                     1,
@@ -208,6 +206,7 @@ class MainActivity : AppCompatActivity() {
                     arrayListOf(assets.researches[0])
                 )
             )
+            assets.shopList.addAll(assets.items.values)
             Log.d("Assets", Json.encodeToString(Assets.serializer(), assets))
         }
     }

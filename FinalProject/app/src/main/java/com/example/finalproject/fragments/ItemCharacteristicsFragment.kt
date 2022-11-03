@@ -12,7 +12,7 @@ import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 import com.example.finalproject.service.classes.items.Item
 
-class ItemCharacteristicsFragment(val item: Item, private val mode: Boolean = true) : Fragment() {
+class ItemCharacteristicsFragment(val item: Item, private val buyMode: Boolean = true) : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,9 +35,9 @@ class ItemCharacteristicsFragment(val item: Item, private val mode: Boolean = tr
         val cost: TextView = requireView().findViewById(R.id.cost_field)
         name.text = item.name
         category.text = item.category.toString()
-        if (mode)
-            cost.text = item.costSell.toString()
-        else
+        if (buyMode)
             cost.text = item.costBuy.toString()
+        else
+            cost.text = item.costSell.toString()
     }
 }

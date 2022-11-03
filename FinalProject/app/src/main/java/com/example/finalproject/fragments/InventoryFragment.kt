@@ -50,7 +50,14 @@ class InventoryFragment : Fragment(), View.OnClickListener {
             categories[i].setImageBitmap(Bitmap.createBitmap(bm))
             categories[i].setOnClickListener(this)
         }
-        inventory.adapter = InventoryAdapter(MainActivity.player.inventory.inventory)
+        inventory.adapter = InventoryAdapter(
+            MainActivity.player.inventory.inventory.run {
+                val items: ArrayList<Pair<Int, Item>> = ArrayList()
+                for (i in keys)
+                    items.add(Pair(this[i]!!, MainActivity.assets.items[i]!!))
+                return@run items
+            }
+        )
         inventory.layoutManager = LinearLayoutManager(context)
         back.setOnClickListener(this)
     }
@@ -86,10 +93,12 @@ class InventoryFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        override fun getItemCount(): Int {
-            return if (category == -1) {
-                if (data.size == 0) noItems!!.visibility = View.VISIBLE else noItems!!.visibility =
-                    View.GONE
+        override fun getItemCount(): Int =
+            if (category == -1) {
+                if (data.size == 0)
+                    noItems!!.visibility = View.VISIBLE
+                else
+                    noItems!!.visibility = View.GONE
                 data.size
             } else {
                 val data1 = ArrayList<Pair<Int, Item>>()
@@ -98,17 +107,27 @@ class InventoryFragment : Fragment(), View.OnClickListener {
                 }
                 data.clear()
                 data.addAll(data1)
-                if (data.size == 0) noItems!!.visibility = View.VISIBLE else noItems!!.visibility =
-                    View.GONE
-                data1.size
+                if (data.size == 0)
+                    noItems!!.visibility = View.VISIBLE
+                else
+                    noItems!!.visibility = View.GONE
+                data.size
             }
-        }
     }
 
     override fun onClick(p0: View?) {
         if (p0 is ImageView) {
             inventory.adapter =
-                InventoryAdapter(MainActivity.player.inventory.inventory, categories.indexOf(p0))
+                InventoryAdapter(MainActivity.player.inventory.inventory.run {
+                    val items: ArrayList<Pair<Int, Item>> = ArrayList()
+                    for (i in keys)
+                        items.add(Pair(this[i]!!, MainActivity.assets.items[i]!!))
+                    return@run items
+                }, categories.indexOf(p0))
+            val fm = childFragmentManager
+            val fr = fm.beginTransaction()
+            fm.findFragmentById(R.id.characteristics)?.let { it1 -> fr.remove(it1) }
+            fr.commit()
         } else if (p0 == back) {
             val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()

@@ -1,6 +1,7 @@
 package com.example.finalproject.fragments
 
 import android.os.Bundle
+import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.finalproject.MainActivity
 import com.example.finalproject.R
@@ -17,33 +19,36 @@ import com.google.firebase.database.FirebaseDatabase
 
 class RegisterFragment : Fragment(), View.OnClickListener {
 
-    private lateinit var register:Button
-    private lateinit var back:Button
+    private lateinit var register: Button
+    private lateinit var back: Button
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_register, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        back= requireView().findViewById(R.id.register_back_button)
+        back = requireView().findViewById(R.id.register_back_button)
         register = requireView().findViewById(R.id.register_button)
         back.setOnClickListener(this)
         register.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
-        if (p0==register) {
-            val t:ProgressBar = requireView().findViewById(R.id.register_loading)
-            val loginView:EditText = requireView().findViewById(R.id.login_reg)
-            val emailView:EditText = requireView().findViewById(R.id.email_reg)
-            val passwordView:EditText = requireView().findViewById(R.id.password_reg)
-            val confirmPasswordView:EditText = requireView().findViewById(R.id.confirm_password_reg)
-            val login:String = loginView.text.toString()
-            val email:String = emailView.text.toString()
-            val password:String = passwordView.text.toString()
-            val confirmPassword:String = confirmPasswordView.text.toString()
+        if (p0 == register) {
+            val t: ProgressBar = requireView().findViewById(R.id.register_loading)
+            val loginView: EditText = requireView().findViewById(R.id.login_reg)
+            val emailView: EditText = requireView().findViewById(R.id.email_reg)
+            val passwordView: EditText = requireView().findViewById(R.id.password_reg)
+            val confirmPasswordView: EditText =
+                requireView().findViewById(R.id.confirm_password_reg)
+            val login: String = loginView.text.toString()
+            val email: String = emailView.text.toString()
+            val password: String = passwordView.text.toString()
+            val confirmPassword: String = confirmPasswordView.text.toString()
             if (login.isEmpty()) {
                 loginView.error = "Login is required"
             } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -57,30 +62,32 @@ class RegisterFragment : Fragment(), View.OnClickListener {
             } else {
                 t.visibility = View.VISIBLE
                 t.animate()
-                register.visibility=View.GONE
+                register.visibility = View.GONE
                 FirebaseAuth.getInstance()
                     .createUserWithEmailAndPassword(email, password.hashCode().toString())
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
                             val ref = FirebaseDatabase.getInstance().getReference("Users")
-                            MainActivity.player.user= User(login, email)
+                            MainActivity.player.user = User(login, email)
                             MainActivity.player.user.uID = FirebaseAuth.getInstance().uid.toString()
                             ref.child(FirebaseAuth.getInstance().uid!!)
                                 .setValue(MainActivity.player.user)
                             MainActivity.player.user.logIn()
-                            val fm=parentFragmentManager
+                            val fm = parentFragmentManager
                             val fr = fm.beginTransaction()
                             fr.add(R.id.chat, ChatFragment())
-                            fr.remove(fm.findFragmentById(R.id.register)!!)
+                            fm.findFragmentById(R.id.register)?.let { fr.remove(it) }
                             fr.commit()
-                        }
+                        } else
+                            Toast.makeText(context, "Something went wrong", Toast.LENGTH_SHORT)
+                                .show()
                         t.clearAnimation()
                         t.visibility = View.GONE
-                        register.visibility=View.VISIBLE
+                        register.visibility = View.VISIBLE
                     }
             }
-        } else if (p0==back) {
-            val fragmentManager =parentFragmentManager
+        } else if (p0 == back) {
+            val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.register)!!)
             fragmentTransaction.add(R.id.log_in, SignInFragment())

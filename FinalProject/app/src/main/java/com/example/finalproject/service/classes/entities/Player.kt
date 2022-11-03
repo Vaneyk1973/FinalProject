@@ -183,41 +183,39 @@ class Player(
         (2.0.pow(2 * sqrt(level.toDouble())) + level).toInt()
 
     override fun addItemsToInventory(item: Pair<Int, Item>) {
-        if (inventory.quantity(item.second) > 0) {
-            val itemIndex = inventory.index(item.second)
-            inventory.inventory[itemIndex] =
-                Pair(item.first + inventory.inventory[itemIndex].first, item.second)
-        } else {
-            Log.d("Inv", item.second.toString())
-            inventory.inventory.add(item)
-            Log.d("Inv", inventory.inventory.toString())
-        }
+        inventory.inventory[item.second.id] =
+            (inventory.inventory[item.second.id] ?: 0) + item.first
+        MainActivity.assets.itemsObtained[item.second.id] =
+            (MainActivity.assets.itemsObtained[item.second.id] ?: 0) + item.first
     }
 
-    override fun removeItemsFromInventory(item: Pair<Int, Item>): Boolean {
-        return if (inventory.quantity(item.second) > item.first) {
-            val itemIndex = inventory.index(item.second)
-            inventory.inventory[itemIndex] =
-                Pair(inventory.inventory[itemIndex].first-item.first, item.second)
+    override fun removeItemsFromInventory(item: Pair<Int, Item>): Boolean = run {
+        if (inventory.quantity(item.second.id) > item.first) {
+            inventory.inventory[item.second.id] = inventory.inventory[item.second.id]!! - item.first
             true
-        } else if (inventory.quantity(item.second) == item.first) {
-            inventory.removeItem(item.second)
-            return true
+        } else if (inventory.quantity(item.second.id) == item.first) {
+            inventory.removeItem(item.second.id)
+            true
         } else {
+            Log.d("InventoryError: ", "Cannot remove items. Not enough items in the inventory")
             false
         }
     }
 
-    fun craft(recipe: Recipe): Boolean {
-        for (i in recipe.ingredients) {
-            Log.d("Items", "${i.first}, ${inventory.quantity(i.second)}")
-            if (inventory.quantity(i.second) < i.first)
+    fun craft(recipe: Recipe): Boolean = run {
+        for (item in recipe.ingredients) {
+            if (inventory.quantity(item.second.id) < item.first) {
+                Log.d(
+                    "InventoryError: ",
+                    "Cannot craft items. Not enough ingredients in the inventory"
+                )
                 return false
+            }
         }
-        for (i in recipe.ingredients)
-            removeItemsFromInventory(i)
+        for (item in recipe.ingredients)
+            removeItemsFromInventory(item)
         addItemsToInventory(recipe.product)
-        return true
+        true
     }
 
     fun takeDrop(loot: Lootable) {
@@ -228,8 +226,8 @@ class Player(
             addItemsToInventory(i)
     }
 
-    override fun equipItem(item: Item): Boolean {
-        return when (item) {
+    override fun equipItem(item: Item): Boolean =
+        when (item) {
             is Weapon -> {
                 equipment[0] = item
                 true
@@ -244,7 +242,6 @@ class Player(
                 false
             }
         }
-    }
 
     override fun unequipItem(item: Item): Boolean {
         return if (item is Weapon && equipment[0] == item) {
@@ -276,25 +273,23 @@ class Player(
         }
     }
 
-    fun sellItem(item: Pair<Int, Item>): Boolean {
-        return if (inventory.quantity(item.second) >= item.first) {
-            gold += item.second.costSell * item.first
+    fun sellItem(item: Pair<Int, Item>): Boolean =
+        if (inventory.quantity(item.second.id) >= item.first) {
+            gold += item.second.costBuy * item.first
             removeItemsFromInventory(item)
             true
         } else {
             false
         }
-    }
 
-    fun buyItem(item: Pair<Int, Item>): Boolean {
-        return if (gold >= item.second.costSell * item.first) {
+    fun buyItem(item: Pair<Int, Item>): Boolean =
+        if (gold >= item.second.costSell * item.first) {
             gold -= item.second.costSell * item.first
             addItemsToInventory(item)
             true
         } else {
             false
         }
-    }
 
     override fun buyItemOnAuction(item: Pair<Int, Item>, ref: DatabaseReference) {
         TODO("Not yet implemented")

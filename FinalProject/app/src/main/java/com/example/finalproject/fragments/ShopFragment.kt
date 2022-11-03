@@ -40,7 +40,6 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
     private lateinit var add: FloatingActionButton
     private lateinit var remove: FloatingActionButton
     private lateinit var shopList: RecyclerView
-    private lateinit var _childFragmentManager: FragmentManager
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -51,7 +50,6 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        _childFragmentManager = childFragmentManager
         sellBuy = requireView().findViewById(R.id.sell_buy_switch)
         modeText = requireView().findViewById(R.id.shop_mode)
         amountText = requireView().findViewById(R.id.amount)
@@ -63,19 +61,19 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
         shopList.layoutManager = LinearLayoutManager(context)
         for (i in MainActivity.assets.shopList)
             data.add(Pair(inf, i))
-        shopList.adapter = ShopAdapter(player.inventory.inventory)
+        shopList.adapter = ShopAdapter(getInventoryAsArrayList())
         if (!auction) {
             sellBuy.setOnCheckedChangeListener(this)
             sellBuy.isChecked = true
             sellBuy.isChecked = false
             sellBuyButton.setOnClickListener(this)
         } else {
-            var text="Place"
+            var text = "Place"
             modeText.text = text
             sellBuyButton.text = text
-            text="Place/Buy"
+            text = "Place/Buy"
             sellBuy.text = text
-            shopList.adapter = ShopAdapter(player.inventory.inventory)
+            shopList.adapter = ShopAdapter(getInventoryAsArrayList())
             sellBuy.setOnCheckedChangeListener(this)
             sellBuyButton.setOnClickListener(this)
         }
@@ -83,6 +81,7 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
         remove.setOnClickListener(this)
         back.setOnClickListener(this)
     }
+
 
     private inner class ShopAdapter : RecyclerView.Adapter<ShopAdapter.ViewHolder> {
         private val data = ArrayList<Pair<Int, Item>>()
@@ -114,20 +113,21 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             if (!auction) {
                 if (data.size == 0) {
-                    val fr = _childFragmentManager.beginTransaction()
-                    _childFragmentManager.findFragmentById(R.id.characteristics3)
+                    val fr = childFragmentManager.beginTransaction()
+                    childFragmentManager.findFragmentById(R.id.characteristics3)
                         ?.let { fr.remove(it) }
                     fr.commit()
                 } else {
                     if (!buyMode)
                         holder.name.text = ">${data[position].second.name}:${data[position].first}"
-                    else holder.name.text = ">${data[position].second.name}"
+                    else
+                        holder.name.text = ">${data[position].second.name}"
                     holder.name.setOnClickListener {
                         chosenItem = data[position].second
                         amount = 1
                         amountText.text = amount.toString()
-                        val fr = _childFragmentManager.beginTransaction()
-                        _childFragmentManager.findFragmentById(R.id.characteristics3)
+                        val fr = childFragmentManager.beginTransaction()
+                        childFragmentManager.findFragmentById(R.id.characteristics3)
                             ?.let { it1 -> fr.remove(it1) }
                         fr.add(
                             R.id.characteristics3,
@@ -138,12 +138,13 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                 }
             } else {
                 if (dataA.size == 0 && buyMode || data.size == 0 && !buyMode) {
-                    val fragmentTransaction = _childFragmentManager.beginTransaction()
-                    _childFragmentManager.findFragmentById(R.id.characteristics3)
+                    val fragmentTransaction = childFragmentManager.beginTransaction()
+                    childFragmentManager.findFragmentById(R.id.characteristics3)
                         ?.let { fragmentTransaction.remove(it) }
                     fragmentTransaction.commit()
                 } else if (buyMode) {
-                    holder.name.text =">${dataA[position].first.name}:${dataA[position].second} ${dataA[position].third}"
+                    holder.name.text =
+                        ">${dataA[position].first.name}:${dataA[position].second} ${dataA[position].third}"
                     holder.name.setOnClickListener {
                         chosenItem =
                             dataA[position].first
@@ -151,25 +152,29 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                             dataA[position].third
                         amount = 1
                         amountText.text = amount.toString()
-                        val fr = _childFragmentManager.beginTransaction()
-                        _childFragmentManager.findFragmentById(R.id.characteristics3)
+                        val fr = childFragmentManager.beginTransaction()
+                        childFragmentManager.findFragmentById(R.id.characteristics3)
                             ?.let { it1 -> fr.remove(it1) }
-                        fr.add(R.id.characteristics3,
-                            ItemCharacteristicsFragment(dataA[position].first, !buyMode))
+                        fr.add(
+                            R.id.characteristics3,
+                            ItemCharacteristicsFragment(dataA[position].first, !buyMode)
+                        )
                         fr.commit()
                     }
                 } else {
-                    holder.name.text =">${data[position].second.name}:${data[position].first}"
+                    holder.name.text = ">${data[position].second.name}:${data[position].first}"
                     holder.name.setOnClickListener {
                         chosenItem =
                             data[position].second
                         amount = 1
                         amountText.text = amount.toString()
-                        val fr = _childFragmentManager.beginTransaction()
-                        _childFragmentManager.findFragmentById(R.id.characteristics3)
+                        val fr = childFragmentManager.beginTransaction()
+                        childFragmentManager.findFragmentById(R.id.characteristics3)
                             ?.let { it1 -> fr.remove(it1) }
-                        fr.add(R.id.characteristics3,
-                            ItemCharacteristicsFragment(data[position].second, buyMode))
+                        fr.add(
+                            R.id.characteristics3,
+                            ItemCharacteristicsFragment(data[position].second, buyMode)
+                        )
                         fr.commit()
                     }
                 }
@@ -193,11 +198,11 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
     }
 
     override fun onClick(p0: View?) {
-        if (p0==add)
+        if (p0 == add)
             amountText.text = (++amount).toString()
-        else if (p0==remove&&amount>1)
+        else if (p0 == remove && amount > 1)
             amountText.text = (--amount).toString()
-        else if (p0==back){
+        else if (p0 == back) {
             val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentManager.findFragmentById(R.id.shop)?.let { fragmentTransaction.remove(it) }
@@ -206,24 +211,27 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
             fragmentTransaction.add(R.id.status, StatusBarFragment())
             fragmentTransaction.add(R.id.menu, MenuFragment())
             fragmentTransaction.commit()
-        } else{
+        } else {
             if (auction) {
-                if (p0==sellBuyButton){
+                if (p0 == sellBuyButton) {
                     if (chosenItem != null) {
-                        if (!buyMode)
-                            if (amount > player.inventory.quantity(chosenItem!!))
-                                Toast.makeText(context, "You don't have enough items", Toast.LENGTH_SHORT).show()
-                            else {
-                                val fragmentTransaction = _childFragmentManager.beginTransaction()
-                                _childFragmentManager.findFragmentById(R.id.characteristics3)
+                        if (!buyMode) {
+                            if (amount > player.inventory.quantity(chosenItem!!.id)) {
+                                Toast.makeText(
+                                    context,
+                                    "You don't have enough items",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            } else {
+                                val fragmentTransaction = childFragmentManager.beginTransaction()
+                                childFragmentManager.findFragmentById(R.id.characteristics3)
                                     ?.let { fragmentTransaction.remove(it) }
                                 fragmentTransaction.commit()
                             }
-                        else {
-                            //player.buyItemOnAuction()
+                        } else {
                             amountText.text = amount.toString()
-                            val fragmentTransaction = _childFragmentManager.beginTransaction()
-                            _childFragmentManager.findFragmentById(R.id.characteristics3)
+                            val fragmentTransaction = childFragmentManager.beginTransaction()
+                            childFragmentManager.findFragmentById(R.id.characteristics3)
                                 ?.let { fragmentTransaction.remove(it) }
                             fragmentTransaction.commit()
                         }
@@ -235,22 +243,24 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                     if (chosenItem == null)
                         Toast.makeText(context, "Choose item first", Toast.LENGTH_SHORT).show()
                     else if (!buyMode) {
-                        if (!player.sellItem(Pair(amount, chosenItem!!)))
+                        if (player.sellItem(Pair(amount, chosenItem!!))) {
+                            Toast.makeText(context, "Sold successfully", Toast.LENGTH_SHORT).show()
+                            shopList.adapter = ShopAdapter(getInventoryAsArrayList())
+                            val fr = childFragmentManager.beginTransaction()
+                            childFragmentManager.findFragmentById(R.id.characteristics3)
+                                ?.let { it1 -> fr.remove(it1) }
+                            fr.commit()
+                        } else {
                             Toast.makeText(
                                 context,
                                 "You don't have enough items", Toast.LENGTH_SHORT
                             ).show()
-                        else {
-                            Toast.makeText(context, "Sold successfully", Toast.LENGTH_SHORT).show()
-                            shopList.adapter = ShopAdapter(player.inventory.inventory)
-                            val fr = _childFragmentManager.beginTransaction()
-                            _childFragmentManager.findFragmentById(R.id.characteristics3)?.let { it1 -> fr.remove(it1) }
-                            fr.commit()
                         }
                     } else if (player.buyItem(Pair(amount, chosenItem!!)))
-                        Toast.makeText(context, "You don't have enough gold", Toast.LENGTH_SHORT).show()
-                    else
                         Toast.makeText(context, "Bought successfully", Toast.LENGTH_SHORT).show()
+                    else
+                        Toast.makeText(context, "You don't have enough gold", Toast.LENGTH_SHORT)
+                            .show()
                 }
             }
         }
@@ -258,13 +268,13 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
 
     override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
         if (auction) {
-            if (p0==sellBuy){
+            if (p0 == sellBuy) {
                 buyMode = p1
-                val fr = _childFragmentManager.beginTransaction()
-                _childFragmentManager.findFragmentById(R.id.characteristics3)?.let { fr.remove(it) }
+                val fr = childFragmentManager.beginTransaction()
+                childFragmentManager.findFragmentById(R.id.characteristics3)?.let { fr.remove(it) }
                 fr.commit()
                 if (p1) {
-                    val text="Buy"
+                    val text = "Buy"
                     modeText.text = text
                     sellBuyButton.text = text
                     shopList.adapter = ShopAdapter(ArrayList())
@@ -273,14 +283,15 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                         object : GenericTypeIndicator<ArrayList<Triple<Item, Int, String>>>() {}
                     ref.get().addOnCompleteListener { task ->
                         if (task.isSuccessful)
-                            if (task.result.getValue(genericTypeIndicator) != null )
-                                shopList.adapter = ShopAdapter(task.result.getValue(genericTypeIndicator)!!, true)
+                            if (task.result.getValue(genericTypeIndicator) != null)
+                                shopList.adapter =
+                                    ShopAdapter(task.result.getValue(genericTypeIndicator)!!, true)
                     }
                 } else {
-                    val text="Place"
+                    val text = "Place"
                     modeText.text = text
                     sellBuyButton.text = text
-                    shopList.adapter = ShopAdapter(player.inventory.inventory)
+                    shopList.adapter = ShopAdapter(getInventoryAsArrayList())
                 }
                 amountText.text = amount.toString()
             }
@@ -288,19 +299,26 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
             if (p0 == sellBuy) {
                 buyMode = p1
                 if (buyMode) {
-                    val text="Buy"
+                    val text = "Buy"
                     modeText.text = text
                     sellBuyButton.text = text
                     shopList.adapter = ShopAdapter(data)
                 } else {
-                    val text="Sell"
+                    val text = "Sell"
                     modeText.text = text
                     sellBuyButton.text = text
-                    shopList.adapter = ShopAdapter(player.inventory.inventory)
+                    shopList.adapter = ShopAdapter(getInventoryAsArrayList())
                 }
-                amount=1
+                amount = 1
                 amountText.text = amount.toString()
             }
         }
+    }
+
+    private fun getInventoryAsArrayList() = player.inventory.inventory.run {
+        val items: ArrayList<Pair<Int, Item>> = ArrayList()
+        for (i in keys)
+            items.add(Pair(this[i]!!, MainActivity.assets.items[i]!!))
+        return@run items
     }
 }

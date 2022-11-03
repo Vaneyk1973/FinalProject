@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.lang.Integer.min
 import java.util.*
+import kotlin.math.log
 
 class ChatFragment : Fragment(), View.OnClickListener, ValueEventListener,
     TextView.OnEditorActionListener {
@@ -48,6 +49,10 @@ class ChatFragment : Fragment(), View.OnClickListener, ValueEventListener,
         enterMessageView = requireView().findViewById(R.id.message)
         logOutButton = requireView().findViewById(R.id.log_out)
         backButton = requireView().findViewById(R.id.chat_back_button)
+        backButton.setOnClickListener(this)
+        logOutButton.setOnClickListener(this)
+        chatDatabaseReference.addValueEventListener(this)
+        enterMessageView.setOnEditorActionListener(this)
         chatDatabaseReference.get().addOnCompleteListener {
             onDataChange(it.result)
         }
@@ -119,7 +124,7 @@ class ChatFragment : Fragment(), View.OnClickListener, ValueEventListener,
         Toast.makeText(context, "Ooops something went wrong", Toast.LENGTH_SHORT).show()
     }
 
-    override fun onEditorAction(messageEnterView: TextView?, p1: Int, p2: KeyEvent?): Boolean {
+    override fun onEditorAction(messageEnterView: TextView?, p1: Int, p2: KeyEvent?): Boolean =
         if (messageEnterView!!.text.toString().isNotEmpty()) {
             val message = Message(
                 messageEnterView.text.toString(),
@@ -128,8 +133,6 @@ class ChatFragment : Fragment(), View.OnClickListener, ValueEventListener,
             )
             chatDatabaseReference.child(messagesList.size.toString()).setValue(message)
             messageEnterView.text = ""
-            return true
-        }
-        return false
-    }
+            true
+        } else false
 }

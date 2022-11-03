@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class Research(
     val name: String,
+    val id: Int,
     val cost: Int,
     val tier: Int,
     val effect: Int,
