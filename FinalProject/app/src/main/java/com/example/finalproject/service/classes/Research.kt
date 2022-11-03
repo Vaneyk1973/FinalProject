@@ -1,6 +1,6 @@
 package com.example.finalproject.service.classes
 
-import com.example.finalproject.MainActivity
+import com.example.finalproject.MainActivity.Companion.assets
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -12,14 +12,13 @@ data class Research(
     val effect: Int,
     var researched: Boolean,
     var available: Boolean,
-    val requiredResearches: ArrayList<Research>
+    val requiredResearches: ArrayList<Int>
 ) {
-
-    private fun affect() = MainActivity.assets.elements[effect].avail()
 
     private fun enable() {
         for (i in requiredResearches)
-            if (!i.researched) return
+            if (assets.researches[i]?.researched != true)
+                return
         available = true
     }
 

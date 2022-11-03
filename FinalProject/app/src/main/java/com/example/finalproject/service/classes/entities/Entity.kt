@@ -1,6 +1,5 @@
 package com.example.finalproject.service.classes.entities
 
-import android.graphics.Bitmap
 import com.example.finalproject.service.classes.Damage
 import com.example.finalproject.service.classes.Loot
 import com.example.finalproject.service.classes.Unit
@@ -29,39 +28,6 @@ open class Entity(
 ) :
     Unit(name = name, id = id), Health, Mana, Lootable {
 
-    var texture: Bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888)
-        get() = Bitmap.createBitmap(field)
-        set(texture) {
-            field = Bitmap.createBitmap(texture)
-        }
-
-    constructor(
-        name: String,
-        id: Int,
-        health: Double,
-        maxHealth: Double,
-        healthRegen: Double,
-        mana: Double,
-        maxMana: Double,
-        manaRegen: Double,
-        resistances: ArrayList<Double>,
-        loot: Loot,
-        texture: Bitmap
-    ) : this(
-        name = name,
-        id = id,
-        health = health,
-        maxHealth = maxHealth,
-        healthRegen = healthRegen,
-        mana = mana,
-        maxMana = maxMana,
-        manaRegen = manaRegen,
-        resistances = resistances,
-        loot = loot
-    ) {
-        this.texture = texture
-    }
-
     constructor(entity: Entity) : this(
         entity.name,
         entity.id,
@@ -73,7 +39,6 @@ open class Entity(
         entity.manaRegen,
         entity.resistances,
         entity.loot,
-        entity.texture
     )
 
     override fun takeDamage(damage: Damage) {

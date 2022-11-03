@@ -9,6 +9,5 @@
     "forms":[{"component":{"name":"Sphere","id":0,"available":true},"form":0}],
     "manaReservoirs":[{"component":{"name":"Base","id":0,"available":true},"volume":10.0}],
     "researches":[{"name":"Spell usage", "id":0, "cost":1,"tier":0,"effect":0,"researched":false,"available":true,"requiredResearches":[]}],
-    "items":{"0":{"name":"Wolf pelt","id":0,"costSell":10,"costBuy":10,"rarity":0,"category":0}},
-    "tasks":[{"description":"Get level 3","name":"First level"}]}
+    "items":{"0":{"name":"Wolf pelt","id":0,"costSell":10,"costBuy":10,"rarity":0,"category":0}}}
 </data>

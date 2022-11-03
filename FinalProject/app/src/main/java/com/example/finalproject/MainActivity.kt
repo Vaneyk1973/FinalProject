@@ -101,13 +101,15 @@ class MainActivity : AppCompatActivity() {
             val types = ArrayList<Type>()
             val forms = ArrayList<Form>()
             val manaReservoirs = ArrayList<ManaReservoir>()
-            val researches = ArrayList<Research>()
+            val researches = HashMap<Int, Research>() //<id of a research, object template>
+            val researchEffects = HashMap<Int, ResearchEffect>()//<id of an effect, object template>
             val recipes = ArrayList<Recipe>()
             val items = HashMap<Int, Item>() //<id of an item, object template>
             val shopList = ArrayList<Item>()
-            val tasks = ArrayList<Task>()
-            val itemsObtained:HashMap<Int, Int> =HashMap() //<id of an item, quantity>
-            val enemiesKilled:HashMap<Int, Int> = HashMap() //<id of an enemy, quantity>
+            val tasks = HashMap<Int, Task>() //<id of a task, object template>
+            val activeTasks = ArrayList<Int>()
+            val itemsObtained: HashMap<Int, Int> = HashMap() //<id of an item, quantity>
+            val enemiesKilled: HashMap<Int, Int> = HashMap() //<id of an enemy, quantity>
         }
 
         fun getAvatar(): Bitmap = Bitmap.createBitmap(avatar)
@@ -194,19 +196,34 @@ class MainActivity : AppCompatActivity() {
                     arrayListOf(Pair(3, assets.items[0]!!))
                 )
             )
-            assets.researches.add(
-                Research(
-                    "Fire element",
-                    1,
-                    2,
-                    1,
-                    1,
-                    false,
-                    false,
-                    arrayListOf(assets.researches[0])
-                )
+            assets.researches[1] = Research(
+                "Fire element",
+                1,
+                2,
+                1,
+                1,
+                false,
+                false,
+                arrayListOf(0)
             )
             assets.shopList.addAll(assets.items.values)
+            assets.tasks[1] =
+                Task(
+                    "Wolf killer",
+                    1,
+                    "Kill five wolfs",
+                    enemiesToKill = arrayListOf(Pair(256, 5)),
+                    goldGiven = 70,
+                    experienceGiven = 20
+                )
+            assets.tasks[0] = Task(
+                "Your first levels",
+                0,
+                "Reach level 3",
+                levelToReach = 3,
+                goldGiven = 15,
+                experienceGiven = 14
+            )
             Log.d("Assets", Json.encodeToString(Assets.serializer(), assets))
         }
     }

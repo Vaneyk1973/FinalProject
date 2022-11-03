@@ -189,20 +189,20 @@ class Player(
             (MainActivity.assets.itemsObtained[item.second.id] ?: 0) + item.first
     }
 
-    override fun removeItemsFromInventory(item: Pair<Int, Item>): Boolean = run {
+    override fun removeItemsFromInventory(item: Pair<Int, Item>): Boolean {
         if (inventory.quantity(item.second.id) > item.first) {
             inventory.inventory[item.second.id] = inventory.inventory[item.second.id]!! - item.first
-            true
+            return true
         } else if (inventory.quantity(item.second.id) == item.first) {
             inventory.removeItem(item.second.id)
-            true
+            return true
         } else {
             Log.d("InventoryError: ", "Cannot remove items. Not enough items in the inventory")
-            false
+            return false
         }
     }
 
-    fun craft(recipe: Recipe): Boolean = run {
+    fun craft(recipe: Recipe): Boolean {
         for (item in recipe.ingredients) {
             if (inventory.quantity(item.second.id) < item.first) {
                 Log.d(
@@ -215,7 +215,7 @@ class Player(
         for (item in recipe.ingredients)
             removeItemsFromInventory(item)
         addItemsToInventory(recipe.product)
-        true
+        return true
     }
 
     fun takeDrop(loot: Lootable) {
@@ -265,12 +265,14 @@ class Player(
     }
 
     fun checkTasks() {
-        if (level == 3) {
-            experience += 50
-            gold += 10
-            MainActivity.assets.tasks[0].completed = true
-            levelUp()
+        val newActiveTasks = ArrayList<Int>()
+        for (task in MainActivity.assets.activeTasks) {
+            if (MainActivity.assets.tasks[task]?.checkTask() != true) {
+                newActiveTasks.add(task)
+            }
         }
+        MainActivity.assets.activeTasks.clear()
+        MainActivity.assets.activeTasks.addAll(newActiveTasks)
     }
 
     fun sellItem(item: Pair<Int, Item>): Boolean =

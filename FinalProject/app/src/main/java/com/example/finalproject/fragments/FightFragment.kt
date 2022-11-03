@@ -77,7 +77,7 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
             dbReference.get().addOnCompleteListener(this)
             enemyImage.setImageBitmap(MainActivity.textures[5][6])
         } else {
-            enemyImage.setImageBitmap(enemy.texture)
+            enemyImage.setImageBitmap(MainActivity.textures[5][enemyId-256])
             updateStatus()
         }
         playerImage.setImageBitmap(MainActivity.getAvatar())
@@ -131,20 +131,24 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
                         "Not enough mana", Toast.LENGTH_SHORT
                     ).show()
                 player.castSpell(enemy, chosenSpell)
+                if (enemy.health <= 0) {
+                    val fragmentManager = parentFragmentManager
+                    player.takeDrop(enemy)
+                    assets.enemiesKilled[enemyId] =
+                        assets.enemiesKilled[enemyId]?.inc() ?: 1
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentManager.findFragmentById(R.id.fight)
+                        ?.let { fragmentTransaction.remove(it) }
+                    fragmentTransaction.add(R.id.map, MapFragment())
+                    fragmentTransaction.add(R.id.status, StatusBarFragment())
+                    fragmentTransaction.add(R.id.menu, MenuFragment())
+                    fragmentTransaction.commit()
+                    MainActivity.music.start(requireContext(), R.raw.main)
+                }
                 player.regenerate()
                 enemy.regenerate()
                 enemy.attack(player)
                 updateStatus()
-                if (enemy.health <= 0) {
-                    player.takeDrop(enemy)
-                    val fragmentManager = parentFragmentManager
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
-                    fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
-                    fragmentTransaction.add(R.id.status, StatusBarFragment())
-                    fragmentTransaction.add(R.id.menu, MenuFragment())
-                    fragmentTransaction.commit()
-                }
             }
         }
 
@@ -253,14 +257,14 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
         } else {
             when (v) {
                 attack -> {
-                    player.doDamage(enemy)
-                    if (enemy.health <= 0) {
-                        //TODO
-                    }
                     if (player.health <= 0) {
 
                     }
                     player.regenerate()
+                    player.doDamage(enemy)
+                    if (enemy.health <= 0) {
+                        //TODO
+                    }
                 }
 
                 run -> {

@@ -31,7 +31,7 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
         researchPointsAmount.text=text
         initializeResearches(researchHashMap)
         back= requireView().findViewById(R.id.research_tree_back_button)
-        for (i in assets.researches) {
+        for (i in assets.researches.values) {
             text="${i.name} : ${i.cost}"
             researchHashMap[i]!!.text = text
             researchHashMap[i]!!.setOnClickListener(this)
