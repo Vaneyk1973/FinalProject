@@ -10,46 +10,41 @@
     <FrameLayout
         android:id="@+id/log_in"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteY="731dp" />
+        android:layout_height="match_parent" />
+
+    <FrameLayout
+        android:id="@+id/statistics"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/characteristics"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteY="731dp" />
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/auction"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteY="731dp" />
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/shop"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteY="731dp" />
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/tasks"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteY="731dp" />
+        android:layout_height="match_parent" />
     <FrameLayout
         android:id="@+id/crafting_station"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteY="731dp" />
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/chat"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent" />
 
     <FrameLayout
         android:id="@+id/inventory"

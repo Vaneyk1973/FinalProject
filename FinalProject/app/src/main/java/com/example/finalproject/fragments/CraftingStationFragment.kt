@@ -32,7 +32,7 @@ class CraftingStationFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        back = requireView().findViewById(R.id.crafting_station_back_button)
+        back = requireView().findViewById(R.id.statistics_back_button)
         craft = requireView().findViewById(R.id.craft_button)
         back.setOnClickListener(this)
         craft.setOnClickListener(this)

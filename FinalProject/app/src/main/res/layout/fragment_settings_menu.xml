@@ -20,6 +20,18 @@
         app:layout_constraintTop_toBottomOf="@+id/settings_menu_back_button" />
 
     <TextView
+        android:id="@+id/statistics_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Statistics"
+        android:textSize="24sp"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/characteristics_button" />
+
+    <TextView
         android:id="@+id/characteristics_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

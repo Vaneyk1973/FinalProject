@@ -14,6 +14,7 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
 
     private lateinit var settings: TextView
     private lateinit var characteristics: TextView
+    private lateinit var statistics: TextView
     private lateinit var help: TextView
     private lateinit var tasks: TextView
     private lateinit var back: Button
@@ -27,20 +28,22 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        settings= requireView().findViewById(R.id.settings_button)
-        characteristics= requireView().findViewById(R.id.characteristics_button)
-        tasks= requireView().findViewById(R.id.tasks_button)
-        help= requireView().findViewById(R.id.help_button)
-        back= requireView().findViewById(R.id.settings_menu_back_button)
+        settings = requireView().findViewById(R.id.settings_button)
+        characteristics = requireView().findViewById(R.id.characteristics_button)
+        statistics = requireView().findViewById(R.id.statistics_button)
+        tasks = requireView().findViewById(R.id.tasks_button)
+        help = requireView().findViewById(R.id.help_button)
+        back = requireView().findViewById(R.id.settings_menu_back_button)
         settings.setOnClickListener(this)
         characteristics.setOnClickListener(this)
+        statistics.setOnClickListener(this)
         help.setOnClickListener(this)
         tasks.setOnClickListener(this)
         back.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
-        val fragmentManager=parentFragmentManager
+        val fragmentManager = parentFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
         when (p0) {
             back -> {
@@ -50,25 +53,35 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
                 fragmentTransaction.add(R.id.menu, MenuFragment())
                 fragmentTransaction.add(R.id.status, StatusBarFragment())
             }
+
             settings -> {
                 fragmentManager.findFragmentById(R.id.settings_menu)
                     ?.let { fragmentTransaction.remove(it) }
                 fragmentTransaction.add(R.id.settings, SettingsFragment())
             }
+
             help -> {
                 fragmentManager.findFragmentById(R.id.settings_menu)
                     ?.let { fragmentTransaction.remove(it) }
                 fragmentTransaction.add(R.id.tutorial, TutorialFragment())
             }
+
             tasks -> {
                 fragmentManager.findFragmentById(R.id.settings_menu)
                     ?.let { fragmentTransaction.remove(it) }
                 fragmentTransaction.add(R.id.tasks, TaskManagerFragment())
             }
-            characteristics->{
+
+            characteristics -> {
                 fragmentManager.findFragmentById(R.id.settings_menu)
                     ?.let { fragmentTransaction.remove(it) }
                 fragmentTransaction.add(R.id.characteristics, CharacteristicsFragment())
+            }
+
+            statistics -> {
+                fragmentManager.findFragmentById(R.id.settings_menu)
+                    ?.let { fragmentTransaction.remove(it) }
+                fragmentTransaction.add(R.id.statistics, StatisticsFragment())
             }
 
         }

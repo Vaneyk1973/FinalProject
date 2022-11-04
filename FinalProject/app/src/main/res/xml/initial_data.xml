@@ -2,6 +2,6 @@
 <data>
     {"chancesOfFight":{"512":0,"513":50,"514":0,"515":0,"516":0,"517":0,"518":0,"519":0},
     "chancesOfEnemy":{"513":[{"first":100,"second":256}]},
-    "enemies":{"256":{"entity":{"name":"Wolf","id":256,"health":20.0,"maxHealth":20.0,"healthRegen":2.0,"mana":0.0,"maxMana":0.0,"manaRegen":0.0,"loot":{"loot":[{"first":100,"second":2,"third":0}],"gold":10,"exp":10}},"damage":{"dmg":[20.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]}}},
+    "enemies":{"256":{"entity":{"name":"Wolf","id":256,"health":20.0,"maxHealth":20.0,"healthRegen":2.0,"mana":0.0,"maxMana":0.0,"manaRegen":0.0,"loot":{"loot":[{"first":100,"second":2,"third":0}],"gold":10,"exp":10}},"damage":{"dmg":[5.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]}}},
     "items":{"0":{"name":"Wolf pelt","id":0,"costSell":10,"costBuy":10,"rarity":0,"category":0}}}
 </data>
