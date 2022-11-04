@@ -35,7 +35,7 @@ class SettingsFragment:Fragment(), View.OnClickListener, CompoundButton.OnChecke
             val fragmentManager=parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentTransaction.add(R.id.settings_menu, SettingsMenuFragment())
-            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.settings)!!)
+            fragmentManager.findFragmentById(R.id.settings)?.let { fragmentTransaction.remove(it) }
             fragmentTransaction.commit()
         }
     }

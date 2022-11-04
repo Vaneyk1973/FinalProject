@@ -2,6 +2,7 @@ package com.example.finalproject.service.classes.entities
 
 import com.example.finalproject.service.classes.Damage
 import com.example.finalproject.service.classes.Loot
+import com.example.finalproject.service.classes.Resistances
 import com.example.finalproject.service.interfaces.Dmg
 import com.example.finalproject.service.interfaces.Health
 import com.example.finalproject.service.serializers.EnemySerializer
@@ -18,7 +19,7 @@ class Enemy(
     mana: Double,
     maxMana: Double,
     manaRegen: Double,
-    resistances: ArrayList<Double>,
+    resistances: Resistances,
     loot: Loot,
     override var damage: Damage
 ) :
@@ -88,10 +89,8 @@ class Enemy(
     override fun defend() {
         def = !def
         if (def)
-            for (i in 0 until resistances.size)
-                resistances[i] *= defCoefficient
+            resistances.applyDefence(defCoefficient)
         else
-            for (i in 0 until resistances.size)
-                resistances[i] /= defCoefficient
+            resistances.removeDefence(defCoefficient)
     }
 }

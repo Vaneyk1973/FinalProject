@@ -69,7 +69,7 @@ class InventoryFragment : Fragment(), View.OnClickListener {
 
         private inner class ViewHolder(itemView: View) :
             RecyclerView.ViewHolder(itemView) {
-            var name: TextView = itemView.findViewById(R.id.textView)
+            val name: TextView = itemView.findViewById(R.id.textView)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

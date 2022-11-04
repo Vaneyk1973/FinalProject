@@ -14,4 +14,6 @@ open class Component(name: String, id: Int, var available: Boolean) :
     fun avail() {
         available = true
     }
+
+    override fun toString(): String ="name:$name, id:$id, available:$available"
 }

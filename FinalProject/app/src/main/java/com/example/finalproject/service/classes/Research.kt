@@ -10,21 +10,26 @@ data class Research(
     val cost: Int,
     val tier: Int,
     val effect: Int,
-    var researched: Boolean,
-    var available: Boolean,
-    val requiredResearches: ArrayList<Int>
+    var researched: Boolean = false,
+    var available: Boolean = false,
+    val requiredResearches: ArrayList<Int> = ArrayList(),
+    var description: String = ""
 ) {
-
-    private fun enable() {
+    fun enable(): Boolean {
         for (i in requiredResearches)
             if (assets.researches[i]?.researched != true)
-                return
+                return false
         available = true
+        return true
     }
 
     fun research(): Boolean {
-        if (available)
+        if (available) {
             researched = true
+            available = false
+            assets.availableResearches.remove(id)
+            assets.researchEffects[effect]?.affect()
+        }
         return researched
     }
 }

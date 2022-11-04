@@ -2,6 +2,7 @@ package com.example.finalproject.service.classes.entities
 
 import com.example.finalproject.service.classes.Damage
 import com.example.finalproject.service.classes.Loot
+import com.example.finalproject.service.classes.Resistances
 import com.example.finalproject.service.classes.Unit
 import com.example.finalproject.service.classes.spell.Spell
 import com.example.finalproject.service.interfaces.Health
@@ -23,7 +24,7 @@ open class Entity(
     override var mana: Double = 0.0,
     override var maxMana: Double = 0.0,
     override var manaRegen: Double = 0.0,
-    override var resistances: ArrayList<Double> = ArrayList(),
+    override var resistances: Resistances = Resistances(),
     override val loot: Loot = Loot()
 ) :
     Unit(name = name, id = id), Health, Mana, Lootable {

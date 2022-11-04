@@ -10,6 +10,7 @@ import com.example.finalproject.service.classes.spell.Spell
 import com.example.finalproject.service.interfaces.*
 import com.example.finalproject.service.serializers.PlayerSerializer
 import com.google.firebase.database.DatabaseReference
+import com.example.finalproject.MainActivity.Companion.assets
 import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -24,7 +25,7 @@ class Player(
     mana: Double,
     maxMana: Double,
     manaRegen: Double,
-    resistances: ArrayList<Double>,
+    resistances:Resistances,
     loot: Loot,
     override val inventory: Inventory,
     override var damage: Damage,
@@ -48,7 +49,7 @@ class Player(
     loot = loot
 ), Dmg, Level, Inv, Equipment, Auction {
     val spells: ArrayList<Spell> = ArrayList()
-    var researchPoints: Int = 0
+    var researchPoints: Int = 1000
     var chatMode: Boolean = false
     var gold: Int = 0
     private val defCoefficient = 1.05
@@ -135,10 +136,10 @@ class Player(
         10.0,
         10.0,
         0.1,
-        arrayListOf(0.2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0),
+        Resistances(),
         Loot(),
         Inventory(),
-        Damage(arrayListOf(4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
+        Damage(arrayListOf(4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
         ArrayList(),
         1,
         0,
@@ -159,11 +160,9 @@ class Player(
     override fun defend() {
         def = !def
         if (def)
-            for (i in 0 until resistances.size)
-                resistances[i] *= defCoefficient
+            resistances.applyDefence(defCoefficient)
         else
-            for (i in 0 until resistances.size)
-                resistances[i] /= defCoefficient
+            resistances.removeDefence(defCoefficient)
     }
 
     override fun levelUp() {
@@ -185,8 +184,8 @@ class Player(
     override fun addItemsToInventory(item: Pair<Int, Item>) {
         inventory.inventory[item.second.id] =
             (inventory.inventory[item.second.id] ?: 0) + item.first
-        MainActivity.assets.itemsObtained[item.second.id] =
-            (MainActivity.assets.itemsObtained[item.second.id] ?: 0) + item.first
+        assets.itemsObtained[item.second.id] =
+            (assets.itemsObtained[item.second.id] ?: 0) + item.first
     }
 
     override fun removeItemsFromInventory(item: Pair<Int, Item>): Boolean {
@@ -255,24 +254,27 @@ class Player(
         }
     }
 
-    fun research(research: Research): Boolean {
-        return if (research.cost > researchPoints)
-            false
-        else {
-            researchPoints -= research.cost
-            research.research()
+    fun research(research: Int): Boolean {
+        if (assets.researches[research] != null) {
+            if (researchPoints >= assets.researches[research]!!.cost) {
+                if (assets.researches[research]!!.research()) {
+                    researchPoints -= assets.researches[research]!!.cost
+                    return true
+                }
+            }
         }
+        return false
     }
 
     fun checkTasks() {
         val newActiveTasks = ArrayList<Int>()
-        for (task in MainActivity.assets.activeTasks) {
-            if (MainActivity.assets.tasks[task]?.checkTask() != true) {
+        for (task in assets.activeTasks) {
+            if (assets.tasks[task]?.checkTask() != true) {
                 newActiveTasks.add(task)
             }
         }
-        MainActivity.assets.activeTasks.clear()
-        MainActivity.assets.activeTasks.addAll(newActiveTasks)
+        assets.activeTasks.clear()
+        assets.activeTasks.addAll(newActiveTasks)
     }
 
     fun sellItem(item: Pair<Int, Item>): Boolean =

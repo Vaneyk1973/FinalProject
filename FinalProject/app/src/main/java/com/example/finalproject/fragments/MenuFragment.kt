@@ -11,6 +11,8 @@ import com.example.finalproject.MainActivity
 import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.R
 
+private const val SPELL_CREATION_RESEARCH_ID = 1280
+private const val SPELL_USAGE_RESEARCH_ID=1282
 class MenuFragment : Fragment(), View.OnClickListener {
 
     private lateinit var controlPanel: Array<ImageView>
@@ -50,7 +52,7 @@ class MenuFragment : Fragment(), View.OnClickListener {
             fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.menu)!!)
             fragmentTransaction.commit()
         } else if (p0 == controlPanel[1]) {
-            if (assets.researches[0].researched) {
+            if (assets.researches[SPELL_CREATION_RESEARCH_ID]?.researched == true) {
                 fragmentTransaction.add(R.id.spell_creation, SpellCreationFragment())
                 fragmentManager.findFragmentById(R.id.map)
                     ?.let { it1 -> fragmentTransaction.remove(it1) }
@@ -63,7 +65,7 @@ class MenuFragment : Fragment(), View.OnClickListener {
                 Toast.makeText(context, "You don't know how to make spells yet", Toast.LENGTH_SHORT)
                     .show()
         } else if (p0 == controlPanel[2]) {
-            if (assets.researches[0].researched) {
+            if (assets.researches[SPELL_USAGE_RESEARCH_ID]?.researched == true) {
                 if (MainActivity.player.spells.isEmpty())
                     Toast.makeText(context, "You don't have any spells yet", Toast.LENGTH_SHORT)
                         .show()
@@ -78,7 +80,7 @@ class MenuFragment : Fragment(), View.OnClickListener {
                     fragmentTransaction.commit()
                 }
             } else
-                Toast.makeText(context, "You don't know how to make spells yet", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "You don't know how to use spells yet", Toast.LENGTH_SHORT)
                     .show()
         } else if (p0 == controlPanel[3]) {
             fragmentTransaction.add(R.id.research_tree, ResearchTreeFragment())

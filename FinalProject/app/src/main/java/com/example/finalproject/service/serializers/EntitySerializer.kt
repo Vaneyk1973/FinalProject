@@ -1,6 +1,7 @@
 package com.example.finalproject.service.serializers
 
 import com.example.finalproject.service.classes.Loot
+import com.example.finalproject.service.classes.Resistances
 import com.example.finalproject.service.classes.entities.Entity
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.ListSerializer
@@ -25,7 +26,7 @@ object EntitySerializer : KSerializer<Entity> {
             element<Double>("mana")
             element<Double>("maxMana")
             element<Double>("manaRegen")
-            element<ArrayList<Double>>("resistances")
+            element<Resistances>("resistances")
             element<Loot>("loot")
         }
 
@@ -39,7 +40,7 @@ object EntitySerializer : KSerializer<Entity> {
             var mana = -1.0
             var maxMana = -1.0
             var manaRegen = -1.0
-            var resistances = ArrayList<Double>()
+            var resistances = Resistances()
             var loot = Loot()
             while (true) {
                 when (val index = decodeElementIndex(descriptor)) {
@@ -51,11 +52,9 @@ object EntitySerializer : KSerializer<Entity> {
                     5 -> mana = decodeDoubleElement(descriptor, index)
                     6 -> maxMana = decodeDoubleElement(descriptor, index)
                     7 -> manaRegen = decodeDoubleElement(descriptor, index)
-                    8 -> resistances = decodeSerializableElement(
-                        descriptor,
-                        index,
-                        ListSerializer(Double.serializer())
-                    ) as ArrayList<Double>
+                    8 -> resistances =
+                        decodeSerializableElement(descriptor, index, Resistances.serializer())
+
                     9 -> loot = decodeSerializableElement(descriptor, index, Loot.serializer())
                     CompositeDecoder.DECODE_DONE -> break
                     else -> error("Unexpected index: $index")
@@ -88,7 +87,7 @@ object EntitySerializer : KSerializer<Entity> {
             encodeSerializableElement(
                 descriptor,
                 8,
-                ListSerializer(Double.serializer()),
+                Resistances.serializer(),
                 value.resistances
             )
             encodeSerializableElement(descriptor, 9, Loot.serializer(), value.loot)

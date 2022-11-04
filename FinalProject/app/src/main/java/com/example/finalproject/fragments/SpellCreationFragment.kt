@@ -34,24 +34,26 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
     private lateinit var manaChannelView: Button
     private lateinit var formView: Button
     private lateinit var comps: RecyclerView
-    private var name: String? = null
+    private var name: String = ""
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_spell_creation, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        nameView= requireView().findViewById(R.id.spell_name)
-        confirmSpell= requireView().findViewById(R.id.confirm_creation)
-        back= requireView().findViewById(R.id.spell_creation_back_button)
-        elementView= requireView().findViewById(R.id.element)
-        manaReservoirView= requireView().findViewById(R.id.mana_reservoir)
-        typeView= requireView().findViewById(R.id.type)
-        manaChannelView= requireView().findViewById(R.id.mana_channel)
-        formView= requireView().findViewById(R.id.form)
-        comps= requireView().findViewById(R.id.avaliable_components)
+        nameView = requireView().findViewById(R.id.spell_name)
+        confirmSpell = requireView().findViewById(R.id.confirm_creation)
+        back = requireView().findViewById(R.id.spell_creation_back_button)
+        elementView = requireView().findViewById(R.id.element)
+        manaReservoirView = requireView().findViewById(R.id.mana_reservoir)
+        typeView = requireView().findViewById(R.id.type)
+        manaChannelView = requireView().findViewById(R.id.mana_channel)
+        formView = requireView().findViewById(R.id.form)
+        comps = requireView().findViewById(R.id.avaliable_components)
         name = nameView.text.toString()
         nameView.setOnEditorActionListener(this)
         confirmSpell.setOnClickListener(this)
@@ -64,15 +66,15 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
         formView.setOnClickListener(this)
     }
 
-    private inner class SpellAdapter<T : Component>(dt: ArrayList<T>) :
-        RecyclerView.Adapter<SpellAdapter<T>.ViewHolder>() {
+    private inner class SpellAdapter(dt: ArrayList<Int>) :
+        RecyclerView.Adapter<SpellAdapter.ViewHolder>() {
 
-        private val data: ArrayList<T> = ArrayList()
+        private val data: ArrayList<Int> = ArrayList()
 
         init {
-            for (i in dt)
-                if (i.available)
-                    data.add(i)
+            for (component in dt)
+                if (assets.components[component]?.available == true)
+                    data.add(component)
         }
 
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -86,26 +88,26 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.comp.text = data[position].name
-            when (data[position].javaClass) {
-                Element::javaClass -> element = data[position] as Element
-
-                Type::javaClass -> type = data[position] as Type
-
-                Form::javaClass -> form = data[position] as Form
-
-                ManaChannel::javaClass -> manaChannel = data[position] as ManaChannel
-
-                ManaReservoir::javaClass -> manaReservoir = data[position] as ManaReservoir
-            }
+            holder.comp.text = assets.components[data[position]]?.name ?: ""
             holder.comp.setOnClickListener {
+                when (data[position]) {
+                    in assets.elements -> element = data[position]
+                    in assets.types -> type = data[position]
+                    in assets.forms -> form = data[position]
+                    in assets.manaChannels -> manaChannel = data[position]
+                    in assets.manaReservoirs -> manaReservoir = data[position]
+                }
                 val fm: FragmentManager = childFragmentManager
                 val fr: FragmentTransaction = fm.beginTransaction()
                 fm.findFragmentById(R.id.spell_characteristics)?.let { it1 -> fr.remove(it1) }
                 fr.add(
                     R.id.spell_characteristics, SpellCharacteristicsFragment(
                         Spell(
-                            element, type, form, manaChannel, manaReservoir,
+                            assets.components[element] as Element,
+                            assets.components[type] as Type,
+                            assets.components[form] as Form,
+                            assets.components[manaChannel] as ManaChannel,
+                            assets.components[manaReservoir] as ManaReservoir,
                             (view!!.findViewById(R.id.spell_name) as EditText).text.toString()
                         )
                     )
@@ -118,29 +120,50 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
     }
 
     override fun onClick(p0: View?) {
-        if (p0==confirmSpell){
-            name = nameView.text.toString()
-            MainActivity.player.spells.add(
-                Spell(element, type, form, manaChannel, manaReservoir, name!!)
-            )
-        } else if (p0==back){
-            val fragmentManager = parentFragmentManager
-            val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.spell_creation)!!)
-            fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNumber))
-            fragmentTransaction.add(R.id.status, StatusBarFragment())
-            fragmentTransaction.add(R.id.menu, MenuFragment())
-            fragmentTransaction.commit()
-        } else if (p0==formView){
-            comps.adapter = SpellAdapter(assets.forms)
-        } else if (p0==typeView) {
-            comps.adapter = SpellAdapter(assets.types)
-        } else if (p0==manaChannelView) {
-            comps.adapter = SpellAdapter(assets.manaChannels)
-        } else if (p0==manaReservoirView) {
-            comps.adapter = SpellAdapter(assets.manaReservoirs)
-        } else if (p0==elementView) {
-            comps.adapter = SpellAdapter(assets.elements)
+        when (p0) {
+            confirmSpell -> {
+                name = nameView.text.toString()
+                MainActivity.player.spells.add(
+                    Spell(
+                        assets.components[element] as Element,
+                        assets.components[type] as Type,
+                        assets.components[form] as Form,
+                        assets.components[manaChannel] as ManaChannel,
+                        assets.components[manaReservoir] as ManaReservoir, name
+                    )
+                )
+            }
+
+            back -> {
+                val fragmentManager = parentFragmentManager
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentManager.findFragmentById(R.id.spell_creation)
+                    ?.let { fragmentTransaction.remove(it) }
+                fragmentTransaction.add(R.id.map, MapFragment(MainActivity.player.mapNumber))
+                fragmentTransaction.add(R.id.status, StatusBarFragment())
+                fragmentTransaction.add(R.id.menu, MenuFragment())
+                fragmentTransaction.commit()
+            }
+
+            formView -> {
+                comps.adapter = SpellAdapter(assets.forms)
+            }
+
+            typeView -> {
+                comps.adapter = SpellAdapter(assets.types)
+            }
+
+            manaChannelView -> {
+                comps.adapter = SpellAdapter(assets.manaChannels)
+            }
+
+            manaReservoirView -> {
+                comps.adapter = SpellAdapter(assets.manaReservoirs)
+            }
+
+            elementView -> {
+                comps.adapter = SpellAdapter(assets.elements)
+            }
         }
     }
 
