@@ -1,6 +1,7 @@
 package com.example.finalproject.service.classes.entities
 
 import android.util.Log
+import android.widget.Toast
 import com.example.finalproject.MainActivity
 import com.example.finalproject.service.classes.*
 import com.example.finalproject.service.classes.items.Armor
@@ -11,6 +12,9 @@ import com.example.finalproject.service.interfaces.*
 import com.example.finalproject.service.serializers.PlayerSerializer
 import com.google.firebase.database.DatabaseReference
 import com.example.finalproject.MainActivity.Companion.assets
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import kotlinx.serialization.Serializable
 import kotlin.math.pow
 import kotlin.math.sqrt
@@ -25,7 +29,7 @@ class Player(
     mana: Double,
     maxMana: Double,
     manaRegen: Double,
-    resistances:Resistances,
+    resistances: Resistances,
     loot: Loot,
     override val inventory: Inventory,
     override var damage: Damage,
@@ -47,42 +51,13 @@ class Player(
     manaRegen = manaRegen,
     resistances = resistances,
     loot = loot
-), Dmg, Level, Inv, Equipment, Auction {
+), Dmg, Level, Inv, Equipment{
     val spells: ArrayList<Spell> = ArrayList()
     var researchPoints: Int = 1000
     var chatMode: Boolean = false
     var gold: Int = 0
     private val defCoefficient = 1.05
     override var def: Boolean = false
-
-    @Suppress("UNCHECKED_CAST")
-    constructor(player: Player) : this(
-        player.name,
-        player.id,
-        player.health,
-        player.maxHealth,
-        player.healthRegen,
-        player.mana,
-        player.maxMana,
-        player.manaRegen,
-        player.resistances,
-        player.loot,
-        player.inventory,
-        player.damage,
-        player.equipment,
-        player.level,
-        player.experience,
-        player.experienceToTheNextLevelRequired,
-        player.user,
-        player.mapNumber,
-        player.coordinates
-    ) {
-        spells.clear()
-        spells.addAll(player.spells.clone() as Collection<Spell>)
-        researchPoints = player.researchPoints
-        chatMode = player.chatMode
-        gold = player.gold
-    }
 
     constructor(
         entity: Entity,
@@ -189,15 +164,15 @@ class Player(
     }
 
     override fun removeItemsFromInventory(item: Pair<Int, Item>): Boolean {
-        if (inventory.quantity(item.second.id) > item.first) {
+        return if (inventory.quantity(item.second.id) > item.first) {
             inventory.inventory[item.second.id] = inventory.inventory[item.second.id]!! - item.first
-            return true
+            true
         } else if (inventory.quantity(item.second.id) == item.first) {
             inventory.removeItem(item.second.id)
-            return true
+            true
         } else {
             Log.d("InventoryError: ", "Cannot remove items. Not enough items in the inventory")
-            return false
+            false
         }
     }
 
@@ -279,7 +254,7 @@ class Player(
 
     fun sellItem(item: Pair<Int, Item>): Boolean =
         if (inventory.quantity(item.second.id) >= item.first) {
-            gold += item.second.costBuy * item.first
+            gold += item.second.costSell * item.first
             removeItemsFromInventory(item)
             true
         } else {
@@ -287,23 +262,11 @@ class Player(
         }
 
     fun buyItem(item: Pair<Int, Item>): Boolean =
-        if (gold >= item.second.costSell * item.first) {
-            gold -= item.second.costSell * item.first
+        if (gold >= item.second.costBuy * item.first) {
+            gold -= item.second.costBuy * item.first
             addItemsToInventory(item)
             true
         } else {
             false
         }
-
-    override fun buyItemOnAuction(item: Pair<Int, Item>, ref: DatabaseReference) {
-        TODO("Not yet implemented")
-    }
-
-    override fun putItemOnAuction(item: Pair<Int, Item>, ref: DatabaseReference) {
-        TODO("Not yet implemented")
-    }
-
-    override fun removeItemFromAuction(item: Pair<Int, Item>, ref: DatabaseReference) {
-        TODO("Not yet implemented")
-    }
 }

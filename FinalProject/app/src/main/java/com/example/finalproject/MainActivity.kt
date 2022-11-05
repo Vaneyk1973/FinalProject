@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
+import android.provider.BaseColumns
 import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -55,18 +56,13 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         music.start(this, R.raw.main)
     }
 
-    override fun onStop() {
-        super.onStop()
-        music.stop()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onPause() {
+        super.onPause()
         music.stop()
     }
 
@@ -264,10 +260,10 @@ class MainActivity : AppCompatActivity() {
                     )
                 )
             )
-            assets.researchEffects[1540]= ResearchEffect(
+            assets.researchEffects[1540] = ResearchEffect(
                 "5% physical resistance upgrade",
                 1540,
-                affectedResearches= arrayListOf(1285, 1286),
+                affectedResearches = arrayListOf(1285, 1286),
                 upgradedResistances = arrayListOf(Pair(0, 0.05))
             )
             assets.recipes.add(

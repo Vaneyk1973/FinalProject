@@ -47,7 +47,8 @@ open class Entity(
     }
 
     override fun takeDamage(damage: Damage, ref: DatabaseReference) {
-        ref.child("health").setValue(max(0.0, health - damage.realDamage(resistances)))
+        takeDamage(damage)
+        ref.child("health").setValue(health)
     }
 
     override fun regenerateHealth() {
@@ -65,5 +66,11 @@ open class Entity(
     fun regenerate() {
         regenerateHealth()
         regenerateMana()
+    }
+
+    fun regenerate(playerReference: DatabaseReference) {
+        regenerate()
+        playerReference.child("health").setValue(health)
+        playerReference.child("mana").setValue(mana)
     }
 }

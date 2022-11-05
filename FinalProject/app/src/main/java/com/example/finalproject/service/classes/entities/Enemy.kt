@@ -21,7 +21,8 @@ class Enemy(
     manaRegen: Double,
     resistances: Resistances,
     loot: Loot,
-    override var damage: Damage
+    override var damage: Damage,
+    var dead: Boolean = false
 ) :
     Entity(
         name = name,
