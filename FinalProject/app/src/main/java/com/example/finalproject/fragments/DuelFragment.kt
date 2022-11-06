@@ -96,6 +96,7 @@ class DuelFragment : Fragment(), View.OnClickListener {
             fragmentTransaction.commit()
         } else if (v == createDuelButton) {
             val duelRef = duelListRef.child(player.user.uID)
+            duelRef.child("1").removeValue()
             duelRef.child("0").child("user").setValue(player.user)
             duelRef.child("0").child("enemy")
                 .setValue(Json.encodeToString(Enemy.serializer(), Enemy(player, player.damage)))
