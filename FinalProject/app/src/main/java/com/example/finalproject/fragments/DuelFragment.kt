@@ -1,27 +1,22 @@
 package com.example.finalproject.fragments
 
 import android.annotation.SuppressLint
-import android.nfc.cardemulation.HostApduService
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity.Companion.player
 import com.example.finalproject.R
 import com.example.finalproject.service.classes.User
 import com.example.finalproject.service.classes.entities.Enemy
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
 import kotlinx.serialization.json.Json
 
 class DuelFragment : Fragment(), View.OnClickListener {
@@ -130,22 +125,28 @@ class DuelFragment : Fragment(), View.OnClickListener {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.duel.text = ">${data[position].login}: ${data[position].rating}"
             holder.duel.setOnClickListener {
-                val duelRef = duelListRef.child(data[position].uID).child("1")
+                val duelRef = duelListRef.child(data[position].uID)
                 duelRef.get().addOnCompleteListener {
                     if (it.isSuccessful) {
-                        if (it.result.childrenCount==1L){
+                        if (it.result.childrenCount == 1L) {
                             val fragmentManager = parentFragmentManager
                             val fragmentTransaction = fragmentManager.beginTransaction()
-                            duelRef.child("user").setValue(player.user)
-                            duelRef.child("enemy")
-                                .setValue(Json.encodeToString(Enemy.serializer(), Enemy(player, player.damage)))
-                            fragmentManager.findFragmentById(R.id.duel)?.let { fragmentTransaction.remove(it) }
+                            duelRef.child("1").child("user").setValue(player.user)
+                            duelRef.child("1").child("enemy")
+                                .setValue(
+                                    Json.encodeToString(
+                                        Enemy.serializer(),
+                                        Enemy(player, player.damage)
+                                    )
+                                )
+                            fragmentManager.findFragmentById(R.id.duel)
+                                ?.let { fragmentTransaction.remove(it) }
                             fragmentTransaction.add(
                                 R.id.fight,
                                 FightFragment(duel = true, roomId = data[position].uID)
                             )
                             fragmentTransaction.commit()
-                        } else{
+                        } else {
                             Toast.makeText(
                                 context,
                                 "This room is already full, try another one",

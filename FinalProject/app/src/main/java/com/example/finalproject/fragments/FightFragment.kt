@@ -1,7 +1,6 @@
 package com.example.finalproject.fragments
 
 import android.os.Bundle
-import android.util.JsonReader
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,14 +17,9 @@ import com.example.finalproject.MainActivity
 import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.MainActivity.Companion.player
 import com.example.finalproject.R
-import com.example.finalproject.service.classes.Damage
-import com.example.finalproject.service.classes.Loot
-import com.example.finalproject.service.classes.Resistances
 import com.example.finalproject.service.classes.entities.Enemy
 import com.example.finalproject.service.classes.entities.Player
 import com.example.finalproject.service.classes.spell.Spell
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
@@ -33,7 +27,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import kotlinx.serialization.json.Json
 import java.util.Random
-import kotlin.math.min
 import kotlin.math.roundToInt
 
 class FightFragment(
@@ -94,11 +87,11 @@ class FightFragment(
         } else {
             enemy = Enemy(assets.enemies[enemyId]!!)
             updateStatus()
-            attack.setOnClickListener(this)
-            run.setOnClickListener(this)
-            castSpell.setOnClickListener(this)
-            defend.setOnClickListener(this)
         }
+        attack.setOnClickListener(this)
+        run.setOnClickListener(this)
+        castSpell.setOnClickListener(this)
+        defend.setOnClickListener(this)
         enemyImage.setImageBitmap(MainActivity.textures[5][enemyId - 256])
         playerImage.setImageBitmap(MainActivity.getAvatar())
     }
@@ -134,6 +127,7 @@ class FightFragment(
                 Enemy.serializer(),
                 snapshot.child("enemy").value.toString()
             )
+            duelProgressBar.visibility = View.GONE
             updateStatus()
         } else if (snapshot.ref == playerRef && snapshot.child("enemy").value != null) {
             val playerAsEnemy = Json.decodeFromString(
