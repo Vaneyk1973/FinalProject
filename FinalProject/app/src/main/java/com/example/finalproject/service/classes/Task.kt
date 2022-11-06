@@ -38,6 +38,13 @@ data class Task(
                     break
             }
         }
+        if (completed) {
+            player.gold += goldGiven
+            player.experience += experienceGiven
+            player.levelUp()
+            for (item in itemsGiven)
+                player.addItemsToInventory(Pair(item.first, assets.items[item.second]!!))
+        }
         return completed
     }
 }

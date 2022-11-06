@@ -51,7 +51,7 @@ class Player(
     manaRegen = manaRegen,
     resistances = resistances,
     loot = loot
-), Dmg, Level, Inv, Equipment{
+), Dmg, Level, Inv, Equipment {
     val spells: ArrayList<Spell> = ArrayList()
     var researchPoints: Int = 1000
     var chatMode: Boolean = false

@@ -100,7 +100,7 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                         chance = Random(Date().time).nextInt(101)
                         var prevChance = 0
                         for (enemyChance in assets.chancesOfEnemy[tileId]!!) {
-                            if (prevChance <= chance && chance < prevChance+enemyChance.first) {
+                            if (prevChance <= chance && chance < prevChance + enemyChance.first) {
                                 enemyId = enemyChance.second
                                 break
                             }
@@ -111,7 +111,7 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                         fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.map)!!)
                         fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.menu)!!)
                         fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.status)!!)
-                        fragmentTransaction.add(R.id.fight, FightFragment(false, enemyId))
+                        fragmentTransaction.add(R.id.fight, FightFragment(enemyId))
                         fragmentTransaction.commit()
                     } else {
                         when (tileId) {
@@ -124,6 +124,7 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                                 fragmentTransaction.add(R.id.map, MapFragment(1))
                                 fragmentTransaction.commit()
                             }
+
                             9 + MIN_LOCATION_ID -> {
                                 val fm = parentFragmentManager
                                 val fragmentTransaction = fm.beginTransaction()
@@ -133,6 +134,7 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                                 fragmentTransaction.add(R.id.tasks, TaskManagerFragment(true))
                                 fragmentTransaction.commit()
                             }
+
                             10 + MIN_LOCATION_ID -> {
                                 if (isInternetAvailable()) {
                                     if (player.user.login.isEmpty())
@@ -144,10 +146,7 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                                         fragmentTransaction.remove(fm.findFragmentById(R.id.map)!!)
                                         fragmentTransaction.remove(fm.findFragmentById(R.id.status)!!)
                                         fragmentTransaction.remove(fm.findFragmentById(R.id.menu)!!)
-                                        fragmentTransaction.add(
-                                            R.id.fight,
-                                            FightFragment(true, enemyId)
-                                        )
+                                        fragmentTransaction.add(R.id.duel, DuelFragment())
                                         fragmentTransaction.commit()
                                     }
                                 } else
@@ -156,6 +155,7 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                                         Toast.LENGTH_SHORT
                                     ).show()
                             }
+
                             11 + MIN_LOCATION_ID -> {
                                 val fm = parentFragmentManager
                                 val fragmentTransaction = fm.beginTransaction()
@@ -168,6 +168,7 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                                 )
                                 fragmentTransaction.commit()
                             }
+
                             12 + MIN_LOCATION_ID -> {
                                 val fm = parentFragmentManager
                                 val fragmentTransaction = fm.beginTransaction()
@@ -177,6 +178,7 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                                 fragmentTransaction.add(R.id.shop, ShopFragment())
                                 fragmentTransaction.commit()
                             }
+
                             13 + MIN_LOCATION_ID -> {
                                 val fm = parentFragmentManager
                                 val fragmentTransaction = fm.beginTransaction()
@@ -184,6 +186,7 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
                                 fragmentTransaction.add(R.id.map, MapFragment())
                                 fragmentTransaction.commit()
                             }
+
                             14 + MIN_LOCATION_ID -> {
                                 if (isInternetAvailable()) {
                                     if (player.user.login.isEmpty()) {

@@ -56,12 +56,14 @@ object PlayerSerializer : KSerializer<Player> {
                 0 -> entity = decodeSerializableElement(descriptor, index, Entity.serializer())
                 1 -> inventory =
                     decodeSerializableElement(descriptor, index, Inventory.serializer())
+
                 2 -> damage = decodeSerializableElement(descriptor, index, Damage.serializer())
                 3 -> equipment = decodeSerializableElement(
                     descriptor,
                     index,
                     ListSerializer(Item.serializer())
                 ) as ArrayList<Item>
+
                 4 -> level = decodeIntElement(descriptor, index)
                 5 -> experience = decodeIntElement(descriptor, index)
                 6 -> experienceToTheNextLevelRequired = decodeIntElement(descriptor, index)
@@ -72,11 +74,13 @@ object PlayerSerializer : KSerializer<Player> {
                         PairSerializer(Int.serializer(), Int.serializer())
                     )
                 ) as ArrayList<Pair<Int, Int>>
+
                 10 -> spells = decodeSerializableElement(
                     descriptor,
                     index,
                     ListSerializer(Spell.serializer())
                 ) as ArrayList<Spell>
+
                 11 -> researchPoints = decodeIntElement(descriptor, index)
                 12 -> chatMode = decodeBooleanElement(descriptor, index)
                 13 -> gold = decodeIntElement(descriptor, index)

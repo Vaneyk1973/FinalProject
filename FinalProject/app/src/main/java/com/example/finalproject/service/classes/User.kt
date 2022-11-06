@@ -9,6 +9,14 @@ import kotlinx.serialization.json.Json
 data class User(var login: String = "", var email: String = "") {
     var loggedIn: Boolean = false
     var uID: String = ""
+    var rating: Int = 0
+
+    constructor(login: String, email: String, loggedIn: Boolean, uID: String, rating: Int)
+            : this(login, email) {
+        this.loggedIn = loggedIn
+        this.uID = uID
+        this.rating = rating
+    }
 
     fun logIn() {
         loggedIn = true

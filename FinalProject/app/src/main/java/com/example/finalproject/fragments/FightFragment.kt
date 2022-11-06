@@ -34,7 +34,11 @@ import java.util.Random
 import kotlin.math.min
 import kotlin.math.roundToInt
 
-class FightFragment(private var duel: Boolean = false, private val enemyId: Int) : Fragment(),
+class FightFragment(
+    private val enemyId: Int = 262,
+    private val duel: Boolean = false,
+    private val roomId: String = ""
+) : Fragment(),
     View.OnClickListener, ValueEventListener {
 
     private lateinit var run: Button
@@ -47,16 +51,12 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
     private lateinit var enemyHealth: TextView
     private lateinit var enemyMana: TextView
     private lateinit var duelProgressBar: ProgressBar
-    private lateinit var playerReference: DatabaseReference
-    private lateinit var enemyReference: DatabaseReference
-    private lateinit var duelReference: DatabaseReference
-    private lateinit var dbReference: DatabaseReference
     private lateinit var chosenSpell: Spell
     private lateinit var enemy: Enemy
-    private var duelNum: Int = 0
-    private var playerNum: Int = 0
-    private var enemyNum: Int = 0
-    private var gotEnemy = false
+    private val duelReference: DatabaseReference =
+        FirebaseDatabase.getInstance().getReference("Duel").child(roomId)
+    private lateinit var playerRef: DatabaseReference
+    private lateinit var enemyRef: DatabaseReference
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,99 +83,29 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
         spells.layoutManager = LinearLayoutManager(context)
         val playerImage: ImageView = requireView().findViewById(R.id.player)
         val enemyImage: ImageView = requireView().findViewById(R.id.enemy)
-        dbReference = FirebaseDatabase.getInstance().getReference("Duel")
         if (duel) {
-            duelProgressBar.visibility = View.VISIBLE
             duelProgressBar.animate()
-            dbReference.get().addOnCompleteListener {
-                if (it.isSuccessful) {
-                    duelNum =
-                        if (it.result.child((it.result.childrenCount - 1).toString()).childrenCount == 2L
-                            || it.result.child((it.result.childrenCount - 1).toString()).childrenCount == 0L
-                        ) {
-                            duelReference = dbReference.child(it.result.childrenCount.toString())
-                            playerNum = 0
-                            enemyNum = 1
-                            duelReference.addValueEventListener(this)
-                            it.result.childrenCount.toInt()
-                        } else {
-                            duelReference =
-                                dbReference.child((it.result.childrenCount - 1).toString())
-                            playerNum = 1
-                            enemyReference = duelReference.child(enemyNum.toString())
-                            enemyReference.addValueEventListener(this)
-                            enemyReference.get().addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    if (it.result.value != null) {
-                                        val enemyMap = it.result.value as HashMap<*, *>
-                                        enemy = Enemy(
-                                            enemyMap["name"] as String,
-                                            enemyMap["id"].toString().toInt(),
-                                            enemyMap["health"].toString().toDouble(),
-                                            enemyMap["maxHealth"].toString().toDouble(),
-                                            enemyMap["healthRegen"].toString().toDouble(),
-                                            enemyMap["mana"].toString().toDouble(),
-                                            enemyMap["maxMana"].toString().toDouble(),
-                                            enemyMap["manaRegen"].toString().toDouble(),
-                                            Resistances(run {
-                                                val resistances = ArrayList<Double>()
-                                                for (i in (enemyMap["resistances"] as HashMap<*, *>)["resistances"] as ArrayList<*>) {
-                                                    resistances.add(i.toString().toDouble())
-                                                }
-                                                resistances
-                                            }),
-                                            Loot(
-                                                exp = (enemyMap["loot"] as HashMap<*, *>)["exp"].toString()
-                                                    .toInt(),
-                                                gold = (enemyMap["loot"] as HashMap<*, *>)["gold"].toString()
-                                                    .toInt()
-                                            ),
-                                            Damage(run {
-                                                val damage = ArrayList<Double>()
-                                                for (i in (enemyMap["damage"] as HashMap<*, *>)["dmg"] as ArrayList<*>) {
-                                                    damage.add(i.toString().toDouble())
-                                                }
-                                                damage
-                                            }),
-                                            enemyMap["dead"].toString().toBoolean()
-                                        )
-                                        duelProgressBar.visibility = View.GONE
-                                        gotEnemy = true
-                                        updateStatus()
-                                    }
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        "Something went wrong, please try again later",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    exitDuel()
-                                }
-                            }
-                            it.result.childrenCount.toInt() - 1
-
-                        }
-                    enemyImage.setImageBitmap(MainActivity.textures[5][6])
-                    addPlayerToDuel()
-                } else {
-                    Toast.makeText(
-                        context,
-                        "Something went wrong, please try again later",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    exitDuel()
-                }
-            }
+            getTheEnemy()
         } else {
             enemy = Enemy(assets.enemies[enemyId]!!)
-            enemyImage.setImageBitmap(MainActivity.textures[5][enemyId - 256])
             updateStatus()
+            attack.setOnClickListener(this)
+            run.setOnClickListener(this)
+            castSpell.setOnClickListener(this)
+            defend.setOnClickListener(this)
         }
+        enemyImage.setImageBitmap(MainActivity.textures[5][enemyId - 256])
         playerImage.setImageBitmap(MainActivity.getAvatar())
-        attack.setOnClickListener(this)
-        run.setOnClickListener(this)
-        castSpell.setOnClickListener(this)
-        defend.setOnClickListener(this)
+    }
+
+    private fun getTheEnemy() {
+        if (roomId == player.user.uID) {
+            playerRef = duelReference.child("0")
+        } else {
+            playerRef = duelReference.child("1")
+            enemyRef = duelReference.child("0")
+            enemyRef.addValueEventListener(this)
+        }
     }
 
     private fun updateStatus() {
@@ -189,248 +119,108 @@ class FightFragment(private var duel: Boolean = false, private val enemyId: Int)
         enemyMana.text = text
     }
 
-    private fun addPlayerToDuel() {
-        playerReference = duelReference.child(playerNum.toString())
-        playerReference.setValue(Enemy(player, player.damage))
-        playerReference.child("loot")
-            .setValue(Loot(exp = player.experience / 10, gold = player.gold / 10))
-        playerReference.child("dead").setValue(0)
+    override fun onDataChange(snapshot: DataSnapshot) {
+        if (snapshot.ref==enemyRef){
+
+        }
+    }
+    override fun onCancelled(error: DatabaseError) {
+        Log.e("Duel error", error.message)
     }
 
     override fun onClick(v: View?) {
         val fragmentManager = parentFragmentManager
-        if (duel) {
-            when (v) {
-                attack -> {
-                    if (gotEnemy) {
-                        if (player.health <= 0) {
-                            onClick(run)
+        when (v) {
+            attack -> {
+                player.doDamage(enemy)
+                if (enemy.health <= 0) {
+                    player.takeDrop(enemy)
+                    assets.enemiesKilled[enemyId] =
+                        assets.enemiesKilled[enemyId]?.inc() ?: 1
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentManager.findFragmentById(R.id.fight)
+                        ?.let { fragmentTransaction.remove(it) }
+                    fragmentTransaction.add(R.id.map, MapFragment())
+                    fragmentTransaction.add(R.id.status, StatusBarFragment())
+                    fragmentTransaction.add(R.id.menu, MenuFragment())
+                    fragmentTransaction.commit()
+                    MainActivity.music.start(requireContext(), R.raw.main)
+                }
+                enemy.attack(player)
+                updateStatus()
+                if (player.health <= 0) {
+                    player = Player(2, 2)
+                    MainActivity.setInitialData()
+                    Toast.makeText(
+                        context,
+                        "You died \n All of your progress will be reset \n Better luck this time",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentManager.findFragmentById(R.id.fight)
+                        ?.let {
+                            fragmentTransaction.remove(it)
+                            fragmentTransaction.add(R.id.map, MapFragment())
+                            fragmentTransaction.add(R.id.status, StatusBarFragment())
+                            fragmentTransaction.add(R.id.menu, MenuFragment())
                         }
-                        player.regenerate(playerReference)
-                        player.doDamage(enemy, enemyReference)
-                    }
+                    fragmentTransaction.commit()
+                    MainActivity.music.start(requireContext(), R.raw.main)
                 }
-
-                run -> {
-                    exitDuel()
-                    player.gold /= 10
-                    player.experience /= 10
-
-                }
+                player.regenerate()
+                enemy.regenerate()
             }
-        } else {
-            when (v) {
-                attack -> {
-                    player.doDamage(enemy)
-                    if (enemy.health <= 0) {
-                        player.takeDrop(enemy)
-                        assets.enemiesKilled[enemyId] =
-                            assets.enemiesKilled[enemyId]?.inc() ?: 1
-                        val fragmentTransaction = fragmentManager.beginTransaction()
-                        fragmentManager.findFragmentById(R.id.fight)
-                            ?.let { fragmentTransaction.remove(it) }
-                        fragmentTransaction.add(R.id.map, MapFragment())
-                        fragmentTransaction.add(R.id.status, StatusBarFragment())
-                        fragmentTransaction.add(R.id.menu, MenuFragment())
-                        fragmentTransaction.commit()
-                        MainActivity.music.start(requireContext(), R.raw.main)
-                    }
-                    enemy.attack(player)
-                    updateStatus()
-                    if (player.health <= 0) {
-                        player = Player(2, 2)
-                        MainActivity.setInitialData()
-                        Toast.makeText(
-                            context,
-                            "You died \n All of your progress will be reset \n Better luck this time",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        val fragmentTransaction = fragmentManager.beginTransaction()
-                        fragmentManager.findFragmentById(R.id.fight)
-                            ?.let {
-                                fragmentTransaction.remove(it)
-                                fragmentTransaction.add(R.id.map, MapFragment())
-                                fragmentTransaction.add(R.id.status, StatusBarFragment())
-                                fragmentTransaction.add(R.id.menu, MenuFragment())
-                            }
-                        fragmentTransaction.commit()
-                        MainActivity.music.start(requireContext(), R.raw.main)
-                    }
+
+            run -> {
+                val a = Random().nextInt(100)
+                if (a < 50) {
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentManager.findFragmentById(R.id.fight)
+                        ?.let {
+                            fragmentTransaction.remove(it)
+                            fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
+                            fragmentTransaction.add(R.id.status, StatusBarFragment())
+                            fragmentTransaction.add(R.id.menu, MenuFragment())
+                        }
+                    fragmentTransaction.commit()
+                } else {
                     player.regenerate()
                     enemy.regenerate()
-                }
-
-                run -> {
-                    val a = Random().nextInt(100)
-                    if (a < 50) {
-                        val fragmentTransaction = fragmentManager.beginTransaction()
-                        fragmentManager.findFragmentById(R.id.fight)
-                            ?.let {
-                                fragmentTransaction.remove(it)
-                                fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
-                                fragmentTransaction.add(R.id.status, StatusBarFragment())
-                                fragmentTransaction.add(R.id.menu, MenuFragment())
-                            }
-                        fragmentTransaction.commit()
-                    } else {
-                        player.regenerate()
-                        enemy.regenerate()
-                        enemy.attack(player)
-                        updateStatus()
-                    }
-                }
-
-                castSpell -> {
-                    updateStatus()
-                    spells.adapter = SpellsAdapter(player.spells)
-                }
-
-                defend -> {
-                    player.defend()
                     enemy.attack(player)
-                    player.defend()
                     updateStatus()
-                    if (player.health <= 0) {
-                        player = Player(2, 2)
-                        MainActivity.setInitialData()
-                        Toast.makeText(
-                            context,
-                            "You died \n All of your progress will be reset \n Better luck this time",
-                            Toast.LENGTH_LONG
-                        ).show()
-                        val fragmentTransaction = fragmentManager.beginTransaction()
-                        fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
-                        fragmentTransaction.add(R.id.map, MapFragment())
-                        fragmentTransaction.add(R.id.status, StatusBarFragment())
-                        fragmentTransaction.add(R.id.menu, MenuFragment())
-                        fragmentTransaction.commit()
-                        MainActivity.music.start(requireContext(), R.raw.main)
-                    }
-                    player.regenerate()
-                    enemy.regenerate()
                 }
             }
-        }
-    }
 
-    private fun exitDuel() {
-        val fragmentManager = parentFragmentManager
-        playerReference.child("dead").setValue(1)
-        player.mana = player.maxMana
-        player.health = player.maxHealth
-        val fragmentTransaction = fragmentManager.beginTransaction()
-        fragmentManager.findFragmentById(R.id.fight)
-            ?.let { fragmentTransaction.remove(it) }
-        fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
-        fragmentTransaction.add(R.id.status, StatusBarFragment())
-        fragmentTransaction.add(R.id.menu, MenuFragment())
-        fragmentTransaction.commit()
-    }
+            castSpell -> {
+                updateStatus()
+                spells.adapter = SpellsAdapter(player.spells)
+            }
 
-    override fun onDataChange(snapshot: DataSnapshot) {
-        if (snapshot.ref == duelReference) {
-            enemyReference = duelReference.child(enemyNum.toString())
-            enemyReference.addValueEventListener(this)
-            enemyReference.get().addOnCompleteListener {
-                if (it.isSuccessful) {
-                    if (it.result.value != null) {
-                        val enemyMap = it.result.value as HashMap<*, *>
-                        enemy = Enemy(
-                            enemyMap["name"] as String,
-                            enemyMap["id"].toString().toInt(),
-                            enemyMap["health"].toString().toDouble(),
-                            enemyMap["maxHealth"].toString().toDouble(),
-                            enemyMap["healthRegen"].toString().toDouble(),
-                            enemyMap["mana"].toString().toDouble(),
-                            enemyMap["maxMana"].toString().toDouble(),
-                            enemyMap["manaRegen"].toString().toDouble(),
-                            Resistances(run {
-                                val resistances = ArrayList<Double>()
-                                for (i in (enemyMap["resistances"] as HashMap<*, *>)["resistances"] as ArrayList<*>) {
-                                    resistances.add(i.toString().toDouble())
-                                }
-                                resistances
-                            }),
-                            Loot(
-                                exp = (enemyMap["loot"] as HashMap<*, *>)["exp"].toString().toInt(),
-                                gold = (enemyMap["loot"] as HashMap<*, *>)["gold"].toString()
-                                    .toInt()
-                            ),
-                            Damage(run {
-                                val damage = ArrayList<Double>()
-                                for (i in (enemyMap["damage"] as HashMap<*, *>)["dmg"] as ArrayList<*>) {
-                                    damage.add(i.toString().toDouble())
-                                }
-                                damage
-                            }),
-                            enemyMap["dead"].toString().toBoolean()
-                        )
-                        duelProgressBar.visibility = View.GONE
-                        gotEnemy = true
-                        updateStatus()
-                    }
-                } else {
+            defend -> {
+                player.defend()
+                enemy.attack(player)
+                player.defend()
+                updateStatus()
+                if (player.health <= 0) {
+                    player = Player(2, 2)
+                    MainActivity.setInitialData()
                     Toast.makeText(
                         context,
-                        "Something went wrong, please try again later",
-                        Toast.LENGTH_SHORT
+                        "You died \n All of your progress will be reset \n Better luck this time",
+                        Toast.LENGTH_LONG
                     ).show()
-                    exitDuel()
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
+                    fragmentTransaction.add(R.id.map, MapFragment())
+                    fragmentTransaction.add(R.id.status, StatusBarFragment())
+                    fragmentTransaction.add(R.id.menu, MenuFragment())
+                    fragmentTransaction.commit()
+                    MainActivity.music.start(requireContext(), R.raw.main)
                 }
-            }
-        } else if (snapshot.ref == enemyReference) {
-            enemyReference.get().addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val enemyMap = it.result.value as HashMap<*, *>
-                    enemy = Enemy(
-                        enemyMap["name"] as String,
-                        enemyMap["id"].toString().toInt(),
-                        enemyMap["health"].toString().toDouble(),
-                        enemyMap["maxHealth"].toString().toDouble(),
-                        enemyMap["healthRegen"].toString().toDouble(),
-                        enemyMap["mana"].toString().toDouble(),
-                        enemyMap["maxMana"].toString().toDouble(),
-                        enemyMap["manaRegen"].toString().toDouble(),
-                        Resistances(run {
-                            val resistances = ArrayList<Double>()
-                            for (i in (enemyMap["resistances"] as HashMap<*, *>)["resistances"] as ArrayList<*>) {
-                                resistances.add(i.toString().toDouble())
-                            }
-                            resistances
-                        }),
-                        Loot(
-                            exp = (enemyMap["loot"] as HashMap<*, *>)["exp"].toString().toInt(),
-                            gold = (enemyMap["loot"] as HashMap<*, *>)["gold"].toString().toInt()
-                        ),
-                        Damage(run {
-                            val damage = ArrayList<Double>()
-                            for (i in (enemyMap["damage"] as HashMap<*, *>)["dmg"] as ArrayList<*>) {
-                                damage.add(i.toString().toDouble())
-                            }
-                            damage
-                        }),
-                        enemyMap["dead"].toString().toBoolean()
-                    )
-                    if (enemy.dead) {
-                        player.takeDrop(enemy)
-                        exitDuel()
-                    }
-                    updateStatus()
-                } else {
-                    Toast.makeText(
-                        context,
-                        "Something went wrong, please try again later",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    exitDuel()
-                }
+                player.regenerate()
+                enemy.regenerate()
             }
         }
-    }
-
-    override fun onCancelled(error: DatabaseError) {
-        exitDuel()
-        Log.e("Duel error", error.message)
     }
 
     private inner class SpellsAdapter(val data: ArrayList<Spell> = ArrayList()) :
