@@ -53,9 +53,11 @@ class FightFragment(
         FirebaseDatabase.getInstance().getReference("Duel").child(roomId)
     private lateinit var playerRef: DatabaseReference
     private lateinit var enemyRef: DatabaseReference
-    private val winRef: DatabaseReference = duelReference.child("2")
+    private val winRef: DatabaseReference = duelReference.child("win")
+    private val moveRef: DatabaseReference = duelReference.child("move")
     private var playerNum: Int = 0
     private var enemyNum: Int = 1
+    private var move: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -80,6 +82,8 @@ class FightFragment(
         MainActivity.music.start(requireContext(), R.raw.fight)
         spells = requireView().findViewById(R.id.avaliable_spells)
         spells.layoutManager = LinearLayoutManager(context)
+        castSpell.visibility = View.GONE
+        defend.visibility = View.GONE
         val playerImage: ImageView = requireView().findViewById(R.id.player)
         val enemyImage: ImageView = requireView().findViewById(R.id.enemy)
         if (duel) {
@@ -92,8 +96,6 @@ class FightFragment(
         }
         attack.setOnClickListener(this)
         run.setOnClickListener(this)
-        castSpell.setOnClickListener(this)
-        defend.setOnClickListener(this)
         enemyImage.setImageBitmap(MainActivity.textures[5][enemyId - 256])
         playerImage.setImageBitmap(MainActivity.getAvatar())
     }
@@ -102,11 +104,14 @@ class FightFragment(
         if (roomId == player.user.uID) {
             playerRef = duelReference.child("0")
             enemyRef = duelReference.child("1")
+            move = enemyNum
+            duelReference.child("move").setValue(move)
         } else {
             playerNum = 1
             enemyNum = 0
             playerRef = duelReference.child("1")
             enemyRef = duelReference.child("0")
+            move = playerNum
         }
         enemyRef.addValueEventListener(this)
         playerRef.addValueEventListener(this)
@@ -156,6 +161,8 @@ class FightFragment(
                 player.experience += enemy.loot.exp
                 player.takeDrop(enemy)
             }
+        } else if (snapshot.ref == duelReference.child("move") && snapshot.value != null) {
+            move = snapshot.value.toString().toInt()
         }
     }
 
@@ -165,28 +172,20 @@ class FightFragment(
 
     override fun onClick(v: View?) {
         val fragmentManager = parentFragmentManager
-        if (duel) {
+        if (duel && move == playerNum) {
             when (v) {
                 attack -> {
                     player.doDamage(enemy, enemyRef.child("enemy"))
+                    moveRef.setValue(enemyNum)
                 }
 
                 run -> {
-                    duelReference.child("2").setValue(enemyNum)
+                    duelReference.child("win").setValue(enemyNum)
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentManager.findFragmentById(R.id.fight)
                         ?.let { fragmentTransaction.remove(it) }
                     fragmentTransaction.add(R.id.duel, DuelFragment())
                     fragmentTransaction.commit()
-                }
-
-                castSpell -> {
-                    updateStatus()
-                    spells.adapter = SpellsAdapter(player.spells)
-                }
-
-                defend -> {
-
                 }
             }
         } else {
