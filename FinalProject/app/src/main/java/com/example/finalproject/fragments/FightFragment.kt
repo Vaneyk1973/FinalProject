@@ -11,7 +11,6 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
@@ -53,8 +52,8 @@ class FightFragment(
         FirebaseDatabase.getInstance().getReference("Duel").child(roomId)
     private lateinit var playerRef: DatabaseReference
     private lateinit var enemyRef: DatabaseReference
-    private val winRef: DatabaseReference = duelReference.child("win")
-    private val moveRef: DatabaseReference = duelReference.child("move")
+    private val winRef: DatabaseReference = duelReference.child("2")
+    private val moveRef: DatabaseReference = duelReference.child("3")
     private var playerNum: Int = 0
     private var enemyNum: Int = 1
     private var move: Int = 0
@@ -105,7 +104,7 @@ class FightFragment(
             playerRef = duelReference.child("0")
             enemyRef = duelReference.child("1")
             move = enemyNum
-            duelReference.child("move").setValue(move)
+            moveRef.setValue(move)
         } else {
             playerNum = 1
             enemyNum = 0
@@ -148,7 +147,7 @@ class FightFragment(
                 val fragmentManager = parentFragmentManager
                 player.gold -= player.gold / 10
                 player.experience -= player.experience / 10
-                duelReference.child("2").setValue(enemyNum)
+                winRef.setValue(enemyNum)
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentManager.findFragmentById(R.id.fight)
                     ?.let { fragmentTransaction.remove(it) }
@@ -161,7 +160,7 @@ class FightFragment(
                 player.experience += enemy.loot.exp
                 player.takeDrop(enemy)
             }
-        } else if (snapshot.ref == duelReference.child("move") && snapshot.value != null) {
+        } else if (snapshot.ref == moveRef && snapshot.value != null) {
             move = snapshot.value.toString().toInt()
         }
     }
@@ -180,7 +179,7 @@ class FightFragment(
                 }
 
                 run -> {
-                    duelReference.child("win").setValue(enemyNum)
+                    winRef.setValue(enemyNum)
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentManager.findFragmentById(R.id.fight)
                         ?.let { fragmentTransaction.remove(it) }
