@@ -49,7 +49,6 @@ open class Entity(
 
     override fun takeDamage(damage: Damage, ref: DatabaseReference) {
         takeDamage(damage)
-        ref.setValue(Json.encodeToString(serializer(), this))
     }
 
     override fun regenerateHealth() {
@@ -69,8 +68,7 @@ open class Entity(
         regenerateMana()
     }
 
-    fun regenerate(playerReference: DatabaseReference) {
+    open fun regenerate(playerReference: DatabaseReference) {
         regenerate()
-        playerReference.setValue(serializer(), this)
     }
 }

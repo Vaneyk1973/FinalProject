@@ -8,6 +8,7 @@ import com.example.finalproject.service.interfaces.Health
 import com.example.finalproject.service.serializers.EnemySerializer
 import com.google.firebase.database.DatabaseReference
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import java.util.HashMap
 
 @Serializable(with = EnemySerializer::class)
@@ -93,5 +94,10 @@ class Enemy(
             resistances.applyDefence(defCoefficient)
         else
             resistances.removeDefence(defCoefficient)
+    }
+
+    override fun takeDamage(damage: Damage, ref: DatabaseReference) {
+        super.takeDamage(damage, ref)
+        ref.setValue(Json.encodeToString(serializer(), this))
     }
 }

@@ -16,6 +16,7 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -227,6 +228,16 @@ class Player(
         } else {
             false
         }
+    }
+
+    override fun regenerate(playerReference: DatabaseReference) {
+        super.regenerate(playerReference)
+        playerReference.setValue(Json.encodeToString(Enemy.serializer(), Enemy(this, damage)))
+    }
+
+    override fun takeDamage(damage: Damage, ref: DatabaseReference) {
+        super.takeDamage(damage, ref)
+        ref.setValue(Json.encodeToString(Enemy.serializer(), Enemy(this, damage)))
     }
 
     fun research(research: Int): Boolean {
