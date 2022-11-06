@@ -39,6 +39,8 @@ class DuelFragment : Fragment(), View.OnClickListener {
         createDuelButton = requireView().findViewById(R.id.create_duel_button)
         duelList = requireView().findViewById(R.id.duel_list)
         getDuelList()
+        player.loot.exp = player.experience / 10
+        player.loot.gold = player.gold / 10
         duelList.layoutManager = LinearLayoutManager(context)
         back.setOnClickListener(this)
         createDuelButton.setOnClickListener(this)

@@ -11,7 +11,7 @@ import kotlin.random.Random
  *  @property loot a list of possible items in form of <the percent chance of dropping in range [0, 100] :[Int], the quantity of items :[Int], the given item :[Item]>
  */
 @Serializable
-data class Loot(val loot: ArrayList<Triple<Int, Int, Int>> = ArrayList(), val gold:Int=0, val exp:Int=0) {
+data class Loot(val loot: ArrayList<Triple<Int, Int, Int>> = ArrayList(), var gold:Int=0, var exp:Int=0) {
 
     /**
      * @return the items according to their chances

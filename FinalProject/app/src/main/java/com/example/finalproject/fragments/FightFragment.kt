@@ -11,6 +11,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.commit
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
@@ -52,6 +53,7 @@ class FightFragment(
         FirebaseDatabase.getInstance().getReference("Duel").child(roomId)
     private lateinit var playerRef: DatabaseReference
     private lateinit var enemyRef: DatabaseReference
+    private val winRef: DatabaseReference = duelReference.child("2")
     private var playerNum: Int = 0
     private var enemyNum: Int = 1
 
@@ -108,6 +110,7 @@ class FightFragment(
         }
         enemyRef.addValueEventListener(this)
         playerRef.addValueEventListener(this)
+        winRef.addValueEventListener(this)
     }
 
     private fun updateStatus() {
@@ -136,6 +139,12 @@ class FightFragment(
             )
             player.health = playerAsEnemy.health
             player.mana = playerAsEnemy.mana
+        } else if (snapshot.ref == winRef && snapshot.value != null) {
+            if (snapshot.value.toString().toInt() == playerNum) {
+                player.gold += enemy.loot.gold
+                player.experience += enemy.loot.exp
+                player.takeDrop(enemy)
+            }
         }
     }
 
@@ -147,16 +156,31 @@ class FightFragment(
         val fragmentManager = parentFragmentManager
         if (duel) {
             when (v) {
-                attack -> {}
+                attack -> {
+                    if (player.health <= 0) {
+                        player.gold -= player.gold / 10
+                        player.experience -= player.experience / 10
+                        onClick(run)
+                    }
+                }
 
-                run -> {}
+                run -> {
+                    duelReference.child("2").setValue(enemyNum)
+                    val fragmentTransaction = fragmentManager.beginTransaction()
+                    fragmentManager.findFragmentById(R.id.fight)
+                        ?.let { fragmentTransaction.remove(it) }
+                    fragmentTransaction.add(R.id.duel, DuelFragment())
+                    fragmentTransaction.commit()
+                }
 
                 castSpell -> {
                     updateStatus()
                     spells.adapter = SpellsAdapter(player.spells)
                 }
 
-                defend -> {}
+                defend -> {
+
+                }
             }
         } else {
             when (v) {
