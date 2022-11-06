@@ -130,18 +130,38 @@ class DuelFragment : Fragment(), View.OnClickListener {
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.duel.text = ">${data[position].login}: ${data[position].rating}"
             holder.duel.setOnClickListener {
-                val duelRef = duelListRef.child(data[position].uID)
-                duelRef.child("1").child("user").setValue(player.user)
-                duelRef.child("1").child("enemy")
-                    .setValue(Json.encodeToString(Enemy.serializer(), Enemy(player, player.damage)))
-                val fragmentManager = parentFragmentManager
-                val fragmentTransaction = fragmentManager.beginTransaction()
-                fragmentManager.findFragmentById(R.id.duel)?.let { fragmentTransaction.remove(it) }
-                fragmentTransaction.add(
-                    R.id.fight,
-                    FightFragment(duel = true, roomId = data[position].uID)
-                )
-                fragmentTransaction.commit()
+                val duelRef = duelListRef.child(data[position].uID).child("1")
+                duelRef.get().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        if (it.result.childrenCount==1L){
+                            val fragmentManager = parentFragmentManager
+                            val fragmentTransaction = fragmentManager.beginTransaction()
+                            duelRef.child("user").setValue(player.user)
+                            duelRef.child("enemy")
+                                .setValue(Json.encodeToString(Enemy.serializer(), Enemy(player, player.damage)))
+                            fragmentManager.findFragmentById(R.id.duel)?.let { fragmentTransaction.remove(it) }
+                            fragmentTransaction.add(
+                                R.id.fight,
+                                FightFragment(duel = true, roomId = data[position].uID)
+                            )
+                            fragmentTransaction.commit()
+                        } else{
+                            Toast.makeText(
+                                context,
+                                "This room is already full, try another one",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            getDuelList()
+                        }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            "Something went wrong, please try again later",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        onClick(back)
+                    }
+                }
             }
         }
     }
