@@ -82,12 +82,12 @@ class FightFragment(
         MainActivity.music.start(requireContext(), R.raw.fight)
         spells = requireView().findViewById(R.id.avaliable_spells)
         spells.layoutManager = LinearLayoutManager(context)
-        castSpell.visibility = View.GONE
-        defend.visibility = View.GONE
         val playerImage: ImageView = requireView().findViewById(R.id.player)
         val enemyImage: ImageView = requireView().findViewById(R.id.enemy)
         if (duel) {
             duelProgressBar.animate()
+            castSpell.visibility = View.GONE
+            defend.visibility = View.GONE
             duelProgressBar.visibility = View.VISIBLE
             getTheEnemy()
         } else {
