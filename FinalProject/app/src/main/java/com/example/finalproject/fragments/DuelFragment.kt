@@ -58,6 +58,7 @@ class DuelFragment : Fragment(), View.OnClickListener {
                     for (i in duelListMap.values) {
                         if (i.size == 1) {
                             val user = i[0]["user"]!!
+                            Log.d("user", user.toString())
                             users.add(
                                 User(
                                     user["name"].toString(),
