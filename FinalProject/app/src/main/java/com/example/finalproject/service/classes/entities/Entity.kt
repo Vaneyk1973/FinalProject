@@ -11,6 +11,7 @@ import com.example.finalproject.service.interfaces.Mana
 import com.example.finalproject.service.serializers.EntitySerializer
 import com.google.firebase.database.DatabaseReference
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 import kotlin.math.max
 import kotlin.math.min
 
@@ -48,7 +49,7 @@ open class Entity(
 
     override fun takeDamage(damage: Damage, ref: DatabaseReference) {
         takeDamage(damage)
-        ref.child("health").setValue(health)
+        ref.setValue(Json.encodeToString(serializer(), this))
     }
 
     override fun regenerateHealth() {
@@ -70,7 +71,6 @@ open class Entity(
 
     fun regenerate(playerReference: DatabaseReference) {
         regenerate()
-        playerReference.child("health").setValue(health)
-        playerReference.child("mana").setValue(mana)
+        playerReference.setValue(serializer(), this)
     }
 }

@@ -139,6 +139,17 @@ class FightFragment(
             )
             player.health = playerAsEnemy.health
             player.mana = playerAsEnemy.mana
+            if (player.health <= 0) {
+                val fragmentManager = parentFragmentManager
+                player.gold -= player.gold / 10
+                player.experience -= player.experience / 10
+                duelReference.child("2").setValue(enemyNum)
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentManager.findFragmentById(R.id.fight)
+                    ?.let { fragmentTransaction.remove(it) }
+                fragmentTransaction.add(R.id.duel, DuelFragment())
+                fragmentTransaction.commit()
+            }
         } else if (snapshot.ref == winRef && snapshot.value != null) {
             if (snapshot.value.toString().toInt() == playerNum) {
                 player.gold += enemy.loot.gold
@@ -157,11 +168,7 @@ class FightFragment(
         if (duel) {
             when (v) {
                 attack -> {
-                    if (player.health <= 0) {
-                        player.gold -= player.gold / 10
-                        player.experience -= player.experience / 10
-                        onClick(run)
-                    }
+                    player.doDamage(enemy, enemyRef.child("enemy"))
                 }
 
                 run -> {
