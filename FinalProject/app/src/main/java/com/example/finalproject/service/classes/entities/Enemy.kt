@@ -8,6 +8,7 @@ import com.example.finalproject.service.interfaces.Health
 import com.example.finalproject.service.serializers.EnemySerializer
 import com.google.firebase.database.DatabaseReference
 import kotlinx.serialization.Serializable
+import java.util.HashMap
 
 @Serializable(with = EnemySerializer::class)
 class Enemy(
@@ -21,8 +22,7 @@ class Enemy(
     manaRegen: Double,
     resistances: Resistances,
     loot: Loot,
-    override var damage: Damage,
-    var dead: Boolean = false
+    override var damage: Damage
 ) :
     Entity(
         name = name,

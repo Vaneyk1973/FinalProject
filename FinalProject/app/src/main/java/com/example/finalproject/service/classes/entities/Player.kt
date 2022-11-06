@@ -104,7 +104,7 @@ class Player(
 
     constructor(x: Int, y: Int) : this(
         "Player",
-        0,
+        511,
         100.0,
         100.0,
         1.0,

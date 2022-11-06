@@ -1,6 +1,7 @@
 package com.example.finalproject.fragments
 
 import android.os.Bundle
+import android.util.JsonReader
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -30,6 +31,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.serialization.json.Json
 import java.util.Random
 import kotlin.math.min
 import kotlin.math.roundToInt
@@ -57,6 +59,8 @@ class FightFragment(
         FirebaseDatabase.getInstance().getReference("Duel").child(roomId)
     private lateinit var playerRef: DatabaseReference
     private lateinit var enemyRef: DatabaseReference
+    private var playerNum: Int = 0
+    private var enemyNum: Int = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -85,6 +89,7 @@ class FightFragment(
         val enemyImage: ImageView = requireView().findViewById(R.id.enemy)
         if (duel) {
             duelProgressBar.animate()
+            duelProgressBar.visibility = View.VISIBLE
             getTheEnemy()
         } else {
             enemy = Enemy(assets.enemies[enemyId]!!)
@@ -101,11 +106,15 @@ class FightFragment(
     private fun getTheEnemy() {
         if (roomId == player.user.uID) {
             playerRef = duelReference.child("0")
+            enemyRef = duelReference.child("1")
         } else {
+            playerNum = 1
+            enemyNum = 0
             playerRef = duelReference.child("1")
             enemyRef = duelReference.child("0")
-            enemyRef.addValueEventListener(this)
         }
+        enemyRef.addValueEventListener(this)
+        playerRef.addValueEventListener(this)
     }
 
     private fun updateStatus() {
@@ -120,105 +129,132 @@ class FightFragment(
     }
 
     override fun onDataChange(snapshot: DataSnapshot) {
-        if (snapshot.ref==enemyRef){
-
+        if (snapshot.ref == enemyRef && snapshot.child("enemy").value != null) {
+            enemy = Json.decodeFromString(
+                Enemy.serializer(),
+                snapshot.child("enemy").value.toString()
+            )
+            updateStatus()
+        } else if (snapshot.ref == playerRef && snapshot.child("enemy").value != null) {
+            val playerAsEnemy = Json.decodeFromString(
+                Enemy.serializer(),
+                snapshot.child("enemy").value.toString()
+            )
+            player.health = playerAsEnemy.health
+            player.mana = playerAsEnemy.mana
         }
     }
+
     override fun onCancelled(error: DatabaseError) {
         Log.e("Duel error", error.message)
     }
 
     override fun onClick(v: View?) {
         val fragmentManager = parentFragmentManager
-        when (v) {
-            attack -> {
-                player.doDamage(enemy)
-                if (enemy.health <= 0) {
-                    player.takeDrop(enemy)
-                    assets.enemiesKilled[enemyId] =
-                        assets.enemiesKilled[enemyId]?.inc() ?: 1
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentManager.findFragmentById(R.id.fight)
-                        ?.let { fragmentTransaction.remove(it) }
-                    fragmentTransaction.add(R.id.map, MapFragment())
-                    fragmentTransaction.add(R.id.status, StatusBarFragment())
-                    fragmentTransaction.add(R.id.menu, MenuFragment())
-                    fragmentTransaction.commit()
-                    MainActivity.music.start(requireContext(), R.raw.main)
-                }
-                enemy.attack(player)
-                updateStatus()
-                if (player.health <= 0) {
-                    player = Player(2, 2)
-                    MainActivity.setInitialData()
-                    Toast.makeText(
-                        context,
-                        "You died \n All of your progress will be reset \n Better luck this time",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentManager.findFragmentById(R.id.fight)
-                        ?.let {
-                            fragmentTransaction.remove(it)
-                            fragmentTransaction.add(R.id.map, MapFragment())
-                            fragmentTransaction.add(R.id.status, StatusBarFragment())
-                            fragmentTransaction.add(R.id.menu, MenuFragment())
-                        }
-                    fragmentTransaction.commit()
-                    MainActivity.music.start(requireContext(), R.raw.main)
-                }
-                player.regenerate()
-                enemy.regenerate()
-            }
+        if (duel) {
+            when (v) {
+                attack -> {}
 
-            run -> {
-                val a = Random().nextInt(100)
-                if (a < 50) {
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentManager.findFragmentById(R.id.fight)
-                        ?.let {
-                            fragmentTransaction.remove(it)
-                            fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
-                            fragmentTransaction.add(R.id.status, StatusBarFragment())
-                            fragmentTransaction.add(R.id.menu, MenuFragment())
-                        }
-                    fragmentTransaction.commit()
-                } else {
-                    player.regenerate()
-                    enemy.regenerate()
+                run -> {}
+
+                castSpell -> {
+                    updateStatus()
+                    spells.adapter = SpellsAdapter(player.spells)
+                }
+
+                defend -> {}
+            }
+        } else {
+            when (v) {
+                attack -> {
+                    player.doDamage(enemy)
+                    if (enemy.health <= 0) {
+                        player.takeDrop(enemy)
+                        assets.enemiesKilled[enemyId] =
+                            assets.enemiesKilled[enemyId]?.inc() ?: 1
+                        val fragmentTransaction = fragmentManager.beginTransaction()
+                        fragmentManager.findFragmentById(R.id.fight)
+                            ?.let { fragmentTransaction.remove(it) }
+                        fragmentTransaction.add(R.id.map, MapFragment())
+                        fragmentTransaction.add(R.id.status, StatusBarFragment())
+                        fragmentTransaction.add(R.id.menu, MenuFragment())
+                        fragmentTransaction.commit()
+                        MainActivity.music.start(requireContext(), R.raw.main)
+                    }
                     enemy.attack(player)
                     updateStatus()
+                    if (player.health <= 0) {
+                        player = Player(2, 2)
+                        MainActivity.setInitialData()
+                        Toast.makeText(
+                            context,
+                            "You died \n All of your progress will be reset \n Better luck this time",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        val fragmentTransaction = fragmentManager.beginTransaction()
+                        fragmentManager.findFragmentById(R.id.fight)
+                            ?.let {
+                                fragmentTransaction.remove(it)
+                                fragmentTransaction.add(R.id.map, MapFragment())
+                                fragmentTransaction.add(R.id.status, StatusBarFragment())
+                                fragmentTransaction.add(R.id.menu, MenuFragment())
+                            }
+                        fragmentTransaction.commit()
+                        MainActivity.music.start(requireContext(), R.raw.main)
+                    }
+                    player.regenerate()
+                    enemy.regenerate()
                 }
-            }
 
-            castSpell -> {
-                updateStatus()
-                spells.adapter = SpellsAdapter(player.spells)
-            }
-
-            defend -> {
-                player.defend()
-                enemy.attack(player)
-                player.defend()
-                updateStatus()
-                if (player.health <= 0) {
-                    player = Player(2, 2)
-                    MainActivity.setInitialData()
-                    Toast.makeText(
-                        context,
-                        "You died \n All of your progress will be reset \n Better luck this time",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    val fragmentTransaction = fragmentManager.beginTransaction()
-                    fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
-                    fragmentTransaction.add(R.id.map, MapFragment())
-                    fragmentTransaction.add(R.id.status, StatusBarFragment())
-                    fragmentTransaction.add(R.id.menu, MenuFragment())
-                    fragmentTransaction.commit()
-                    MainActivity.music.start(requireContext(), R.raw.main)
+                run -> {
+                    val a = Random().nextInt(100)
+                    if (a < 50) {
+                        val fragmentTransaction = fragmentManager.beginTransaction()
+                        fragmentManager.findFragmentById(R.id.fight)
+                            ?.let {
+                                fragmentTransaction.remove(it)
+                                fragmentTransaction.add(R.id.map, MapFragment(player.mapNumber))
+                                fragmentTransaction.add(R.id.status, StatusBarFragment())
+                                fragmentTransaction.add(R.id.menu, MenuFragment())
+                            }
+                        fragmentTransaction.commit()
+                    } else {
+                        player.regenerate()
+                        enemy.regenerate()
+                        enemy.attack(player)
+                        updateStatus()
+                    }
                 }
-                player.regenerate()
-                enemy.regenerate()
+
+                castSpell -> {
+                    updateStatus()
+                    spells.adapter = SpellsAdapter(player.spells)
+                }
+
+                defend -> {
+                    player.defend()
+                    enemy.attack(player)
+                    player.defend()
+                    updateStatus()
+                    if (player.health <= 0) {
+                        player = Player(2, 2)
+                        MainActivity.setInitialData()
+                        Toast.makeText(
+                            context,
+                            "You died \n All of your progress will be reset \n Better luck this time",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        val fragmentTransaction = fragmentManager.beginTransaction()
+                        fragmentTransaction.remove(fragmentManager.findFragmentById(R.id.fight)!!)
+                        fragmentTransaction.add(R.id.map, MapFragment())
+                        fragmentTransaction.add(R.id.status, StatusBarFragment())
+                        fragmentTransaction.add(R.id.menu, MenuFragment())
+                        fragmentTransaction.commit()
+                        MainActivity.music.start(requireContext(), R.raw.main)
+                    }
+                    player.regenerate()
+                    enemy.regenerate()
+                }
             }
         }
     }

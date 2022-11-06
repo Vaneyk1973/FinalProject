@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import kotlinx.serialization.json.Json
 
 class DuelFragment : Fragment(), View.OnClickListener {
 
@@ -58,16 +59,17 @@ class DuelFragment : Fragment(), View.OnClickListener {
                     for (i in duelListMap.values) {
                         if (i.size == 1) {
                             val user = i[0]["user"]!!
-                            Log.d("user", user.toString())
-                            users.add(
-                                User(
-                                    user["name"].toString(),
-                                    user["email"].toString(),
-                                    user["loggedIn"].toString().toBoolean(),
-                                    user["uID"].toString(),
-                                    user["rating"].toString().toInt()
+                            if (user["uid"] != player.user.uID) {
+                                users.add(
+                                    User(
+                                        user["login"].toString(),
+                                        user["email"].toString(),
+                                        user["loggedIn"].toString().toBoolean(),
+                                        user["uid"].toString(),
+                                        user["rating"].toString().toInt()
+                                    )
                                 )
-                            )
+                            }
                         }
                     }
                     duelList.adapter = DuelAdapter(users)
@@ -95,7 +97,8 @@ class DuelFragment : Fragment(), View.OnClickListener {
         } else if (v == createDuelButton) {
             val duelRef = duelListRef.child(player.user.uID)
             duelRef.child("0").child("user").setValue(player.user)
-            duelRef.child("0").child("enemy").setValue(Enemy(player, player.damage))
+            duelRef.child("0").child("enemy")
+                .setValue(Json.encodeToString(Enemy.serializer(), Enemy(player, player.damage)))
             val fragmentManager = parentFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
             fragmentManager.findFragmentById(R.id.duel)?.let { fragmentTransaction.remove(it) }
@@ -128,7 +131,8 @@ class DuelFragment : Fragment(), View.OnClickListener {
             holder.duel.setOnClickListener {
                 val duelRef = duelListRef.child(data[position].uID)
                 duelRef.child("1").child("user").setValue(player.user)
-                duelRef.child("1").child("enemy").setValue(Enemy(player, player.damage))
+                duelRef.child("1").child("enemy")
+                    .setValue(Json.encodeToString(Enemy.serializer(), Enemy(player, player.damage)))
                 val fragmentManager = parentFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentManager.findFragmentById(R.id.duel)?.let { fragmentTransaction.remove(it) }
