@@ -162,6 +162,12 @@ class FightFragment(
                 player.gold += enemy.loot.gold
                 player.experience += enemy.loot.exp
                 player.takeDrop(enemy)
+                val fragmentManager = parentFragmentManager
+                val fragmentTransaction = fragmentManager.beginTransaction()
+                fragmentManager.findFragmentById(R.id.fight)
+                    ?.let { fragmentTransaction.remove(it) }
+                fragmentTransaction.add(R.id.duel, DuelFragment())
+                fragmentTransaction.commit()
             }
         } else if (snapshot.ref == moveRef && snapshot.value != null) {
             move = snapshot.value.toString().toInt()
