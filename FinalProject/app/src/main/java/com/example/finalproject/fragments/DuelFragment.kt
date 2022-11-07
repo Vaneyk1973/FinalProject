@@ -54,7 +54,7 @@ class DuelFragment : Fragment(), View.OnClickListener {
                         it.result.value as HashMap<String, ArrayList<HashMap<String, HashMap<String, *>>>>
                     val users = ArrayList<User>()
                     for (i in duelListMap.values) {
-                        if (i[2].toString() == "null") {
+                        if (i[2] == null) {
                             val user = i[0]["user"]!!
                             if (user["uid"] != player.user.uID) {
                                 users.add(
@@ -132,7 +132,7 @@ class DuelFragment : Fragment(), View.OnClickListener {
                 val duelRef = duelListRef.child(data[position].uID)
                 duelRef.get().addOnCompleteListener {
                     if (it.isSuccessful) {
-                        if (it.result.child("2").toString() == "null") {
+                        if (it.result.child("2") == null) {
                             val fragmentManager = parentFragmentManager
                             val fragmentTransaction = fragmentManager.beginTransaction()
                             duelRef.child("1").child("user").setValue(player.user)
