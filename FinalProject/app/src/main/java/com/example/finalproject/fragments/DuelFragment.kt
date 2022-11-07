@@ -2,6 +2,7 @@ package com.example.finalproject.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -132,7 +133,7 @@ class DuelFragment : Fragment(), View.OnClickListener {
                 val duelRef = duelListRef.child(data[position].uID)
                 duelRef.get().addOnCompleteListener {
                     if (it.isSuccessful) {
-                        if (it.result.child("2") == null) {
+                        if (it.result.child("2").value == null) {
                             val fragmentManager = parentFragmentManager
                             val fragmentTransaction = fragmentManager.beginTransaction()
                             duelRef.child("1").child("user").setValue(player.user)
