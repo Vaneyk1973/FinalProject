@@ -132,7 +132,7 @@ class DuelFragment : Fragment(), View.OnClickListener {
                 val duelRef = duelListRef.child(data[position].uID)
                 duelRef.get().addOnCompleteListener {
                     if (it.isSuccessful) {
-                        if (it.result.childrenCount == 1L) {
+                        if (it.result.childrenCount == 2L) {
                             val fragmentManager = parentFragmentManager
                             val fragmentTransaction = fragmentManager.beginTransaction()
                             duelRef.child("1").child("user").setValue(player.user)
