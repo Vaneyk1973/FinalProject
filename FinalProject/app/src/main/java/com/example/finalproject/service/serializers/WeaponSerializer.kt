@@ -6,7 +6,11 @@ import com.example.finalproject.service.classes.items.Weapon
 import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 object WeaponSerializer : KSerializer<Weapon> {
     override val descriptor: SerialDescriptor =
@@ -14,6 +18,10 @@ object WeaponSerializer : KSerializer<Weapon> {
 
         }
 
+    /**
+     * @return the value of a needed class according to a descriptor
+     * deserializes the value
+     */
     override fun deserialize(decoder: Decoder): Weapon =
         decoder.decodeStructure(descriptor) {
             var item = Item()
@@ -31,6 +39,9 @@ object WeaponSerializer : KSerializer<Weapon> {
             Weapon(item = item, damage = damage, typeOfWeapon = typeOfWeapon)
         }
 
+    /**
+     * serializes the value
+     */
     override fun serialize(encoder: Encoder, value: Weapon) {
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(

@@ -6,9 +6,14 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
-object ArmorSerializer : KSerializer<Armor> {
+object
+ArmorSerializer : KSerializer<Armor> {
     override val descriptor: SerialDescriptor =
         buildClassSerialDescriptor("Armor") {
             element<Item>("itemPart")
@@ -16,6 +21,10 @@ object ArmorSerializer : KSerializer<Armor> {
             element<Int>("typeOfArmor")
         }
 
+    /**
+     * @return the value of a needed class according to a descriptor
+     * deserializes the value
+     */
     override fun deserialize(decoder: Decoder): Armor =
         decoder.decodeStructure(descriptor) {
             var item = Item()
@@ -37,6 +46,9 @@ object ArmorSerializer : KSerializer<Armor> {
             )
         }
 
+    /**
+     * serializes the value
+     */
     override fun serialize(encoder: Encoder, value: Armor) {
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(

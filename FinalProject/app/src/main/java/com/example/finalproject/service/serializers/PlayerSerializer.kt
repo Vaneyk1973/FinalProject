@@ -14,7 +14,11 @@ import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 
 object PlayerSerializer : KSerializer<Player> {
@@ -36,6 +40,10 @@ object PlayerSerializer : KSerializer<Player> {
             element<Int>("gold")
         }
 
+    /**
+     * @return the value of a needed class according to a descriptor
+     * deserializes the value
+     */
     override fun deserialize(decoder: Decoder): Player = decoder.decodeStructure(descriptor) {
         var entity = Entity()
         var inventory = Inventory()
@@ -106,6 +114,9 @@ object PlayerSerializer : KSerializer<Player> {
         )
     }
 
+    /**
+     * serializes the value
+     */
     override fun serialize(encoder: Encoder, value: Player) {
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(descriptor, 0, Entity.serializer(), Entity(value))

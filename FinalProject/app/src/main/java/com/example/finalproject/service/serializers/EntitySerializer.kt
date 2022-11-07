@@ -4,8 +4,6 @@ import com.example.finalproject.service.classes.Loot
 import com.example.finalproject.service.classes.Resistances
 import com.example.finalproject.service.classes.entities.Entity
 import kotlinx.serialization.KSerializer
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
@@ -30,6 +28,10 @@ object EntitySerializer : KSerializer<Entity> {
             element<Loot>("loot")
         }
 
+    /**
+     * @return the value of a needed class according to a descriptor
+     * deserializes the value
+     */
     override fun deserialize(decoder: Decoder): Entity =
         decoder.decodeStructure(descriptor) {
             var name = ""
@@ -74,6 +76,9 @@ object EntitySerializer : KSerializer<Entity> {
             )
         }
 
+    /**
+     * serializes the value
+     */
     override fun serialize(encoder: Encoder, value: Entity) {
         encoder.encodeStructure(descriptor) {
             encodeStringElement(descriptor, 0, value.name)

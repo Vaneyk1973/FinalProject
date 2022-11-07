@@ -5,7 +5,11 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 object ComponentSerializer : KSerializer<Component> {
     override val descriptor: SerialDescriptor =
@@ -15,6 +19,10 @@ object ComponentSerializer : KSerializer<Component> {
             element<Boolean>("available")
         }
 
+    /**
+     * @return the value of a needed class according to a descriptor
+     * deserializes the value
+     */
     override fun deserialize(decoder: Decoder): Component =
         decoder.decodeStructure(descriptor) {
             var name = ""
@@ -32,6 +40,9 @@ object ComponentSerializer : KSerializer<Component> {
             Component(name = name, id = id, available = available)
         }
 
+    /**
+     * serializes the value
+     */
     override fun serialize(encoder: Encoder, value: Component) {
         encoder.encodeStructure(descriptor) {
             encodeStringElement(descriptor, 0, value.name)

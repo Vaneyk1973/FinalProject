@@ -7,7 +7,11 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 object EnemySerializer : KSerializer<Enemy> {
     override val descriptor: SerialDescriptor =
@@ -16,6 +20,10 @@ object EnemySerializer : KSerializer<Enemy> {
             element<Damage>("damage")
         }
 
+    /**
+     * @return the value of a needed class according to a descriptor
+     * deserializes the value
+     */
     override fun deserialize(decoder: Decoder): Enemy =
         decoder.decodeStructure(descriptor) {
             var entity = Entity()
@@ -31,6 +39,9 @@ object EnemySerializer : KSerializer<Enemy> {
             Enemy(entity = entity, damage = damage)
         }
 
+    /**
+     * serializes the value
+     */
     override fun serialize(encoder: Encoder, value: Enemy) {
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(descriptor, 0, Entity.serializer(), Entity(value))

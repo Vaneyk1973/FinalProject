@@ -5,7 +5,11 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 object ItemSerializer : KSerializer<Item> {
 
@@ -19,6 +23,10 @@ object ItemSerializer : KSerializer<Item> {
             element<Int>("category")
         }
 
+    /**
+     * @return the value of a needed class according to a descriptor
+     * deserializes the value
+     */
     override fun deserialize(decoder: Decoder): Item =
         decoder.decodeStructure(descriptor) {
             var name = ""
@@ -49,6 +57,9 @@ object ItemSerializer : KSerializer<Item> {
             )
         }
 
+    /**
+     * serializes the value
+     */
     override fun serialize(encoder: Encoder, value: Item) {
         encoder.encodeStructure(descriptor) {
             encodeStringElement(descriptor, 0, value.name)

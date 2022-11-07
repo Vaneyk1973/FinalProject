@@ -6,7 +6,11 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 object FoodSerializer : KSerializer<Food> {
     override val descriptor: SerialDescriptor =
@@ -16,6 +20,10 @@ object FoodSerializer : KSerializer<Food> {
             element<Double>("healthRecovery")
         }
 
+    /**
+     * @return the value of a needed class according to a descriptor
+     * deserializes the value
+     */
     override fun deserialize(decoder: Decoder): Food =
         decoder.decodeStructure(descriptor) {
             var item = Item()
@@ -33,6 +41,9 @@ object FoodSerializer : KSerializer<Food> {
             Food(item = item, manaRecovery = manaRecovery, healthRecovery = healthRecovery)
         }
 
+    /**
+     * serializes the value
+     */
     override fun serialize(encoder: Encoder, value: Food) {
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(

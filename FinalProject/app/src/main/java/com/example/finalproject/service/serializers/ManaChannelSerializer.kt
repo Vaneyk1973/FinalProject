@@ -6,7 +6,11 @@ import kotlinx.serialization.KSerializer
 import kotlinx.serialization.descriptors.SerialDescriptor
 import kotlinx.serialization.descriptors.buildClassSerialDescriptor
 import kotlinx.serialization.descriptors.element
-import kotlinx.serialization.encoding.*
+import kotlinx.serialization.encoding.CompositeDecoder
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
+import kotlinx.serialization.encoding.decodeStructure
+import kotlinx.serialization.encoding.encodeStructure
 
 object ManaChannelSerializer : KSerializer<ManaChannel> {
     override val descriptor: SerialDescriptor =
@@ -15,6 +19,10 @@ object ManaChannelSerializer : KSerializer<ManaChannel> {
             element<Double>("bandwidth")
         }
 
+    /**
+     * @return the value of a needed class according to a descriptor
+     * deserializes the value
+     */
     override fun deserialize(decoder: Decoder): ManaChannel =
         decoder.decodeStructure(descriptor) {
             var component = Component()
@@ -31,6 +39,9 @@ object ManaChannelSerializer : KSerializer<ManaChannel> {
             ManaChannel(component = component, bandwidth = bandwidth)
         }
 
+    /**
+     * serializes the value
+     */
     override fun serialize(encoder: Encoder, value: ManaChannel) {
         encoder.encodeStructure(descriptor) {
             encodeSerializableElement(
