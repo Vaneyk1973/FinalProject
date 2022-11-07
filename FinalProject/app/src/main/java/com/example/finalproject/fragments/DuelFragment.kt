@@ -2,7 +2,6 @@ package com.example.finalproject.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -55,7 +54,7 @@ class DuelFragment : Fragment(), View.OnClickListener {
                         it.result.value as HashMap<String, ArrayList<HashMap<String, HashMap<String, *>>>>
                     val users = ArrayList<User>()
                     for (i in duelListMap.values) {
-                        if (i[1] == null) {
+                        if (i[2].toString() == "null") {
                             val user = i[0]["user"]!!
                             if (user["uid"] != player.user.uID) {
                                 users.add(
@@ -133,7 +132,7 @@ class DuelFragment : Fragment(), View.OnClickListener {
                 val duelRef = duelListRef.child(data[position].uID)
                 duelRef.get().addOnCompleteListener {
                     if (it.isSuccessful) {
-                        if (it.result.childrenCount == 2L) {
+                        if (it.result.child("2").toString() == "null") {
                             val fragmentManager = parentFragmentManager
                             val fragmentTransaction = fragmentManager.beginTransaction()
                             duelRef.child("1").child("user").setValue(player.user)

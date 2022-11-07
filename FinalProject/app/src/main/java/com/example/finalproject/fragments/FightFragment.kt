@@ -115,6 +115,7 @@ class FightFragment(
         enemyRef.addValueEventListener(this)
         playerRef.addValueEventListener(this)
         winRef.addValueEventListener(this)
+        moveRef.addValueEventListener(this)
     }
 
     private fun updateStatus() {
