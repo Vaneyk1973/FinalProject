@@ -109,8 +109,7 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
                             MainActivity.Companion.Assets.serializer(),
                             MainActivity.assets
                         ),
-                        Json.encodeToString(Player.serializer(), MainActivity.player),
-                        MainActivity.showTutorial
+                        Json.encodeToString(Player.serializer(), MainActivity.player), MainActivity.showTutorial
                     )
                 )
                 MainActivity.saved = true

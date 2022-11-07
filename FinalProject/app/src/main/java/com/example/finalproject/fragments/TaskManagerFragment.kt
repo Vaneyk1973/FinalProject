@@ -78,8 +78,16 @@ class TaskManagerFragment(private val inVillage: Boolean = false) : Fragment(),
             val description: TextView = view!!.findViewById(R.id.task_description)
             holder.name.setOnClickListener { description.text = data[position].description }
             when {
-                data[position].completed -> holder.name.setBackgroundColor(Color.GREEN)
-                data[position].taken -> holder.name.setBackgroundColor(Color.YELLOW)
+                data[position].completed -> {
+                    holder.name.setBackgroundColor(Color.GREEN)
+                    holder.name.setTextColor(Color.BLACK)
+                }
+
+                data[position].taken -> {
+                    holder.name.setBackgroundColor(Color.YELLOW)
+                    holder.name.setTextColor(Color.BLACK)
+                }
+
                 else -> holder.name.setOnClickListener {
                     description.text = data[position].description
                     chosenTask = data[position].id
@@ -119,7 +127,7 @@ class TaskManagerFragment(private val inVillage: Boolean = false) : Fragment(),
                     adapterData.add(this[i]!!)
                 adapterData
             })
-            chosenTask=-1
+            chosenTask = -1
             takeTask.text = "Check tasks"
         } else if (p0 == back) {
             val fragmentManager = parentFragmentManager

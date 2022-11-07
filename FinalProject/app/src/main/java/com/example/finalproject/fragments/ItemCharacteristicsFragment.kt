@@ -12,7 +12,7 @@ import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 import com.example.finalproject.service.classes.items.Item
 
-class ItemCharacteristicsFragment(val item: Item, private val buyMode: Boolean = true) : Fragment() {
+class ItemCharacteristicsFragment(val item: Item, private val buyMode: Boolean = false) : Fragment() {
 
     /**
      * inflates fragment's layout

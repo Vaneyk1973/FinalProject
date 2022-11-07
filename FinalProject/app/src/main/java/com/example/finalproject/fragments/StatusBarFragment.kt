@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -16,6 +15,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.example.finalproject.MainActivity
 import com.example.finalproject.R
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlin.math.round
 
 class StatusBarFragment : Fragment(), View.OnClickListener {
@@ -25,7 +25,7 @@ class StatusBarFragment : Fragment(), View.OnClickListener {
     private lateinit var exp: TextView
     private lateinit var health: TextView
     private lateinit var mana: TextView
-    private lateinit var chat: Button
+    private lateinit var chat: FloatingActionButton
     private lateinit var avatar: ImageView
 
     /**

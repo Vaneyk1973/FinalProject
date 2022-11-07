@@ -2,6 +2,7 @@ package com.example.finalproject.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -44,6 +45,7 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
         researchesList = requireView().findViewById(R.id.researches_list)
         researchesList.layoutManager = LinearLayoutManager(context)
         researchesList.adapter = ResearchListAdapter(assets.availableResearches)
+        Log.d("RES", assets.availableResearches.toString())
         back.setOnClickListener(this)
         research.setOnClickListener(this)
         updateResearchPointsAmount()

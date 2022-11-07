@@ -58,6 +58,7 @@ class FightFragment(
     private var enemyNum: Int = 1
     private var move: Int = 0
     private var enemyInit: Boolean = false
+    private var win = false
 
     /**
      * inflates fragment's layout
@@ -161,7 +162,7 @@ class FightFragment(
             )
             player.health = playerAsEnemy.health
             player.mana = playerAsEnemy.mana
-            if (player.health <= 0) {
+            if (player.health <= 0 && !win) {
                 val fragmentManager = parentFragmentManager
                 player.gold -= player.gold / 10
                 player.experience -= player.experience / 10
@@ -178,6 +179,7 @@ class FightFragment(
             }
         } else if (snapshot.ref == winRef && snapshot.value != null) {
             if (snapshot.value.toString().toInt() == playerNum) {
+                win = true
                 player.gold += enemy.loot.gold
                 player.experience += enemy.loot.exp
                 player.user.rating++

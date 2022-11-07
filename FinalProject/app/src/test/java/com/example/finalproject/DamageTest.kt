@@ -2,7 +2,8 @@ package com.example.finalproject
 
 import com.example.finalproject.service.classes.Damage
 import com.example.finalproject.service.classes.Resistances
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import kotlin.math.absoluteValue
 
@@ -57,5 +58,6 @@ class DamageTest {
         assertTrue((damage1.realDamage(resistances1) - 0.0).absoluteValue <= eps)
         assertTrue((damage2.realDamage(resistances1) - 237.351).absoluteValue <= eps)
         assertTrue((damage3.realDamage(resistances1) - 47.8).absoluteValue <= eps)
+        resistances1.upgradeResistances(arrayListOf(Pair(-1, 0.5), Pair(8, 1.6)))
     }
 }

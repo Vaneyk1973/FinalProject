@@ -67,8 +67,8 @@ class CharacteristicsFragment : Fragment(), View.OnClickListener {
             "Pure mana",
             "Fire",
             "Water",
-            "Air",
             "Earth",
+            "Air",
             "Death",
             "Life"
         )

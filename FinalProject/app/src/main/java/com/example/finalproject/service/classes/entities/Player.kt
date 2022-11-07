@@ -59,7 +59,7 @@ class Player(
     loot = loot
 ), Dmg, Level, Inv, Equipment {
     val spells: ArrayList<Spell> = ArrayList()
-    var researchPoints: Int = 1000
+    var researchPoints: Int = 100
     var chatMode: Boolean = false
     var gold: Int = 0
     private val defCoefficient = 1.05
@@ -122,7 +122,7 @@ class Player(
         Inventory(),
         Damage(arrayListOf(4.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)),
         ArrayList(),
-        1,
+        50,
         0,
         10,
         User(),

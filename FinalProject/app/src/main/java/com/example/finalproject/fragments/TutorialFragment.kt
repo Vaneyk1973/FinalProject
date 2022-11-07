@@ -7,7 +7,6 @@ import android.view.View.OnClickListener
 import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import com.example.finalproject.MainActivity
 import com.example.finalproject.R
 
 class TutorialFragment : Fragment(), OnClickListener {
@@ -37,7 +36,6 @@ class TutorialFragment : Fragment(), OnClickListener {
      * sets the click listener for needed views
      */
     override fun onClick(p0: View?) {
-        MainActivity.showTutorial = false
         val fm = parentFragmentManager
         val fr = fm.beginTransaction()
         fr.add(R.id.status, StatusBarFragment())
