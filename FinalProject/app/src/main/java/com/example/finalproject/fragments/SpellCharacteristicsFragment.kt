@@ -23,7 +23,7 @@ class SpellCharacteristicsFragment(val spell: Spell):Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val img:ImageView=requireView().findViewById(R.id.element_picture)
         img.setImageBitmap(Bitmap.createScaledBitmap(
-            MainActivity.textures[2][spell.getElement().element],
+            MainActivity.textures[2][spell.getElement().element-1],
             MainActivity.categoryImageWidth/3*2, MainActivity.categoryImageWidth/3*2, false))
         val name:TextView=requireView().findViewById(R.id.spell_name_char)
         val type:TextView=requireView().findViewById(R.id.spell_type_char)

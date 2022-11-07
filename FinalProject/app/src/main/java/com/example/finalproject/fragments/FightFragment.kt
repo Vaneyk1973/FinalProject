@@ -151,6 +151,8 @@ class FightFragment(
                 player.gold -= player.gold / 10
                 player.experience -= player.experience / 10
                 winRef.setValue(enemyNum)
+                player.health = player.maxHealth
+                player.mana = player.maxMana
                 val fragmentTransaction = fragmentManager.beginTransaction()
                 fragmentManager.findFragmentById(R.id.fight)
                     ?.let { fragmentTransaction.remove(it) }
@@ -164,6 +166,8 @@ class FightFragment(
                 player.gold += enemy.loot.gold
                 player.experience += enemy.loot.exp
                 player.user.rating++
+                player.health = player.maxHealth
+                player.mana = player.maxMana
                 player.takeDrop(enemy)
                 val fragmentManager = parentFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
@@ -196,6 +200,8 @@ class FightFragment(
                 }
 
                 run -> {
+                    player.health = player.maxHealth
+                    player.mana = player.maxMana
                     winRef.setValue(enemyNum)
                     val fragmentTransaction = fragmentManager.beginTransaction()
                     fragmentManager.findFragmentById(R.id.fight)

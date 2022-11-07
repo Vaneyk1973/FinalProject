@@ -54,7 +54,7 @@ class StatusBarFragment:Fragment(), View.OnClickListener {
             MainActivity.textures[3][5],
             MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false))
         healthImg.setImageBitmap(Bitmap.createScaledBitmap(
-            MainActivity.textures[2][5],
+            MainActivity.textures[2][6],
             MainActivity.statusImagesWidth, MainActivity.statusImagesWidth, false))
         manaImg.setImageBitmap(Bitmap.createScaledBitmap(
             MainActivity.textures[3][1],

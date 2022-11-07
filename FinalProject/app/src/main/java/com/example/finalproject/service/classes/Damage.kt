@@ -1,9 +1,11 @@
 package com.example.finalproject.service.classes
 
 import kotlinx.serialization.Serializable
+import java.lang.Double.min
+import kotlin.math.min
 
 @Serializable
-class Damage(){
+class Damage() {
     val dmg = ArrayList<Double>()
 
     init {
@@ -11,8 +13,8 @@ class Damage(){
             dmg.add(0.0)
     }
 
-    constructor(dmg: ArrayList<Double>):this() {
-        for (i in this.dmg.indices)
+    constructor(dmg: ArrayList<Double>) : this() {
+        for (i in 0 until min(this.dmg.size, dmg.size))
             this.dmg[i] = dmg[i]
     }
 
@@ -28,9 +30,9 @@ class Damage(){
         return applyResistances(resistances = resistances).sum()
     }
 
-    fun upgradeDamage(addedDamage:ArrayList<Pair<Int, Double>>){
-        for (newDamage in addedDamage){
-            dmg[newDamage.first]*=1+newDamage.second
+    fun upgradeDamage(addedDamage: ArrayList<Pair<Int, Double>>) {
+        for (newDamage in addedDamage) {
+            dmg[newDamage.first] *= 1 + newDamage.second
         }
     }
 

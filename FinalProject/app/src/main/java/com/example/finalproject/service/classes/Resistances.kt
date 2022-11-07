@@ -1,33 +1,40 @@
 package com.example.finalproject.service.classes
 
 import kotlinx.serialization.Serializable
+import java.lang.Double.max
+import java.lang.Double.min
 
 @Serializable
-class Resistances() {
+class Resistances {
     val resistances: ArrayList<Double> = ArrayList()
+    private val beforeDefence: ArrayList<Double> = ArrayList()
 
     init {
         while (resistances.size < 8)
             resistances.add(0.0)
     }
 
-    constructor(resistances: ArrayList<Double>) : this() {
-        for (i in resistances.indices)
-            this.resistances[i] = resistances[i]
-    }
-
     fun applyDefence(defCoefficient: Double) {
-        for (i in resistances.indices)
-            resistances[i] *= defCoefficient
+        if (defCoefficient > 0) {
+            beforeDefence.addAll(resistances)
+            for (i in resistances.indices)
+                resistances[i] =
+                    max(0.0, min(1.0, resistances[i] * defCoefficient))
+        }
     }
 
     fun removeDefence(defCoefficient: Double) {
-        for (i in resistances.indices)
-            resistances[i] /= defCoefficient
+        if (defCoefficient > 0) {
+            resistances.clear()
+            resistances.addAll(beforeDefence)
+            beforeDefence.clear()
+        }
     }
 
     fun upgradeResistances(upgradedResistances: ArrayList<Pair<Int, Double>>) {
         for (newResistance in upgradedResistances)
-            resistances[newResistance.first] += newResistance.second
+            if (newResistance.first in resistances.indices)
+                resistances[newResistance.first] =
+                    max(0.0, min(1.0, resistances[newResistance.first] + newResistance.second))
     }
 }

@@ -196,11 +196,11 @@ class MainActivity : AppCompatActivity() {
                 1,
                 5.0
             )
-            assets.components[1035] = Element(
+            assets.components[1026] = Element(
                 "Fire",
-                1035,
+                1026,
                 false,
-                2,
+                3,
                 10.0
             )
             assets.components[1031] = Form(
@@ -228,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                 0
             )
             assets.elements.add(1024)
-            assets.elements.add(1035)
+            assets.elements.add(1026)
             assets.forms.add(1031)
             assets.manaChannels.add(1032)
             assets.manaReservoirs.add(1033)
@@ -242,7 +242,7 @@ class MainActivity : AppCompatActivity() {
             assets.researchEffects[1537] = ResearchEffect(
                 "Unlock fire element",
                 1537,
-                unlockedComponents = arrayListOf(1035)
+                unlockedComponents = arrayListOf(1026)
             )
             assets.researchEffects[1538] = ResearchEffect(
                 "Spell usage",
