@@ -171,11 +171,16 @@ class FightFragment(
 
     override fun onClick(v: View?) {
         val fragmentManager = parentFragmentManager
-        if (duel && move == playerNum) {
+        if (duel) {
             when (v) {
                 attack -> {
-                    player.doDamage(enemy, enemyRef.child("enemy"))
-                    moveRef.setValue(enemyNum)
+                    if (move == playerNum) {
+                        player.doDamage(enemy, enemyRef.child("enemy"))
+                        moveRef.setValue(enemyNum)
+                    } else {
+                        Toast.makeText(context, "It's your opponent's move", Toast.LENGTH_SHORT)
+                            .show()
+                    }
                 }
 
                 run -> {
