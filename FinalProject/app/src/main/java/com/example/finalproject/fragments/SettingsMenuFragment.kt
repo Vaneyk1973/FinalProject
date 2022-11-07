@@ -9,6 +9,9 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.example.finalproject.MainActivity
 import com.example.finalproject.R
+import com.example.finalproject.service.classes.entities.Player
+import kotlinx.serialization.json.Json
+import kotlin.concurrent.thread
 
 class SettingsMenuFragment : Fragment(), View.OnClickListener {
 
@@ -18,6 +21,7 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
     private lateinit var help: TextView
     private lateinit var tasks: TextView
     private lateinit var back: Button
+    private lateinit var save: Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,12 +38,14 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
         tasks = requireView().findViewById(R.id.tasks_button)
         help = requireView().findViewById(R.id.help_button)
         back = requireView().findViewById(R.id.settings_menu_back_button)
+        save = requireView().findViewById(R.id.save_button)
         settings.setOnClickListener(this)
         characteristics.setOnClickListener(this)
         statistics.setOnClickListener(this)
         help.setOnClickListener(this)
         tasks.setOnClickListener(this)
         back.setOnClickListener(this)
+        save.setOnClickListener(this)
     }
 
     override fun onClick(p0: View?) {
@@ -82,6 +88,23 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
                 fragmentManager.findFragmentById(R.id.settings_menu)
                     ?.let { fragmentTransaction.remove(it) }
                 fragmentTransaction.add(R.id.statistics, StatisticsFragment())
+            }
+
+            save -> thread{
+                val dao = MainActivity.db.userDao()
+                dao.deleteSaves()
+                dao.insertSave(
+                    MainActivity.Saves(
+                        0,
+                        Json.encodeToString(
+                            MainActivity.Companion.Assets.serializer(),
+                            MainActivity.assets
+                        ),
+                        Json.encodeToString(Player.serializer(), MainActivity.player),
+                        MainActivity.showTutorial
+                    )
+                )
+                MainActivity.saved = true
             }
 
         }

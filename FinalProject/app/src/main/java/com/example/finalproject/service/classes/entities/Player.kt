@@ -1,20 +1,25 @@
 package com.example.finalproject.service.classes.entities
 
 import android.util.Log
-import android.widget.Toast
-import com.example.finalproject.MainActivity
-import com.example.finalproject.service.classes.*
+import com.example.finalproject.MainActivity.Companion.assets
+import com.example.finalproject.service.classes.Damage
+import com.example.finalproject.service.classes.Inventory
+import com.example.finalproject.service.classes.Loot
+import com.example.finalproject.service.classes.Recipe
+import com.example.finalproject.service.classes.Resistances
+import com.example.finalproject.service.classes.User
 import com.example.finalproject.service.classes.items.Armor
 import com.example.finalproject.service.classes.items.Item
 import com.example.finalproject.service.classes.items.Weapon
 import com.example.finalproject.service.classes.spell.Spell
-import com.example.finalproject.service.interfaces.*
+import com.example.finalproject.service.interfaces.Dmg
+import com.example.finalproject.service.interfaces.Equipment
+import com.example.finalproject.service.interfaces.Health
+import com.example.finalproject.service.interfaces.Inv
+import com.example.finalproject.service.interfaces.Level
+import com.example.finalproject.service.interfaces.Lootable
 import com.example.finalproject.service.serializers.PlayerSerializer
 import com.google.firebase.database.DatabaseReference
-import com.example.finalproject.MainActivity.Companion.assets
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import kotlin.math.pow
@@ -106,8 +111,8 @@ class Player(
     constructor(x: Int, y: Int) : this(
         "Player",
         511,
-        100.0,
-        100.0,
+        40.0,
+        40.0,
         1.0,
         10.0,
         10.0,

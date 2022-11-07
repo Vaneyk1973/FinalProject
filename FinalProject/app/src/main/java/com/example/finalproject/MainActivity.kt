@@ -1,5 +1,6 @@
 package com.example.finalproject
 
+import android.content.Context
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -12,8 +13,14 @@ import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.ColumnInfo
+import androidx.room.Dao
+import androidx.room.Database
 import androidx.room.Entity
+import androidx.room.Insert
 import androidx.room.PrimaryKey
+import androidx.room.Query
+import androidx.room.Room
+import androidx.room.RoomDatabase
 import com.example.finalproject.fragments.MapFragment
 import com.example.finalproject.fragments.MenuFragment
 import com.example.finalproject.fragments.StatusBarFragment
@@ -28,6 +35,7 @@ import com.example.finalproject.service.classes.spell.*
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.json.Json
 import org.xmlpull.v1.XmlPullParser
+import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
@@ -41,13 +49,21 @@ class MainActivity : AppCompatActivity() {
         mapParser = resources.getXml(R.xml.first_village_map)
         map.add(Map(mapParser))
         val bounds = getBounds()
+        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+        saved = sharedPreference.getBoolean("saved", false)
         width = bounds.first
         height = bounds.second
         res = resources
         music = Music()
         music.start(this, R.raw.main)
         player = Player(2, 2)
-        setInitialData()
+        db = Room.databaseBuilder(
+            applicationContext,
+            AppDatabase::class.java,
+            "saves"
+        ).build()
+        setTextures()
+        setInitialData(saved)
         if (showTutorial) {
             fragmentTransaction.add(R.id.tutorial, TutorialFragment())
         } else {
@@ -61,20 +77,68 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         music.start(this, R.raw.main)
+        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+        saved = sharedPreference.getBoolean("saved", false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        music.start(this, R.raw.main)
+        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+        saved = sharedPreference.getBoolean("saved", false)
     }
 
     override fun onPause() {
         super.onPause()
         music.stop()
+        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+        editor.putBoolean("saved", saved)
+        editor.apply()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        music.stop()
+        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+        editor.putBoolean("saved", saved)
+        editor.apply()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        music.stop()
+        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
+        val editor = sharedPreference.edit()
+        editor.putBoolean("saved", saved)
+        editor.apply()
     }
 
     @Entity
-    data class Saves(
+    class Saves(
         @PrimaryKey val id: Int,
         @ColumnInfo(name = "assets") val assetsSave: String,
         @ColumnInfo(name = "player") val playerSave: String,
-        @ColumnInfo(name="") val
+        @ColumnInfo(name = "tutorial") val tutorialSave: Boolean
     )
+
+    @Dao
+    interface SavesDao {
+        @Query("SELECT * FROM saves")
+        fun getJsons(): List<Saves>
+
+        @Query("DELETE FROM saves WHERE id=0")
+        fun deleteSaves()
+
+        @Insert
+        fun insertSave(save: Saves)
+    }
+
+    @Database(entities = [Saves::class], version = 1)
+    abstract class AppDatabase : RoomDatabase() {
+        abstract fun userDao(): SavesDao
+    }
 
     companion object {
         lateinit var player: Player
@@ -94,6 +158,8 @@ class MainActivity : AppCompatActivity() {
         lateinit var music: Music
         lateinit var assets: Assets
         var showTutorial = true
+        var saved = false
+        lateinit var db: AppDatabase
 
         @Serializable
         class Assets {
@@ -185,185 +251,194 @@ class MainActivity : AppCompatActivity() {
             avatar = Bitmap.createScaledBitmap(textures[5][5], mapTitleWidth, mapTitleWidth, false)
         }
 
-        fun setInitialData() {
-            setTextures()
-            var data = ""
-            val parser = res.getXml(R.xml.initial_data)
-            while (parser.eventType != XmlPullParser.END_TAG) {
-                if (parser.eventType == XmlPullParser.START_TAG && parser.name == "data") {
+        fun setInitialData(saved: Boolean = false) {
+            if (saved) thread {
+                val dao = db.userDao()
+                val saves = dao.getJsons()
+                assets =
+                    Json.decodeFromString(Assets.serializer(), saves[saves.size - 1].assetsSave)
+                player =
+                    Json.decodeFromString(Player.serializer(), saves[saves.size - 1].playerSave)
+                showTutorial = saves[saves.size - 1].tutorialSave
+            } else {
+                var data = ""
+                val parser = res.getXml(R.xml.initial_data)
+                while (parser.eventType != XmlPullParser.END_TAG) {
+                    if (parser.eventType == XmlPullParser.START_TAG && parser.name == "data") {
+                        parser.next()
+                        data = parser.text
+                    }
                     parser.next()
-                    data = parser.text
                 }
-                parser.next()
-            }
-            assets = Json.decodeFromString(Assets.serializer(), data)
-            assets.items[1] = Item("Wolf tooth", 1, 12, 10, 0, 0)
-            assets.items[12] = Item("Leather", 12, 20, 17, 0, 0)
-            assets.components[1024] = Element(
-                "Pure mana",
-                1024,
-                false,
-                1,
-                5.0
-            )
-            assets.components[1026] = Element(
-                "Fire",
-                1026,
-                false,
-                3,
-                10.0
-            )
-            assets.components[1031] = Form(
-                "Sphere",
-                1031,
-                false,
-                0
-            )
-            assets.components[1032] = ManaChannel(
-                "Basic channel",
-                1032,
-                false,
-                1.0
-            )
-            assets.components[1033] = ManaReservoir(
-                "Basic reservoir",
-                1034,
-                false,
-                4.0
-            )
-            assets.components[1034] = Type(
-                "On enemy",
-                1034,
-                false,
-                0
-            )
-            assets.elements.add(1024)
-            assets.elements.add(1026)
-            assets.forms.add(1031)
-            assets.manaChannels.add(1032)
-            assets.manaReservoirs.add(1033)
-            assets.types.add(1034)
-            assets.researchEffects[1536] = ResearchEffect(
-                "Unlock spell creation",
-                1536,
-                affectedResearches = arrayListOf(1281),
-                unlockedComponents = arrayListOf(1024, 1031, 1032, 1033, 1034)
-            )
-            assets.researchEffects[1537] = ResearchEffect(
-                "Unlock fire element",
-                1537,
-                unlockedComponents = arrayListOf(1026)
-            )
-            assets.researchEffects[1538] = ResearchEffect(
-                "Spell usage",
-                1538,
-                affectedResearches = arrayListOf(1280, 1283)
-            )
-            assets.researchEffects[1539] = ResearchEffect(
-                "Fireball spell unlocked",
-                1539,
-                addedSpells = arrayListOf(
-                    Spell(
-                        "Fireball",
-                        14.0,
-                        Damage(arrayListOf(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0))
+                assets = Json.decodeFromString(Assets.serializer(), data)
+                assets.items[1] = Item("Wolf tooth", 1, 12, 10, 0, 0)
+                assets.items[12] = Item("Leather", 12, 20, 17, 0, 0)
+                assets.components[1024] = Element(
+                    "Pure mana",
+                    1024,
+                    false,
+                    1,
+                    5.0
+                )
+                assets.components[1026] = Element(
+                    "Fire",
+                    1026,
+                    false,
+                    3,
+                    10.0
+                )
+                assets.components[1031] = Form(
+                    "Sphere",
+                    1031,
+                    false,
+                    0
+                )
+                assets.components[1032] = ManaChannel(
+                    "Basic channel",
+                    1032,
+                    false,
+                    1.0
+                )
+                assets.components[1033] = ManaReservoir(
+                    "Basic reservoir",
+                    1034,
+                    false,
+                    4.0
+                )
+                assets.components[1034] = Type(
+                    "On enemy",
+                    1034,
+                    false,
+                    0
+                )
+                assets.elements.add(1024)
+                assets.elements.add(1026)
+                assets.forms.add(1031)
+                assets.manaChannels.add(1032)
+                assets.manaReservoirs.add(1033)
+                assets.types.add(1034)
+                assets.researchEffects[1536] = ResearchEffect(
+                    "Unlock spell creation",
+                    1536,
+                    affectedResearches = arrayListOf(1281),
+                    unlockedComponents = arrayListOf(1024, 1031, 1032, 1033, 1034)
+                )
+                assets.researchEffects[1537] = ResearchEffect(
+                    "Unlock fire element",
+                    1537,
+                    unlockedComponents = arrayListOf(1026)
+                )
+                assets.researchEffects[1538] = ResearchEffect(
+                    "Spell usage",
+                    1538,
+                    affectedResearches = arrayListOf(1280, 1283)
+                )
+                assets.researchEffects[1539] = ResearchEffect(
+                    "Fireball spell unlocked",
+                    1539,
+                    addedSpells = arrayListOf(
+                        Spell(
+                            "Fireball",
+                            14.0,
+                            Damage(arrayListOf(0.0, 0.0, 10.0, 0.0, 0.0, 0.0, 0.0, 0.0))
+                        )
                     )
                 )
-            )
-            assets.researchEffects[1540] = ResearchEffect(
-                "5% physical resistance upgrade",
-                1540,
-                affectedResearches = arrayListOf(1285, 1286),
-                upgradedResistances = arrayListOf(Pair(0, 0.05))
-            )
-            assets.recipes.add(
-                Recipe(
-                    Pair(5, assets.items[12]!!),
-                    arrayListOf(Pair(3, assets.items[0]!!))
+                assets.researchEffects[1540] = ResearchEffect(
+                    "5% physical resistance upgrade",
+                    1540,
+                    affectedResearches = arrayListOf(1285, 1286),
+                    upgradedResistances = arrayListOf(Pair(0, 0.05))
                 )
-            )
-            assets.researches[1280] = Research(
-                "Spell creation",
-                1280,
-                15,
-                0,
-                1536,
-                description = "Allows you to create custom spells"
-            )
-            assets.researches[1281] = Research(
-                "Fire element",
-                1281,
-                2,
-                2,
-                1537,
-                requiredResearches = arrayListOf(1280),
-                description = "Allows you to use a new element in your spells"
-            )
-            assets.researches[1282] = Research(
-                "Spell usage",
-                1282,
-                2,
-                0,
-                available = true,
-                effect = 1538,
-                description = "Allows you to use magic"
-            )
-            assets.researches[1283] = Research(
-                "Fireball",
-                1283,
-                3,
-                1,
-                requiredResearches = arrayListOf(1282),
-                effect = 1539,
-                description = "You learn the basics of a Fireball spell"
-            )
-            assets.researches[1284] = Research(
-                "Hard endurance training 1",
-                1284,
-                2,
-                0,
-                available = true,
-                effect = 1540,
-                description = "You train a lot to become more endurant"
-            )
-            assets.researches[1285] = Research(
-                "Hard endurance training 2",
-                1285,
-                4,
-                1,
-                requiredResearches = arrayListOf(1284),
-                effect = 1540,
-                description = "You train a lot to become more even endurant"
-            )
-            assets.researches[1286] = Research(
-                "Hard endurance training 3",
-                1286,
-                8,
-                2,
-                requiredResearches = arrayListOf(1285),
-                effect = 1540,
-                description = "You train a lot to reach the peak of a human body"
-            )
-            assets.availableResearches.add(1282)
-            assets.availableResearches.add(1284)
-            assets.shopList.addAll(assets.items.values)
-            assets.tasks[1] = Task(
-                "Wolf killer",
-                1,
-                "Kill five wolfs",
-                enemiesToKill = arrayListOf(Pair(256, 5)),
-                goldGiven = 70,
-                experienceGiven = 20
-            )
-            assets.tasks[0] = Task(
-                "Your first levels",
-                0,
-                "Reach level 3",
-                levelToReach = 3,
-                goldGiven = 15,
-                experienceGiven = 14
-            )
-            Log.d("Assets", Json.encodeToString(Assets.serializer(), assets))
+                assets.recipes.add(
+                    Recipe(
+                        Pair(5, assets.items[12]!!),
+                        arrayListOf(Pair(3, assets.items[0]!!))
+                    )
+                )
+                assets.researches[1280] = Research(
+                    "Spell creation",
+                    1280,
+                    15,
+                    0,
+                    1536,
+                    description = "Allows you to create custom spells"
+                )
+                assets.researches[1281] = Research(
+                    "Fire element",
+                    1281,
+                    2,
+                    2,
+                    1537,
+                    requiredResearches = arrayListOf(1280),
+                    description = "Allows you to use a new element in your spells"
+                )
+                assets.researches[1282] = Research(
+                    "Spell usage",
+                    1282,
+                    2,
+                    0,
+                    available = true,
+                    effect = 1538,
+                    description = "Allows you to use magic"
+                )
+                assets.researches[1283] = Research(
+                    "Fireball",
+                    1283,
+                    3,
+                    1,
+                    requiredResearches = arrayListOf(1282),
+                    effect = 1539,
+                    description = "You learn the basics of a Fireball spell"
+                )
+                assets.researches[1284] = Research(
+                    "Hard endurance training 1",
+                    1284,
+                    2,
+                    0,
+                    available = true,
+                    effect = 1540,
+                    description = "You train a lot to become more endurant"
+                )
+                assets.researches[1285] = Research(
+                    "Hard endurance training 2",
+                    1285,
+                    4,
+                    1,
+                    requiredResearches = arrayListOf(1284),
+                    effect = 1540,
+                    description = "You train a lot to become more even endurant"
+                )
+                assets.researches[1286] = Research(
+                    "Hard endurance training 3",
+                    1286,
+                    8,
+                    2,
+                    requiredResearches = arrayListOf(1285),
+                    effect = 1540,
+                    description = "You train a lot to reach the peak of a human body"
+                )
+                assets.availableResearches.add(1282)
+                assets.availableResearches.add(1284)
+                assets.shopList.addAll(assets.items.values)
+                assets.tasks[1] = Task(
+                    "Wolf killer",
+                    1,
+                    "Kill five wolfs",
+                    enemiesToKill = arrayListOf(Pair(256, 5)),
+                    goldGiven = 70,
+                    experienceGiven = 20
+                )
+                assets.tasks[0] = Task(
+                    "Your first levels",
+                    0,
+                    "Reach level 3",
+                    levelToReach = 3,
+                    goldGiven = 15,
+                    experienceGiven = 14
+                )
+                Log.d("Assets", Json.encodeToString(Assets.serializer(), assets))
+            }
         }
     }
 
