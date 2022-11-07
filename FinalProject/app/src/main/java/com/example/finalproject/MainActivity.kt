@@ -7,11 +7,13 @@ import android.graphics.Color
 import android.graphics.Point
 import android.os.Build
 import android.os.Bundle
-import android.provider.BaseColumns
 import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.example.finalproject.fragments.MapFragment
 import com.example.finalproject.fragments.MenuFragment
 import com.example.finalproject.fragments.StatusBarFragment
@@ -65,6 +67,14 @@ class MainActivity : AppCompatActivity() {
         super.onPause()
         music.stop()
     }
+
+    @Entity
+    data class Saves(
+        @PrimaryKey val id: Int,
+        @ColumnInfo(name = "assets") val assetsSave: String,
+        @ColumnInfo(name = "player") val playerSave: String,
+        @ColumnInfo(name="") val
+    )
 
     companion object {
         lateinit var player: Player
