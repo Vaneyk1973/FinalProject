@@ -154,6 +154,8 @@ class FightFragment(
                     ?.let { fragmentTransaction.remove(it) }
                 fragmentTransaction.add(R.id.duel, DuelFragment())
                 fragmentTransaction.commit()
+            } else {
+                updateStatus()
             }
         } else if (snapshot.ref == winRef && snapshot.value != null) {
             if (snapshot.value.toString().toInt() == playerNum) {
