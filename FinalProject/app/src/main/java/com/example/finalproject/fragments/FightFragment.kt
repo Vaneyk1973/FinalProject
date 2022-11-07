@@ -57,6 +57,7 @@ class FightFragment(
     private var playerNum: Int = 0
     private var enemyNum: Int = 1
     private var move: Int = 0
+    private var enemyInit: Boolean = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -135,6 +136,7 @@ class FightFragment(
                 Enemy.serializer(),
                 snapshot.child("enemy").value.toString()
             )
+            enemyInit = true
             duelProgressBar.visibility = View.GONE
             updateStatus()
         } else if (snapshot.ref == playerRef && snapshot.child("enemy").value != null) {
@@ -154,13 +156,14 @@ class FightFragment(
                     ?.let { fragmentTransaction.remove(it) }
                 fragmentTransaction.add(R.id.duel, DuelFragment())
                 fragmentTransaction.commit()
-            } else {
+            } else if (enemyInit) {
                 updateStatus()
             }
         } else if (snapshot.ref == winRef && snapshot.value != null) {
             if (snapshot.value.toString().toInt() == playerNum) {
                 player.gold += enemy.loot.gold
                 player.experience += enemy.loot.exp
+                player.user.rating++
                 player.takeDrop(enemy)
                 val fragmentManager = parentFragmentManager
                 val fragmentTransaction = fragmentManager.beginTransaction()
