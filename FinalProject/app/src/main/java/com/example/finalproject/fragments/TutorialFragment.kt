@@ -14,6 +14,9 @@ class TutorialFragment : Fragment(), OnClickListener {
 
     private lateinit var closeTutorial: Button
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -21,12 +24,18 @@ class TutorialFragment : Fragment(), OnClickListener {
         return inflater.inflate(R.layout.fragment_tutorial, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         closeTutorial = requireView().findViewById(R.id.close_tutorial_button)
         closeTutorial.setOnClickListener(this)
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         MainActivity.showTutorial = false
         val fm = parentFragmentManager
