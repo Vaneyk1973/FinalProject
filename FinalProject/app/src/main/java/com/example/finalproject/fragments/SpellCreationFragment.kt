@@ -25,11 +25,11 @@ import com.example.finalproject.service.classes.spell.Type
 
 class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEditorActionListener {
 
-    private var element = assets.elements[0]
-    private var type = assets.types[0]
-    private var form = assets.forms[0]
-    private var manaChannel = assets.manaChannels[0]
-    private var manaReservoir = assets.manaReservoirs[0]
+    private var element = assets.elements[1024]
+    private var type = assets.types[1034]
+    private var form = assets.forms[1031]
+    private var manaChannel = assets.manaChannels[1032]
+    private var manaReservoir = assets.manaReservoirs[1033]
     private lateinit var nameView: EditText
     private lateinit var confirmSpell: Button
     private lateinit var back: Button
@@ -76,15 +76,22 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
         typeView.setOnClickListener(this)
         formView.setOnClickListener(this)
     }
+
     private inner class SpellAdapter(dt: ArrayList<Int>) :
         RecyclerView.Adapter<SpellAdapter.ViewHolder>() {
 
         private val data: ArrayList<Int> = ArrayList()
 
         init {
-            for (component in dt)
-                if (assets.components[component]?.available == true)
+            for (component in dt) {
+                if (assets.elements[component]?.available == true
+                    || assets.types[component]?.available == true
+                    || assets.forms[component]?.available == true
+                    || assets.manaChannels[component]?.available == true
+                    || assets.manaReservoirs[component]?.available == true
+                )
                     data.add(component)
+            }
         }
 
         inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -105,14 +112,23 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
          * sets the text displayed in the list
          */
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.comp.text = assets.components[data[position]]?.name ?: ""
+            holder.comp.text =
+                when (data[position]) {
+                    in assets.elements -> assets.elements[data[position]]!!.name
+                    in assets.types -> assets.types[data[position]]!!.name
+                    in assets.forms -> assets.forms[data[position]]!!.name
+                    in assets.manaChannels -> assets.manaChannels[data[position]]!!.name
+                    in assets.manaReservoirs -> assets.manaReservoirs[data[position]]!!.name
+                    else -> ""
+                }
             holder.comp.setOnClickListener {
                 when (data[position]) {
-                    in assets.elements -> element = data[position]
-                    in assets.types -> type = data[position]
-                    in assets.forms -> form = data[position]
-                    in assets.manaChannels -> manaChannel = data[position]
-                    in assets.manaReservoirs -> manaReservoir = data[position]
+                    in assets.elements -> element = assets.elements[data[position]]
+                    in assets.types -> type = assets.types[data[position]]
+                    in assets.forms -> form = assets.forms[data[position]]
+                    in assets.manaChannels -> manaChannel = assets.manaChannels[data[position]]
+                    in assets.manaReservoirs -> manaReservoir =
+                        assets.manaReservoirs[data[position]]
                 }
                 val fm: FragmentManager = childFragmentManager
                 val fr: FragmentTransaction = fm.beginTransaction()
@@ -120,11 +136,7 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
                 fr.add(
                     R.id.spell_characteristics, SpellCharacteristicsFragment(
                         Spell(
-                            assets.components[element] as Element,
-                            assets.components[type] as Type,
-                            assets.components[form] as Form,
-                            assets.components[manaChannel] as ManaChannel,
-                            assets.components[manaReservoir] as ManaReservoir,
+                            element!!, type!!, form!!, manaChannel!!, manaReservoir!!,
                             (view!!.findViewById(R.id.spell_name) as EditText).text.toString()
                         )
                     )
@@ -148,11 +160,7 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
                 name = nameView.text.toString()
                 MainActivity.player.spells.add(
                     Spell(
-                        assets.components[element] as Element,
-                        assets.components[type] as Type,
-                        assets.components[form] as Form,
-                        assets.components[manaChannel] as ManaChannel,
-                        assets.components[manaReservoir] as ManaReservoir, name
+                        element!!, type!!, form!!, manaChannel!!, manaReservoir!!, name
                     )
                 )
             }
@@ -169,23 +177,48 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
             }
 
             formView -> {
-                comps.adapter = SpellAdapter(assets.forms)
+                comps.adapter = SpellAdapter(assets.forms.keys.let {
+                    val list = ArrayList<Int>()
+                    for (i in it)
+                        list.add(i)
+                    list
+                })
             }
 
             typeView -> {
-                comps.adapter = SpellAdapter(assets.types)
+                comps.adapter = SpellAdapter(assets.types.keys.let {
+                    val list = ArrayList<Int>()
+                    for (i in it)
+                        list.add(i)
+                    list
+                })
             }
 
             manaChannelView -> {
-                comps.adapter = SpellAdapter(assets.manaChannels)
+                comps.adapter = SpellAdapter(assets.manaChannels.keys.let {
+                    val list = ArrayList<Int>()
+                    for (i in it)
+                        list.add(i)
+                    list
+                })
             }
 
             manaReservoirView -> {
-                comps.adapter = SpellAdapter(assets.manaReservoirs)
+                comps.adapter = SpellAdapter(assets.manaReservoirs.keys.let {
+                    val list = ArrayList<Int>()
+                    for (i in it)
+                        list.add(i)
+                    list
+                })
             }
 
             elementView -> {
-                comps.adapter = SpellAdapter(assets.elements)
+                comps.adapter = SpellAdapter(assets.elements.keys.let {
+                    val list = ArrayList<Int>()
+                    for (i in it)
+                        list.add(i)
+                    list
+                })
             }
         }
     }

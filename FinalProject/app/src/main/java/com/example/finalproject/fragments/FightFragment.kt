@@ -102,6 +102,8 @@ class FightFragment(
         }
         attack.setOnClickListener(this)
         run.setOnClickListener(this)
+        defend.setOnClickListener(this)
+        castSpell.setOnClickListener(this)
         enemyImage.setImageBitmap(MainActivity.textures[5][enemyId - 256])
         playerImage.setImageBitmap(MainActivity.getAvatar())
     }

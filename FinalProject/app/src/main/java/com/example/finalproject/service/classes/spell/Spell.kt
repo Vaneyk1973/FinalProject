@@ -12,7 +12,11 @@ class Spell() {
     lateinit var damage: Damage
     private var lastingTime: Double = 0.0
     var name: String = ""
-    private val components: ArrayList<Component> = ArrayList()
+    private lateinit var element: Element
+    private lateinit var type: Type
+    private lateinit var form: Form
+    private lateinit var manaChannel: ManaChannel
+    private lateinit var manaReservoir: ManaReservoir
 
     constructor(
         element: Element,
@@ -22,11 +26,11 @@ class Spell() {
         manaReservoir: ManaReservoir,
         name: String
     ) : this() {
-        components.add(Element(element))
-        components.add(Type(type))
-        components.add(Form(form))
-        components.add(ManaChannel(manaChannel))
-        components.add(ManaReservoir(manaReservoir))
+        this.element = element
+        this.form = form
+        this.type = type
+        this.manaChannel = manaChannel
+        this.manaReservoir = manaReservoir
         this.name = name
         manaConsumption = manaReservoir.volume * 3
         val a = ArrayList<Double>()
@@ -49,13 +53,16 @@ class Spell() {
         this.manaConsumption = manaConsumption
         this.damage = damage
         this.lastingTime = lastingTime
-        components.add(assets.components[assets.elements[element - 1]] as Element)
-        components.add(assets.components[assets.types[type]] as Type)
+        this.element = assets.elements[element + 1023]!!
+        this.type = assets.types[type + 1034]!!
     }
 
     constructor(spell: Spell) : this() {
-        components.clear()
-        components.addAll(spell.components)
+        element = spell.element
+        form = spell.form
+        type = spell.type
+        manaReservoir = spell.manaReservoir
+        manaChannel = spell.manaChannel
         damage = spell.damage
         lastingTime = spell.lastingTime
         manaConsumption = spell.manaConsumption
@@ -83,10 +90,10 @@ class Spell() {
     /**
      * @return the element component
      */
-    fun getElement(): Element = Element(components[0] as Element)
+    fun getElement(): Element = Element(element)
 
     /**
      * @return the type component
      */
-    fun getType(): Type = Type(components[1] as Type)
+    fun getType(): Type = Type(type)
 }

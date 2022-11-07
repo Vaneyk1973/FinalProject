@@ -30,7 +30,11 @@ class ResearchEffect(
                 assets.availableResearches.add(research)
         }
         for (component in unlockedComponents) {
-            assets.components[component]?.avail()
+            assets.elements[component]?.avail()
+            assets.types[component]?.avail()
+            assets.manaChannels[component]?.avail()
+            assets.forms[component]?.avail()
+            assets.manaReservoirs[component]?.avail()
         }
         for (spell in addedSpells)
             player.spells.add(spell)
@@ -50,12 +54,12 @@ class ResearchEffect(
         if (unlockedComponents.isNotEmpty()) {
             componentsString += "unlocks the following components: "
             for (i in unlockedComponents) {
-                when (val comp = assets.components[i]) {
-                    is Element -> componentsString += "Element ${comp.name}, "
-                    is Type -> componentsString += "Type ${comp.name}, "
-                    is Form -> componentsString += "Form ${comp.name}, "
-                    is ManaChannel -> componentsString += "Mana Channel ${comp.name}, "
-                    is ManaReservoir -> componentsString += "Mana Reservoir ${comp.name}, "
+                 when (i) {
+                    in assets.elements.keys -> componentsString += "Element ${assets.elements[i]!!.name}, "
+                     in assets.types.keys -> componentsString += "Type ${assets.types[i]!!.name}, "
+                     in assets.forms.keys -> componentsString += "Form ${assets.forms[i]!!.name}, "
+                     in assets.manaChannels.keys -> componentsString += "Mana Channel ${assets.manaChannels[i]!!.name}, "
+                     in assets.manaReservoirs.keys -> componentsString += "Mana Reservoir ${assets.manaReservoirs[i]!!.name}, "
                 }
             }
             returnString += componentsString.dropLast(2) + "\n"

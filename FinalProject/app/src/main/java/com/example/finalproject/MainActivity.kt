@@ -160,12 +160,11 @@ class MainActivity : AppCompatActivity() {
             val chancesOfEnemy =
                 HashMap<Int, ArrayList<Pair<Int, Int>>>() //<id of a location, <chance of getting into a fight with that enemy, id of an enemy>
             val enemies = HashMap<Int, Enemy>() //<id of an enemy, object template>
-            val components = HashMap<Int, Component>() //<id of a component, object template>
-            val elements = ArrayList<Int>()
-            val manaChannels = ArrayList<Int>()
-            val types = ArrayList<Int>()
-            val forms = ArrayList<Int>()
-            val manaReservoirs = ArrayList<Int>()
+            val elements = HashMap<Int, Element>()
+            val manaChannels = HashMap<Int, ManaChannel>()
+            val types = HashMap<Int, Type>()
+            val forms = HashMap<Int, Form>()
+            val manaReservoirs = HashMap<Int, ManaReservoir>()
             val researches = HashMap<Int, Research>() //<id of a research, object template>
             val researchEffects =
                 HashMap<Int, ResearchEffect>() //<id of an effect, object template>
@@ -274,6 +273,147 @@ class MainActivity : AppCompatActivity() {
                     parser.next()
                 }
                 assets = Json.decodeFromString(Assets.serializer(), data)
+                assets.items[0] = Item("Wolf pelt", 0, 10, 15, 0, 2)
+                assets.items[1] = Item("Wolf tooth", 1, 10, 12, 0, 3)
+                assets.items[12] = Item("Leather", 12, 17, 20, 0, 2)
+                assets.elements[1024] = Element(
+                    "Pure mana",
+                    1024,
+                    false,
+                    1,
+                    5.0
+                )
+                assets.elements[1026] = Element(
+                    "Fire",
+                    1026,
+                    false,
+                    3,
+                    10.0
+                )
+                assets.forms[1031] = Form(
+                    "Sphere",
+                    1031,
+                    false,
+                    0
+                )
+                assets.manaChannels[1032] = ManaChannel(
+                    "Basic channel",
+                    1032,
+                    false,
+                    1.0
+                )
+                assets.manaReservoirs[1033] = ManaReservoir(
+                    "Basic reservoir",
+                    1034,
+                    false,
+                    4.0
+                )
+                assets.types[1034] = Type(
+                    "On enemy",
+                    1034,
+                    false,
+                    0
+                )
+                assets.researchEffects[1536] = ResearchEffect(
+                    "Unlock spell creation",
+                    1536,
+                    affectedResearches = arrayListOf(1281),
+                    unlockedComponents = arrayListOf(1024, 1031, 1032, 1033, 1034)
+                )
+                assets.researchEffects[1537] = ResearchEffect(
+                    "Unlock fire element",
+                    1537,
+                    unlockedComponents = arrayListOf(1026)
+                )
+                assets.researchEffects[1538] = ResearchEffect(
+                    "Spell usage",
+                    1538,
+                    affectedResearches = arrayListOf(1280)
+                )
+                assets.researchEffects[1540] = ResearchEffect(
+                    "5% physical resistance upgrade",
+                    1540,
+                    affectedResearches = arrayListOf(1285, 1286),
+                    upgradedResistances = arrayListOf(Pair(0, 0.05))
+                )
+                assets.recipes.add(
+                    Recipe(
+                        Pair(5, assets.items[12]!!),
+                        arrayListOf(Pair(3, assets.items[0]!!))
+                    )
+                )
+                assets.researches[1280] = Research(
+                    "Spell creation",
+                    1280,
+                    15,
+                    0,
+                    1536,
+                    description = "Allows you to create custom spells"
+                )
+                assets.researches[1281] = Research(
+                    "Fire element",
+                    1281,
+                    2,
+                    2,
+                    1537,
+                    requiredResearches = arrayListOf(1280),
+                    description = "Allows you to use a new element in your spells"
+                )
+                assets.researches[1282] = Research(
+                    "Spell usage",
+                    1282,
+                    2,
+                    0,
+                    available = true,
+                    effect = 1538,
+                    description = "Allows you to use magic"
+                )
+                assets.researches[1284] = Research(
+                    "Hard endurance training 1",
+                    1284,
+                    2,
+                    0,
+                    available = true,
+                    effect = 1540,
+                    description = "You train a lot to become more endurant"
+                )
+                assets.researches[1285] = Research(
+                    "Hard endurance training 2",
+                    1285,
+                    4,
+                    1,
+                    requiredResearches = arrayListOf(1284),
+                    effect = 1540,
+                    description = "You train a lot to become more even endurant"
+                )
+                assets.researches[1286] = Research(
+                    "Hard endurance training 3",
+                    1286,
+                    8,
+                    2,
+                    requiredResearches = arrayListOf(1285),
+                    effect = 1540,
+                    description = "You train a lot to reach the peak of a human body"
+                )
+                assets.availableResearches.add(1282)
+                assets.availableResearches.add(1284)
+                assets.shopList.addAll(assets.items.values)
+                assets.tasks[1] = Task(
+                    "Wolf killer",
+                    1,
+                    "Kill five wolfs",
+                    enemiesToKill = arrayListOf(Pair(256, 5)),
+                    goldGiven = 70,
+                    experienceGiven = 20
+                )
+                assets.tasks[0] = Task(
+                    "Your first levels",
+                    0,
+                    "Reach level 3",
+                    levelToReach = 3,
+                    goldGiven = 15,
+                    experienceGiven = 14
+                )
                 inited = true
                 Log.d("Assets", Json.encodeToString(Assets.serializer(), assets))
             }
