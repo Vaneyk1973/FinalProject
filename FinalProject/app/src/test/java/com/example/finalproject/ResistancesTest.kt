@@ -35,7 +35,7 @@ class ResistancesTest {
         resistances.upgradeResistances(arrayListOf(Pair(0, 0.43), Pair(3, 0.13), Pair(1, 0.9)))
         resistances.applyDefence(2.0)
         assertEquals(arrayListOf(0.86, 1.0, 0.0, 0.26, 0.0, 0.0, 0.0, 0.0), resistances.resistances)
-        resistances.removeDefence(2.0)
+        resistances.removeDefence()
         assertEquals(arrayListOf(0.43, 0.9, 0.0, 0.13, 0.0, 0.0, 0.0, 0.0), resistances.resistances)
     }
 }

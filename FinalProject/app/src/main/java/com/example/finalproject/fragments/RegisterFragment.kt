@@ -21,6 +21,9 @@ class RegisterFragment : Fragment(), View.OnClickListener {
     private lateinit var register: Button
     private lateinit var back: Button
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -28,6 +31,9 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_register, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         back = requireView().findViewById(R.id.register_back_button)
@@ -36,6 +42,9 @@ class RegisterFragment : Fragment(), View.OnClickListener {
         register.setOnClickListener(this)
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         if (p0 == register) {
             val t: ProgressBar = requireView().findViewById(R.id.register_loading)

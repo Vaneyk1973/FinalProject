@@ -2,7 +2,6 @@ package com.example.finalproject.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -27,6 +26,9 @@ class DuelFragment : Fragment(), View.OnClickListener {
     private lateinit var duelList: RecyclerView
     private val duelListRef: DatabaseReference = FirebaseDatabase.getInstance().getReference("Duel")
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,6 +36,9 @@ class DuelFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_duel, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         back = requireView().findViewById(R.id.duel_list_back_button)
@@ -47,6 +52,9 @@ class DuelFragment : Fragment(), View.OnClickListener {
         createDuelButton.setOnClickListener(this)
     }
 
+    /**
+     * gets the list of available duels from the database
+     */
     private fun getDuelList() {
         duelListRef.get().addOnCompleteListener {
             if (it.isSuccessful) {
@@ -83,6 +91,9 @@ class DuelFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(v: View?) {
         if (v == back) {
             val fragmentManager = parentFragmentManager
@@ -118,14 +129,24 @@ class DuelFragment : Fragment(), View.OnClickListener {
             val duel: TextView = itemView.findViewById(R.id.duel_item)
         }
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.duel_item, parent, false)
             return ViewHolder(view)
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.duel.text = ">${data[position].login}: ${data[position].rating}"

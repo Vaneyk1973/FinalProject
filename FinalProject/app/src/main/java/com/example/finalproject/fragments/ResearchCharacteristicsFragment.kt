@@ -1,16 +1,19 @@
 package com.example.finalproject.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.example.finalproject.R
+import androidx.fragment.app.Fragment
 import com.example.finalproject.MainActivity.Companion.assets
+import com.example.finalproject.R
 
 class ResearchCharacteristicsFragment(private val chosenResearch: Int) : Fragment() {
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -18,6 +21,9 @@ class ResearchCharacteristicsFragment(private val chosenResearch: Int) : Fragmen
         return inflater.inflate(R.layout.fragment_research_characteristics, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val name: TextView = requireView().findViewById(R.id.research_name)

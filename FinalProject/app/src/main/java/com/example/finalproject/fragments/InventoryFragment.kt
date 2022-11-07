@@ -24,6 +24,9 @@ class InventoryFragment : Fragment(), View.OnClickListener {
     private lateinit var back: Button
     private lateinit var inventory: RecyclerView
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -31,6 +34,9 @@ class InventoryFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_inventory, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         noItems = requireView().findViewById(R.id.textView12)
@@ -72,12 +78,19 @@ class InventoryFragment : Fragment(), View.OnClickListener {
             val name: TextView = itemView.findViewById(R.id.textView)
         }
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.inventory_item, parent, false)
             return ViewHolder(view)
         }
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.name.text = ">${data[position].second.name}:${data[position].first}"
@@ -93,6 +106,9 @@ class InventoryFragment : Fragment(), View.OnClickListener {
             }
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int =
             if (category == -1) {
                 if (data.size == 0)
@@ -115,6 +131,9 @@ class InventoryFragment : Fragment(), View.OnClickListener {
             }
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         if (p0 is ImageView) {
             inventory.adapter =

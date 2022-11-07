@@ -2,12 +2,12 @@ package com.example.finalproject.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
@@ -20,6 +20,9 @@ class CharacteristicsFragment : Fragment(), View.OnClickListener {
     private lateinit var resistancesList: RecyclerView
     private lateinit var back: Button
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,6 +30,9 @@ class CharacteristicsFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_settings_characteristics, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         damageList = requireView().findViewById(R.id.damage_characteristics)
@@ -40,6 +46,9 @@ class CharacteristicsFragment : Fragment(), View.OnClickListener {
         back.setOnClickListener(this)
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(v: View?) {
         if (v == back) {
             val fragmentManager = parentFragmentManager
@@ -69,6 +78,9 @@ class CharacteristicsFragment : Fragment(), View.OnClickListener {
             val view: TextView = itemView.findViewById(R.id.characteristic)
         }
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(
             parent: ViewGroup,
             viewType: Int
@@ -78,8 +90,15 @@ class CharacteristicsFragment : Fragment(), View.OnClickListener {
             return CharacteristicsViewHolder(view)
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: CharacteristicsViewHolder, position: Int) {
             if (mode == 0) {

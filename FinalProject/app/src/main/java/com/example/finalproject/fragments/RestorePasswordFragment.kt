@@ -18,11 +18,17 @@ class RestorePasswordFragment : Fragment(), View.OnClickListener {
     private lateinit var resetPassword:Button
     private lateinit var back:Button
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_restore_password, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         back= requireView().findViewById(R.id.reset_password_back_button)
@@ -31,6 +37,9 @@ class RestorePasswordFragment : Fragment(), View.OnClickListener {
         back.setOnClickListener(this)
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         if (p0==resetPassword){
             val email:EditText = requireView().findViewById(R.id.restore_password_email)

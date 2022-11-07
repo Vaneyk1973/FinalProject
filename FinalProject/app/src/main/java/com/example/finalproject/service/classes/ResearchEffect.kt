@@ -20,6 +20,10 @@ class ResearchEffect(
     private val upgradedDamage: ArrayList<Pair<Int, Double>> = ArrayList(),
     private val addedSpells: ArrayList<Spell> = ArrayList()
 ) {
+
+    /**
+     * changes the assets in according to the properties
+     */
     fun affect() {
         for (research in affectedResearches) {
             if (assets.researches[research]?.enable() == true && assets.researches[research]?.researched == false)
@@ -34,6 +38,9 @@ class ResearchEffect(
         player.damage.upgradeDamage(upgradedDamage)
     }
 
+    /**
+     * @return the string value of an object
+     */
     override fun toString(): String {
         var returnString = ""
         var componentsString = ""

@@ -17,6 +17,9 @@ class MenuFragment : Fragment(), View.OnClickListener {
 
     private lateinit var controlPanel: Array<ImageView>
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -24,6 +27,9 @@ class MenuFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_menu, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         controlPanel = arrayOf(
@@ -39,6 +45,9 @@ class MenuFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         val fragmentManager = parentFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()

@@ -20,11 +20,12 @@ import java.util.Date
 import kotlin.math.abs
 import kotlin.random.Random
 
+private const val MIN_LOCATION_ID = 512
+private const val MAX_LOCATION_ID = MIN_LOCATION_ID + 255
+
 class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListener {
 
     private val visibleMap: Array<Array<ImageView?>> = Array(5) { arrayOfNulls(5) }
-    private val MIN_LOCATION_ID = 512
-    private val MAX_LOCATION_ID = MIN_LOCATION_ID + 255
     private val map = MainActivity.map[mapNum].map
     private var enemyId: Int = -1
 
@@ -32,6 +33,9 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
         player.mapNumber = 0
     }
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -39,6 +43,9 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
         return inflater.inflate(R.layout.fragment_map, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val table: TableLayout = requireView().findViewById(R.id.tableLayout)
@@ -62,6 +69,12 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
         }
     }
 
+    /**
+     * @param v the view of a title
+     * @param p the array of views 'map'
+     * @return coordinates of the title
+     * finds the coordinates of a title
+     */
     private fun findTitleCoordinates(v: ImageView, p: Array<Array<ImageView?>>): Pair<Int, Int> {
         for (i in 0..4) {
             for (j in 0..4) {
@@ -75,6 +88,10 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
         return Pair(-1, -1)
     }
 
+    /**
+     * @return true if the network is available, false otherwise
+     * checks if the network is available
+     */
     private fun isInternetAvailable(): Boolean {
         val activeNetwork =
             (requireContext().getSystemService(Context.CONNECTIVITY_SERVICE)
@@ -82,6 +99,9 @@ class MapFragment(private val mapNum: Int = 0) : Fragment(), View.OnClickListene
         return activeNetwork?.isConnectedOrConnecting == true
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(v: View?) {
         if (v is ImageView) {
             val clickCoordinates = findTitleCoordinates(v, visibleMap)

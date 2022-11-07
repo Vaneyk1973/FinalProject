@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
-import com.example.finalproject.R
 import com.example.finalproject.MainActivity.Companion.assets
+import com.example.finalproject.R
 import com.example.finalproject.service.classes.Recipe
 
 class CraftingStationFragment : Fragment(), View.OnClickListener {
@@ -23,6 +23,9 @@ class CraftingStationFragment : Fragment(), View.OnClickListener {
     private lateinit var back:Button
     private lateinit var craft:Button
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,6 +33,9 @@ class CraftingStationFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_crafting_station, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         back = requireView().findViewById(R.id.statistics_back_button)
@@ -44,12 +50,19 @@ class CraftingStationFragment : Fragment(), View.OnClickListener {
     private inner class CraftingAdapter(val data: ArrayList<Recipe>) :
         RecyclerView.Adapter<CraftingAdapter.ViewHolder>() {
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(context).inflate(R.layout.crafting_recipe, parent, false)
             )
         }
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.name.text = ">${data[position].product.second.name}"
@@ -72,6 +85,9 @@ class CraftingStationFragment : Fragment(), View.OnClickListener {
             }
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
 
         private inner class ViewHolder(itemView: View) :
@@ -81,6 +97,9 @@ class CraftingStationFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         if (p0==back){
             val fragmentManager = parentFragmentManager

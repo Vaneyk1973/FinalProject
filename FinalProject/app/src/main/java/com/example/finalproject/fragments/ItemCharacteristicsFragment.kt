@@ -14,6 +14,9 @@ import com.example.finalproject.service.classes.items.Item
 
 class ItemCharacteristicsFragment(val item: Item, private val buyMode: Boolean = true) : Fragment() {
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -21,6 +24,9 @@ class ItemCharacteristicsFragment(val item: Item, private val buyMode: Boolean =
         return inflater.inflate(R.layout.fragment_item_characteristics, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val img: ImageView = requireView().findViewById(R.id.category_image)

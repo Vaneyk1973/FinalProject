@@ -14,11 +14,17 @@ import com.example.finalproject.service.classes.spell.Spell
 
 class SpellCharacteristicsFragment(val spell: Spell):Fragment() {
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_spell_characteristics, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val img:ImageView=requireView().findViewById(R.id.element_picture)

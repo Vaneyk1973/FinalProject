@@ -19,11 +19,17 @@ class SpellsFragment:Fragment(), View.OnClickListener {
 
     private lateinit var back:Button
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_spells, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val spells:RecyclerView =requireView().findViewById(R.id.spells_list)
@@ -42,6 +48,10 @@ class SpellsFragment:Fragment(), View.OnClickListener {
             )
         }
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         override fun onBindViewHolder(holder: SpellsViewHolder, position: Int) {
             holder.name.text = spells[position].name
             holder.name.setOnClickListener {
@@ -53,6 +63,9 @@ class SpellsFragment:Fragment(), View.OnClickListener {
             }
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int=spells.size
 
         inner class SpellsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -60,6 +73,9 @@ class SpellsFragment:Fragment(), View.OnClickListener {
         }
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         if (p0==back){
             val fragmentManager:FragmentManager= parentFragmentManager

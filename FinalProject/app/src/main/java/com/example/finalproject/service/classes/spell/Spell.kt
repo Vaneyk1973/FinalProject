@@ -62,10 +62,17 @@ class Spell() {
         name = spell.name
     }
 
+    /**
+     * consumes mana from the player
+     */
     private fun consumeMana() {
         player.mana -= manaConsumption
     }
 
+    /**
+     * @param target the target of a spell to affect
+     * damages the target
+     */
     fun affect(target: Health) {
         if (player.mana >= manaConsumption) {
             consumeMana()
@@ -73,6 +80,13 @@ class Spell() {
         }
     }
 
+    /**
+     * @return the element component
+     */
     fun getElement(): Element = Element(components[0] as Element)
+
+    /**
+     * @return the type component
+     */
     fun getType(): Type = Type(components[1] as Type)
 }

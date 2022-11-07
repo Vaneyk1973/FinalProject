@@ -6,7 +6,11 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,8 +22,7 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import java.lang.Integer.min
-import java.util.*
-import kotlin.math.log
+import java.util.Date
 
 class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener,
     TextView.OnEditorActionListener {
@@ -33,6 +36,9 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener,
 
     private val chatDatabaseReference = FirebaseDatabase.getInstance().getReference("Chat")
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -40,6 +46,9 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener,
         return inflater.inflate(R.layout.fragment_chat_mini, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         progressBar = requireView().findViewById(R.id.progressBar)
@@ -67,12 +76,19 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener,
             val timeSent: TextView = itemView.findViewById(R.id.time_list)
         }
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ChatViewHolder {
             return ChatViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.message, parent, false)
             )
         }
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         override fun onBindViewHolder(holder: ChatViewHolder, position: Int) {
             holder.messageText.text = data[position].messageText
             var time = data[position].date / 1000 + Calendar.getInstance().timeZone.getOffset(
@@ -88,9 +104,15 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener,
             holder.userLogin.text = data[position].userLogin
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         if (p0 == backButton) {
             val chatFragmentTransaction = parentFragmentManager.beginTransaction()
@@ -103,6 +125,10 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener,
         }
     }
 
+    /**
+     * @param snapshot the snapshot of a database with changes
+     * sets the action on the event if a database value has changed
+     */
     override fun onDataChange(snapshot: DataSnapshot) {
         messagesList.clear()
         for (i in snapshot.children)
@@ -112,10 +138,18 @@ class ChatMiniFragment : Fragment(), View.OnClickListener, ValueEventListener,
         progressBar.visibility = View.GONE
     }
 
+    /**
+     * @param error the thrown error
+     * notifies the player about the error
+     */
     override fun onCancelled(error: DatabaseError) {
         Toast.makeText(context, "Ooops something went wrong", Toast.LENGTH_SHORT).show()
     }
 
+    /**
+     * @param messageEnterView the view that has been edited
+     * sets the action on the event of editing a view
+     */
     override fun onEditorAction(messageEnterView: TextView?, p1: Int, p2: KeyEvent?): Boolean =
         if (messageEnterView!!.text.toString().isNotEmpty()) {
             val message = Message(

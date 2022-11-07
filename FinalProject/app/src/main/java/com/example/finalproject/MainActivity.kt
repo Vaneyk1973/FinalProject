@@ -39,6 +39,9 @@ import kotlin.concurrent.thread
 
 class MainActivity : AppCompatActivity() {
 
+    /**
+     * initializes base data required for app to function, calls graphic components
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -74,13 +77,6 @@ class MainActivity : AppCompatActivity() {
         fragmentTransaction.commit()
     }
 
-    override fun onResume() {
-        super.onResume()
-        music.start(this, R.raw.main)
-        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
-        saved = sharedPreference.getBoolean("saved", false)
-    }
-
     override fun onStart() {
         super.onStart()
         music.start(this, R.raw.main)
@@ -88,26 +84,8 @@ class MainActivity : AppCompatActivity() {
         saved = sharedPreference.getBoolean("saved", false)
     }
 
-    override fun onPause() {
-        super.onPause()
-        music.stop()
-        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
-        val editor = sharedPreference.edit()
-        editor.putBoolean("saved", saved)
-        editor.apply()
-    }
-
     override fun onStop() {
         super.onStop()
-        music.stop()
-        val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
-        val editor = sharedPreference.edit()
-        editor.putBoolean("saved", saved)
-        editor.apply()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
         music.stop()
         val sharedPreference = getSharedPreferences("PREFERENCE_NAME", Context.MODE_PRIVATE)
         val editor = sharedPreference.edit()
@@ -125,12 +103,22 @@ class MainActivity : AppCompatActivity() {
 
     @Dao
     interface SavesDao {
+
+        /**
+         * @return saves from database
+         */
         @Query("SELECT * FROM saves")
         fun getJsons(): List<Saves>
 
+        /**
+         * clears the save
+         */
         @Query("DELETE FROM saves WHERE id=0")
         fun deleteSaves()
 
+        /**
+         * @param save inserts the save into the database
+         */
         @Insert
         fun insertSave(save: Saves)
     }
@@ -187,8 +175,14 @@ class MainActivity : AppCompatActivity() {
             val enemiesKilled: HashMap<Int, Int> = HashMap() //<id of an enemy, quantity>
         }
 
+        /**
+         * @return player's avatar
+         */
         fun getAvatar(): Bitmap = Bitmap.createBitmap(avatar)
 
+        /**
+         * parses textures and initializes map
+         */
         private fun setTextures() {
             val texturesSource: Bitmap
             val xy = width * 1.0 / height
@@ -251,6 +245,10 @@ class MainActivity : AppCompatActivity() {
             avatar = Bitmap.createScaledBitmap(textures[5][5], mapTitleWidth, mapTitleWidth, false)
         }
 
+        /**
+         * @param saved true if the player has already made saves, false otherwise
+         * initializes assets either from Room or from xml file
+         */
         fun setInitialData(saved: Boolean = false) {
             if (saved) thread {
                 val dao = db.userDao()
@@ -442,7 +440,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    @Suppress("DEPRECATION")
+    /**
+     * regulates app's window size
+     */
     private fun goFullscreen() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.hide(WindowInsets.Type.statusBars())
@@ -454,6 +454,10 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    /**
+     * @return width and height of a device's screen
+     * calculates returned value to scale textures
+     */
     @Suppress("DEPRECATION")
     private fun getBounds(): Pair<Int, Int> {
         val wm = windowManager

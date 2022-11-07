@@ -2,15 +2,14 @@ package com.example.finalproject.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.RecyclerView.Recycler
 import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.R
 
@@ -20,6 +19,9 @@ class StatisticsFragment : Fragment(), View.OnClickListener {
     private lateinit var enemiesKilled: RecyclerView
     private lateinit var back: Button
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,6 +29,9 @@ class StatisticsFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_statistics, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         itemsObtainedList = requireView().findViewById(R.id.items_obtained_list)
@@ -51,6 +56,9 @@ class StatisticsFragment : Fragment(), View.OnClickListener {
         back.setOnClickListener(this)
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(v: View?) {
         if (v == back) {
             val fragmentManager = parentFragmentManager
@@ -70,12 +78,19 @@ class StatisticsFragment : Fragment(), View.OnClickListener {
             val name: TextView = itemView.findViewById(R.id.statistics_item_element)
         }
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): StatisticsViewHolder {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.statistics_item, parent, false)
             return StatisticsViewHolder(view)
         }
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: StatisticsViewHolder, position: Int) {
             if (mode == 0) {
@@ -87,6 +102,9 @@ class StatisticsFragment : Fragment(), View.OnClickListener {
             }
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
 
     }

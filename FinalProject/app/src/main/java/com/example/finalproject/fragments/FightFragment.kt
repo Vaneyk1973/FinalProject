@@ -59,6 +59,9 @@ class FightFragment(
     private var move: Int = 0
     private var enemyInit: Boolean = false
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -66,7 +69,9 @@ class FightFragment(
         return inflater.inflate(R.layout.fragment_fight, container, false)
     }
 
-
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         yourHealth = requireView().findViewById(R.id.your_health)
@@ -100,6 +105,9 @@ class FightFragment(
         playerImage.setImageBitmap(MainActivity.getAvatar())
     }
 
+    /**
+     * sets the enemy in case of a duel
+     */
     private fun getTheEnemy() {
         if (roomId == player.user.uID) {
             playerRef = duelReference.child("0")
@@ -119,6 +127,9 @@ class FightFragment(
         moveRef.addValueEventListener(this)
     }
 
+    /**
+     * updates the health and mana views
+     */
     private fun updateStatus() {
         var text = "${player.health.roundToInt()}/${player.maxHealth.roundToInt()}"
         yourHealth.text = text
@@ -130,6 +141,10 @@ class FightFragment(
         enemyMana.text = text
     }
 
+    /**
+     * @param snapshot the snapshot of a database with changes
+     * sets the action on the event if a database value has changed
+     */
     override fun onDataChange(snapshot: DataSnapshot) {
         if (snapshot.ref == enemyRef && snapshot.child("enemy").value != null) {
             enemy = Json.decodeFromString(
@@ -181,10 +196,16 @@ class FightFragment(
         }
     }
 
+    /**
+     * loggs the event of the error
+     */
     override fun onCancelled(error: DatabaseError) {
         Log.e("Duel error", error.message)
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(v: View?) {
         val fragmentManager = parentFragmentManager
         if (duel) {
@@ -308,12 +329,19 @@ class FightFragment(
     private inner class SpellsAdapter(val data: ArrayList<Spell> = ArrayList()) :
         RecyclerView.Adapter<SpellsAdapter.SpellViewHolder>() {
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SpellViewHolder {
             return SpellViewHolder(
                 LayoutInflater.from(parent.context).inflate(R.layout.spells_item, parent, false)
             )
         }
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         override fun onBindViewHolder(holder: SpellViewHolder, position: Int) {
             holder.name.text = data[position].name
             holder.name.setOnClickListener {
@@ -347,6 +375,9 @@ class FightFragment(
             }
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
 
         inner class SpellViewHolder(itemView: View) :

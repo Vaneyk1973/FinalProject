@@ -23,6 +23,9 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
     private lateinit var researchesList: RecyclerView
     private var chosenResearch = -1
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,6 +33,9 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_research_tree, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         researchPointsAmount = requireView().findViewById(R.id.research_points_amount)
@@ -43,6 +49,9 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
         updateResearchPointsAmount()
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         if (p0 == back) {
             val fragmentManager = parentFragmentManager
@@ -72,6 +81,9 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    /**
+     * updates the research points amount view
+     */
     @SuppressLint("SetTextI18n")
     private fun updateResearchPointsAmount() {
         researchPointsAmount.text = "You have ${player.researchPoints} research points"
@@ -84,12 +96,19 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
             val name: TextView = itemView.findViewById(R.id.research_list_name)
         }
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ResearchListViewHolder {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.research_item, parent, false)
             return ResearchListViewHolder(view)
         }
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ResearchListViewHolder, position: Int) {
             val currentResearch = assets.researches[data[position]]
@@ -108,6 +127,9 @@ class ResearchTreeFragment : Fragment(), View.OnClickListener {
             }
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
 
     }

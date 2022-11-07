@@ -18,10 +18,16 @@ data class User(var login: String = "", var email: String = "") {
         this.rating = rating
     }
 
+    /**
+     * logs the person in
+     */
     fun logIn() {
         loggedIn = true
     }
 
+    /**
+     * logs the person out
+     */
     fun logOut() {
         FirebaseDatabase.getInstance().getReference("Users").child(uID).child("loggedIn")
             .setValue(false)
@@ -32,5 +38,8 @@ data class User(var login: String = "", var email: String = "") {
         loggedIn = false
     }
 
+    /**
+     * @return the string value of an object
+     */
     override fun toString(): String = Json.encodeToString(serializer(), this)
 }

@@ -5,7 +5,11 @@ import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.finalproject.MainActivity
 import com.example.finalproject.R
@@ -23,6 +27,9 @@ class SignInFragment : Fragment(), View.OnClickListener {
     private lateinit var register: TextView
     private lateinit var restorePassword: TextView
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,6 +37,9 @@ class SignInFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_log_in, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         back= requireView().findViewById(R.id.log_in_back_button)
@@ -45,6 +55,9 @@ class SignInFragment : Fragment(), View.OnClickListener {
         back.setOnClickListener(this)
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         val fragmentManager = parentFragmentManager
         if (p0 == logIn) {

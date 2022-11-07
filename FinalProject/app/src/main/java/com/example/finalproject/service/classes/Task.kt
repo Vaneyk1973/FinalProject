@@ -20,6 +20,10 @@ data class Task(
     var completed: Boolean = false
     var taken: Boolean = false
 
+    /**
+     * @return true if task was completed, false otherwise
+     * checks whether the task was completed
+     */
     fun checkTask(): Boolean {
         completed = taken && player.gold >= goldToGain && player.level >= levelToReach
         if (enemiesToKill.isNotEmpty()) {

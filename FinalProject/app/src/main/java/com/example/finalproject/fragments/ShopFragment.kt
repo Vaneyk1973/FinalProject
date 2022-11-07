@@ -12,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
@@ -26,7 +25,6 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.GenericTypeIndicator
 import com.google.firebase.database.ValueEventListener
 
 class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnClickListener,
@@ -50,6 +48,9 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
     private val auctionReference: DatabaseReference =
         FirebaseDatabase.getInstance().getReference("Auction")
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -57,6 +58,9 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
         return inflater.inflate(R.layout.fragment_shop, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         sellBuy = requireView().findViewById(R.id.sell_buy_switch)
@@ -89,6 +93,9 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
         remove.setOnClickListener(this)
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         if (p0 == add)
             amountText.text = (++amount).toString()
@@ -115,14 +122,15 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
                             ref.get().addOnCompleteListener {
                                 if (it.isSuccessful) {
                                     for (k in (it.result.value as ArrayList<*>).indices) {
-                                        val i=(it.result.value as ArrayList<*>)[k]
+                                        val i = (it.result.value as ArrayList<*>)[k]
                                         if (((i as HashMap<*, *>)["second"] as HashMap<*, *>)["id"].toString()
                                                 .toInt() == item.second.id
                                         ) {
                                             if (i["first"].toString().toInt() == item.first) {
                                                 if (i["bought"] == false) {
                                                     if (player.buyItem(item)) {
-                                                        ref.child(k.toString()).child("bought").setValue(true)
+                                                        ref.child(k.toString()).child("bought")
+                                                            .setValue(true)
                                                         updateAuction()
                                                         break
                                                     }
@@ -212,6 +220,11 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
         }
     }
 
+    /**
+     * @param p0 the switch that has changed
+     * @param p1 its value
+     * modifies the buy/sell mode and changes the layout
+     */
     override fun onCheckedChanged(p0: CompoundButton?, p1: Boolean) {
         if (auction) {
             if (p0 == sellBuy) {
@@ -262,6 +275,9 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
         }
     }
 
+    /**
+     * updates the list of items presented at the auction
+     */
     private fun updateAuction() {
         FirebaseDatabase.getInstance().getReference("Auction").get()
             .addOnCompleteListener {
@@ -304,6 +320,10 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
             }
     }
 
+    /**
+     * @param inventory the inventory of a player
+     * @return the inventory of a player in the form need for the view
+     */
     private fun getInventoryAsArrayList(inventory: Inventory = player.inventory) =
         inventory.inventory.run {
             val items: ArrayList<Pair<Int, Item>> = ArrayList()
@@ -320,12 +340,19 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
             val name: TextView = itemView.findViewById(R.id.textView)
         }
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.inventory_item, parent, false)
             return ViewHolder(view)
         }
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             if (buyMode)
@@ -347,6 +374,9 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
             }
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
     }
 
@@ -365,14 +395,24 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
             val name: TextView = itemView.findViewById(R.id.textView)
         }
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.inventory_item, parent, false)
             return ViewHolder(view)
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: AuctionAdapter.ViewHolder, position: Int) {
             holder.name.text = ">${data[position].second.name}: ${data[position].first}"
@@ -394,6 +434,10 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
 
     }
 
+    /**
+     * @param snapshot the snapshot of a database with changes
+     * sets the action on the event if a database value has changed
+     */
     override fun onDataChange(snapshot: DataSnapshot) {
         if (snapshot.child("bought").value == true) {
             player.gold += snapshot.child("first").value.toString()
@@ -402,6 +446,9 @@ class ShopFragment(private val auction: Boolean = false) : Fragment(), View.OnCl
         }
     }
 
+    /**
+     * logs the event of an error
+     */
     override fun onCancelled(error: DatabaseError) {
         Log.e("DataBaseError", error.message)
     }

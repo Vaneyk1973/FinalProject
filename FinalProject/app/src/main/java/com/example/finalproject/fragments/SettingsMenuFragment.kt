@@ -23,6 +23,9 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
     private lateinit var back: Button
     private lateinit var save: Button
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -30,6 +33,9 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_settings_menu, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         settings = requireView().findViewById(R.id.settings_button)
@@ -48,6 +54,9 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
         save.setOnClickListener(this)
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         val fragmentManager = parentFragmentManager
         val fragmentTransaction = fragmentManager.beginTransaction()
@@ -90,7 +99,7 @@ class SettingsMenuFragment : Fragment(), View.OnClickListener {
                 fragmentTransaction.add(R.id.statistics, StatisticsFragment())
             }
 
-            save -> thread{
+            save -> thread {
                 val dao = MainActivity.db.userDao()
                 dao.deleteSaves()
                 dao.insertSave(

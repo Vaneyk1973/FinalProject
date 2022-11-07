@@ -23,8 +23,10 @@ class TaskManagerFragment(private val inVillage: Boolean = false) : Fragment(),
     private lateinit var takeTask: Button
     private lateinit var tasks: RecyclerView
     private var chosenTask: Int = -1
-    private var chosenTaskPosition: Int = 0
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -32,6 +34,9 @@ class TaskManagerFragment(private val inVillage: Boolean = false) : Fragment(),
         return inflater.inflate(R.layout.fragment_task_manager, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     @SuppressLint("SetTextI18n")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -54,12 +59,19 @@ class TaskManagerFragment(private val inVillage: Boolean = false) : Fragment(),
     private inner class TasksAdapter(private val data: ArrayList<Task>) :
         RecyclerView.Adapter<TasksAdapter.ViewHolder>() {
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             return ViewHolder(
                 LayoutInflater.from(context).inflate(R.layout.task, parent, false)
             )
         }
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         @SuppressLint("SetTextI18n")
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.name.text = data[position].name
@@ -77,6 +89,9 @@ class TaskManagerFragment(private val inVillage: Boolean = false) : Fragment(),
             }
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
 
         private inner class ViewHolder(itemView: View) :
@@ -85,6 +100,9 @@ class TaskManagerFragment(private val inVillage: Boolean = false) : Fragment(),
         }
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     @SuppressLint("SetTextI18n")
     override fun onClick(p0: View?) {
         if (p0 == takeTask) {

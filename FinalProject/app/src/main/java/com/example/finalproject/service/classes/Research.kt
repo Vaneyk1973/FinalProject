@@ -15,6 +15,10 @@ data class Research(
     val requiredResearches: ArrayList<Int> = ArrayList(),
     var description: String = ""
 ) {
+    /**
+     * @return true if the research became available, false otherwise
+     * checks if all the conditions met for the research to become available
+     */
     fun enable(): Boolean {
         for (i in requiredResearches)
             if (assets.researches[i]?.researched != true)
@@ -23,6 +27,10 @@ data class Research(
         return true
     }
 
+    /**
+     * @return true if the research is researched successfully, false otherwise
+     * makes the research researched and not available
+     */
     fun research(): Boolean {
         if (available) {
             researched = true

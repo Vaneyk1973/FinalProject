@@ -16,7 +16,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.finalproject.MainActivity
 import com.example.finalproject.MainActivity.Companion.assets
 import com.example.finalproject.R
-import com.example.finalproject.service.classes.spell.*
+import com.example.finalproject.service.classes.spell.Element
+import com.example.finalproject.service.classes.spell.Form
+import com.example.finalproject.service.classes.spell.ManaChannel
+import com.example.finalproject.service.classes.spell.ManaReservoir
+import com.example.finalproject.service.classes.spell.Spell
+import com.example.finalproject.service.classes.spell.Type
 
 class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEditorActionListener {
 
@@ -36,6 +41,9 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
     private lateinit var comps: RecyclerView
     private var name: String = ""
 
+    /**
+     * inflates fragment's layout
+     */
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -43,6 +51,9 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
         return inflater.inflate(R.layout.fragment_spell_creation, container, false)
     }
 
+    /**
+     * initializes graphic components
+     */
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         nameView = requireView().findViewById(R.id.spell_name)
@@ -65,7 +76,6 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
         typeView.setOnClickListener(this)
         formView.setOnClickListener(this)
     }
-
     private inner class SpellAdapter(dt: ArrayList<Int>) :
         RecyclerView.Adapter<SpellAdapter.ViewHolder>() {
 
@@ -81,12 +91,19 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
             val comp: TextView = itemView.findViewById(R.id.comp)
         }
 
+        /**
+         * inflates the list item layout
+         */
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view =
                 LayoutInflater.from(parent.context).inflate(R.layout.components_item, parent, false)
             return ViewHolder(view)
         }
 
+        /**
+         * @param holder a holder for a list item view
+         * sets the text displayed in the list
+         */
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             holder.comp.text = assets.components[data[position]]?.name ?: ""
             holder.comp.setOnClickListener {
@@ -116,9 +133,15 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
             }
         }
 
+        /**
+         * @return amount of items in the list
+         */
         override fun getItemCount(): Int = data.size
     }
 
+    /**
+     * sets the click listener for needed views
+     */
     override fun onClick(p0: View?) {
         when (p0) {
             confirmSpell -> {
@@ -167,6 +190,10 @@ class SpellCreationFragment : Fragment(), View.OnClickListener, TextView.OnEdito
         }
     }
 
+    /**
+     * @param p0 the view that has been edited
+     * sets the action on the event of editing a view
+     */
     override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
         if (p0 == nameView) {
             name = p0.text.toString()
