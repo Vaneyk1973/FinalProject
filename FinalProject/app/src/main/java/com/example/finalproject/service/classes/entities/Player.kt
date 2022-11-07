@@ -130,26 +130,41 @@ class Player(
         arrayListOf(Pair(x, y), Pair(6, 3))
     )
 
+    /**
+     * @param target the target to be damaged
+     * damages the target
+     */
     override fun doDamage(target: Health) {
         target.takeDamage(damage)
     }
 
+    /**
+     * @param target the target to be damaged
+     * @param ref a Firebase reference to a target in the database
+     * damages the target
+     */
     override fun doDamage(target: Health, ref: DatabaseReference) {
         target.takeDamage(damage, ref)
     }
 
+    /**
+     * defends or takes down the defence
+     */
     override fun defend() {
         def = !def
         if (def)
             resistances.applyDefence(defCoefficient)
         else
-            resistances.removeDefence(defCoefficient)
+            resistances.removeDefence()
     }
 
+    /**
+     * checks the condition and changes the characteristics of a player
+     */
     override fun levelUp() {
         while (experience >= experienceToTheNextLevelRequired) {
             level++
-            researchPoints += 1
+            researchPoints += 2
             maxHealth += 10
             maxMana += 2
             health = maxHealth
@@ -159,9 +174,18 @@ class Player(
         }
     }
 
+    /**
+     * @param level the next level
+     * @return experience required to level up to the next level
+     * calculates the returned value
+     */
     private fun experienceToTheNextLevelRequiredFormula(level: Int): Int =
         (2.0.pow(2 * sqrt(level.toDouble())) + level).toInt()
 
+    /**
+     * @param item the quantity of items to be added and the item template
+     * adds items to the inventory
+     */
     override fun addItemsToInventory(item: Pair<Int, Item>) {
         inventory.inventory[item.second.id] =
             (inventory.inventory[item.second.id] ?: 0) + item.first
@@ -169,6 +193,10 @@ class Player(
             (assets.itemsObtained[item.second.id] ?: 0) + item.first
     }
 
+    /**
+     * @param item the quantity of items to be removed and the item template
+     * @return if items are removed successfully, false otherwise
+     */
     override fun removeItemsFromInventory(item: Pair<Int, Item>): Boolean {
         return if (inventory.quantity(item.second.id) > item.first) {
             inventory.inventory[item.second.id] = inventory.inventory[item.second.id]!! - item.first
@@ -182,6 +210,11 @@ class Player(
         }
     }
 
+    /**
+     * @param recipe the recipe of an item(s) to be crafted
+     * @return true if the item(s) is crafted successfully, false otherwise
+     * crafts the items and adds them to the inventory
+     */
     fun craft(recipe: Recipe): Boolean {
         for (item in recipe.ingredients) {
             if (inventory.quantity(item.second.id) < item.first) {
@@ -198,6 +231,10 @@ class Player(
         return true
     }
 
+    /**
+     * @param loot the entity from which to collect items, gold and experience
+     * collects the drop from the entity
+     */
     fun takeDrop(loot: Lootable) {
         gold += loot.loot.gold
         experience += loot.loot.exp
@@ -206,6 +243,11 @@ class Player(
             addItemsToInventory(i)
     }
 
+    /**
+     * @param item the item to be equipped
+     * @return true if item is equipped successfully, false otherwise
+     * adds the item as equipment
+     */
     override fun equipItem(item: Item): Boolean =
         when (item) {
             is Weapon -> {
@@ -223,6 +265,11 @@ class Player(
             }
         }
 
+    /**
+     * @param item the item to be unequipped
+     * @return true if item is unequipped successfully, false otherwise
+     * removes the item from equipment
+     */
     override fun unequipItem(item: Item): Boolean {
         return if (item is Weapon && equipment[0] == item) {
             equipment[0] = Item()
@@ -235,16 +282,30 @@ class Player(
         }
     }
 
+    /**
+     * @param playerReference the Firebase reference to an object in database
+     * regenerates and changes the value in the database
+     */
     override fun regenerate(playerReference: DatabaseReference) {
         super.regenerate(playerReference)
         playerReference.setValue(Json.encodeToString(Enemy.serializer(), Enemy(this, damage)))
     }
 
+    /**
+     * @param damage the damage to be taken
+     * @param ref Firebase reference to an object in the database
+     * takes the damage and changes the value in the database
+     */
     override fun takeDamage(damage: Damage, ref: DatabaseReference) {
         super.takeDamage(damage, ref)
         ref.setValue(Json.encodeToString(Enemy.serializer(), Enemy(this, damage)))
     }
 
+    /**
+     * @param research the id of a research
+     * @return true if researched successfully, false otherwise
+     * researches the provided research
+     */
     fun research(research: Int): Boolean {
         if (assets.researches[research] != null) {
             if (researchPoints >= assets.researches[research]!!.cost) {
@@ -257,6 +318,9 @@ class Player(
         return false
     }
 
+    /**
+     * checks if some of the taken tasks are complete and removes the from the active task list
+     */
     fun checkTasks() {
         val newActiveTasks = ArrayList<Int>()
         for (task in assets.activeTasks) {
@@ -268,6 +332,11 @@ class Player(
         assets.activeTasks.addAll(newActiveTasks)
     }
 
+    /**
+     * @param item the quantity of items to be sold, the item's id
+     * @return true if sold successfully, false otherwise
+     * sells the item in the shop
+     */
     fun sellItem(item: Pair<Int, Item>): Boolean =
         if (inventory.quantity(item.second.id) >= item.first) {
             gold += item.second.costSell * item.first
@@ -277,6 +346,11 @@ class Player(
             false
         }
 
+    /**
+     * @param item the quantity of items to be bought, the item's id
+     * @return true if bought successfully, false otherwise
+     * buys the item in the shop
+     */
     fun buyItem(item: Pair<Int, Item>): Boolean =
         if (gold >= item.second.costBuy * item.first) {
             gold -= item.second.costBuy * item.first

@@ -114,6 +114,7 @@ class Enemy(
     /**
      * @param damage the damage applied to the object
      * @param ref a Firebase reference to an object in the database
+     * takes the damage and changes the value in the database
      */
     override fun takeDamage(damage: Damage, ref: DatabaseReference) {
         super.takeDamage(damage, ref)
